@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:frontend": "vite",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:all": "run-p dev:frontend dev:backend",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "run-s \"lint:*\"",
