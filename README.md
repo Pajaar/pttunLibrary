@@ -1,44 +1,59 @@
-# pttunLibrary
+# PTTUN Library
 
-This template should help get you started developing with Vue 3 in Vite.
+Aplikasi perpustakaan digital untuk kebutuhan pengelolaan koleksi buku, pengguna, dan peminjaman di lingkungan pengadilan.
 
-## Recommended IDE Setup
+## Menjalankan Proyek
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+Pasang dependensi frontend dari folder utama:
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+Pasang dependensi backend:
 
 ```sh
-npm run dev
+npm --prefix backend install
 ```
 
-### Compile and Minify for Production
+Jalankan frontend:
 
 ```sh
-npm run build
+npm run dev:frontend
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+Jalankan backend:
 
 ```sh
-npm run lint
+npm run dev:backend
+```
+
+Jalankan keduanya sekaligus:
+
+```sh
+npm run dev:all
+```
+
+## Konfigurasi Backend
+
+Backend membaca konfigurasi database dari `backend/.env`.
+
+Contoh variabel yang dibutuhkan:
+
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=pttun_library
+PORT=5000
+```
+
+Jika memakai Railway, gunakan host dan port dari bagian Public Networking database MySQL.
+`PORT` adalah port server backend Express, sedangkan `DB_PORT` adalah port koneksi database.
+
+Endpoint awal backend tersedia di:
+
+```text
+GET /api/buku
 ```
