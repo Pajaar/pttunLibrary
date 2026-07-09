@@ -17,6 +17,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
     <nav>
       <RouterLink to="/">Beranda</RouterLink>
+      <RouterLink to="/katalog">Katalog</RouterLink>
       <RouterLink to="/about">Tentang</RouterLink>
     </nav>
   </header>
