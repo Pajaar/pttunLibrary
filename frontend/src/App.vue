@@ -6,7 +6,7 @@ import HelloWorld from './components/HelloWorld.vue'
 <template>
   <div class="container">
     <h1>Welcome to Your App</h1>
-    <button class="btn btn-primary">Click Me</button>
+    <a class="btn btn-primary" href="#">Click Me</a>
   </div>
 
   <RouterView />
