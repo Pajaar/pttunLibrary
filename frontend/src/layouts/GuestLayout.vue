@@ -15,18 +15,29 @@
         <div class="vertical-divider-gold"></div>
 
         <div class="topbar-text-content">
-          <h4 class="topbar-title mb-0">MAHKAMAH AGUNG REPUBLIK INDONESIA</h4>
-          <h3 class="topbar-subtitle mb-2">Pengadilan Tinggi Tata Usaha Negara Jakarta</h3>
+          <h4 class="topbar-title mb-1">MAHKAMAH AGUNG REPUBLIK INDONESIA</h4>
+          <h3 class="topbar-subtitle mb-3">Pengadilan Tinggi Tata Usaha Negara Jakarta</h3>
+          <div class="contact-grid d-flex flex-column gap-2">
+            <div class="contact-item d-flex align-items-start gap-2">
+              <i class="bi bi-geo-alt-fill text-gold"></i>
+              <span class="contact-text">{{ contact.address }}</span>
+            </div>
 
-          <div class="contact-row d-flex flex-wrap gap-x-4 gap-y-1">
-            <span class="contact-item"><i class="fa-solid fa-location-dot text-gold"></i>
-              {{ contact.address }}</span>
-            <span class="contact-item"><i class="fa-solid fa-phone text-gold"></i>
-              {{ contact.phone }}</span>
-            <span class="contact-item"><i class="fa-solid fa-fax text-gold"></i>
-              {{ contact.fax }}</span>
-            <span class="contact-item"><i class="fa-solid fa-envelope text-gold"></i>
-              {{ contact.email }}</span>
+            <div class="contact-sub-row d-flex flex-wrap gap-4 mt-2">
+              <div class="contact-item d-flex align-items-center gap-2">
+                <i class="bi bi-telephone-fill text-gold"></i>
+                <span class="contact-text">{{ contact.phone }}</span>
+              </div>
+              <div class="contact-item d-flex align-items-center gap-2">
+                <i class="bi bi-printer-fill text-gold"></i>
+                <span class="contact-text">{{ contact.fax }}</span>
+              </div>
+              <div class="contact-item d-flex align-items-center gap-2">
+                <i class="bi bi-envelope-fill text-gold"></i>
+                <span class="contact-text">{{ contact.email }}</span>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
