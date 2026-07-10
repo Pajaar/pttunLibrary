@@ -1,16 +1,17 @@
-const db = require('../config/database');
+const BukuModel = require('../models/BukuModel')
 
-exports.getBuku = (req, res) => {
-  const sql = 'SELECT * FROM buku';
+exports.getSemuaBuku = async (req, res) => {
+  try {
+    const buku = await BukuModel.getSemuaBuku()
+    res.json({
+      message: 'Data buku berhasil diambil',
+      data: buku,
+    })
+  } catch (error) {
 
-  db.query(sql, (err, results) => {
-    if (err) {
-      return res.status(500).json({
-        message: 'Gagal mengambil data buku',
-        error: err,
-      });
-    }
-
-    res.json(results);
-  });
-};
+    res.status(500).json({
+      message: 'Gagal mengambil data buku',
+      error: error.message,
+    })
+  }
+}
