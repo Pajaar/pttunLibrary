@@ -53,7 +53,7 @@ html, body {
 /* Garis Pembatas Vertikal Emas */
 .vertical-divider-gold {
   width: 4px;
-  height: 90px;
+  height: 130px;
   background-color: #C99738;
   border-radius: 2px;
   margin: 0 10px;
