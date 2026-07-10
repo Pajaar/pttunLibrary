@@ -6,7 +6,6 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  root: fileURLToPath(new URL('./frontend', import.meta.url)),
   plugins: [
     vue(),
     vueDevTools(),

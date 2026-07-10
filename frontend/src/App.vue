@@ -3,12 +3,6 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-<<<<<<< HEAD
-  <div class="container">
-    <h1>Welcome to Your App</h1>
-    <a class="btn btn-primary" href="#">Click Me</a>
-  </div>
-=======
   <header class="app-header">
     <div>
       <p class="app-kicker">Perpustakaan Digital</p>
@@ -20,7 +14,6 @@ import { RouterLink, RouterView } from 'vue-router'
       <RouterLink to="/about">Tentang</RouterLink>
     </nav>
   </header>
->>>>>>> f42ab8ab3d16385c2113f0ffb080c0bbc381a378
 
   <RouterView />
 </template>
