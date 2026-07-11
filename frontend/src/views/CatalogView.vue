@@ -149,60 +149,6 @@ onMounted(async () => {
                 </div>
               </div>
             </div>
-
-            <div class="col-md-4">
-              <div class="book-card">
-                <!-- <img src="img/book.png" alt="Hukum Pidana" class="book-img"> -->
-
-                <div class="book-body">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <h6>Hukum Pidana-Ishaq</h6>
-                    <span class="status">• Tersedia</span>
-                  </div>
-
-                  <p>Dr. H. Ishaq, S.H., M.Hum.</p>
-                  <small>2020</small>
-
-                  <button class="book-btn">Lihat Buku</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-4">
-              <div class="book-card">
-                <!-- <img src="img/book.png" alt="Hukum Pidana" class="book-img"> -->
-
-                <div class="book-body">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <h6>Hukum Pidana-Ishaq</h6>
-                    <span class="status">• Tersedia</span>
-                  </div>
-
-                  <p>Dr. H. Ishaq, S.H., M.Hum.</p>
-                  <small>2020</small>
-
-                  <button class="book-btn">Lihat Buku</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-4">
-              <div class="book-card">
-                <!-- <img src="img/book.png" alt="Hukum Pidana" class="book-img"> -->
-
-                <div class="book-body">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <h6>Hukum Pidana-Ishaq</h6>
-                    <span class="status">• Tersedia</span>
-                  </div>
-
-                  <p>Dr. H. Ishaq, S.H., M.Hum.</p>
-                  <small>2020</small>
-
-                  <button class="book-btn">Lihat Buku</button>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
