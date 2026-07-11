@@ -76,7 +76,9 @@
     <footer class="footer-fluid">
       <div class="container">
         <div class="d-flex align-items-center gap-3 py-4">
-          <div class="seal-lg"><i class="fa-solid fa-scale-balanced"></i></div>
+          <div class="seal-lg">
+            <img src="@/assets/images/logo_Ma.png" alt="" class="main-seal-img">
+          </div>
           <div>
             <h4 class="mb-0">Perpustakaan Digital</h4>
             <h4 class="mb-0">PT TUN Jakarta</h4>
