@@ -21,7 +21,7 @@ onMounted(async () => {
 <template>
   <div class="catalog-page container-fluid">
     <div class="cat-head container d-flex justify-content-center align-items-center">
-      <hr class="flex-grow-1 my-auto opacity-100" style="border-color: #D4AD65; opacity: 1;">
+      <hr class="flex-grow-1 my-auto opacity-100 h-2" style="border-color: #D4AD65; opacity: 1;">
         <span class="px-3 fs-1 text-dark fw-bold">Katalog Buku</span>
       <hr class="flex-grow-1 my-auto opacity-100" style="border-color: #D4AD65; opacity: 1;">
     </div>
