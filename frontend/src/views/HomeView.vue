@@ -86,21 +86,76 @@
       </div>
     </section>
 
-    <section class="section pt-5">
+    <section class="section">
       <div class="container">
+        <div class="text-center mb-5">
+          <div class="eyebrow">Informasi</div>
+          <div class="section-rule-broken"></div>
+          <h2 class="section-title">Tentang Kami</h2>
+        </div>
         <div class="row g-4">
-          <div class="col-6 col-lg-3" v-for="(c, i) in listCategories" :key="i">
-            <div class="cat-list-card">
-              <div class="icon-circle"><i class="bi bi-book"></i></div>
-              <h6>{{ c.name }}</h6>
-              <div class="section-rule"></div>
-              <div class="count">{{ c.count }} Buku</div>
-              <a href="#">Lihat Koleksi <i class="bi bi-arrow-right-short"></i></a>
+          <div class="col-6 ">
+            <div class="image">
+              <img src="@/assets/images/gedung.jpg" alt="Library Image" class="img-fluid">
+            </div>
+          </div>
+          <div class="col-6 content-library">
+            <div class="d-flex align-items-center gap-3 about-library">
+              <i class="bi bi-book" style="color: var(--gold)"></i>
+              <h5 class="mb-0 eyebrow">Tentang Perpustakaan</h5>
+            </div>
+            <h1>Perpustakaan Digital <br>PT TUN Jakarta</h1>
+            <p class="lead">Perpustakaan Digital Pengadilan Tinggi Tata Usaha Negara Jakarta
+              merupakan layanan informasi yang menyediakan akses katalog koleksi buku hukum,
+              peraturan perundang-undangan, jurnal, dan berbagai refrensi hukum lainnya. Sistem ini
+              dirancang untuk memudahkan masyarakat dalam menemukan informasi koleksi secara cepat,
+              akurat, dan terintegrasi dengan website resmi PTTUN Jakarta</p>
+            <div class="mt-4 ps-4">
+              <div class="row g-4 text-center">
+
+                <!-- Kolom 1 -->
+                <div class="col-6 col-lg-3 item">
+                  <div class="icon-circle">
+                    <i class="bi bi-book"></i>
+                  </div>
+                  <h3 class="feature-title">Koleksi Lengkap</h3>
+                  <p class="feature-text">Berbagai Koleksi buku hukum dan refrensi terpercaya</p>
+                </div>
+
+                <!-- Kolom 2 -->
+                <div class="col-6 col-lg-3 item">
+                  <div class="icon-circle">
+                    <i class="bi bi-book"></i>
+                  </div>
+                  <h3 class="feature-title">Refrensi Hukum</h3>
+                  <p class="feature-text">Sumber hukum akurat dan dapat dipertanggungjawabkan</p>
+                </div>
+
+                <!-- Kolom 3 -->
+                <div class="col-6 col-lg-3 item">
+                  <div class="icon-circle">
+                    <i class="bi bi-book"></i>
+                  </div>
+                  <h3 class="feature-title">Pencarian Cepat</h3>
+                  <p class="feature-text">Temukan buku yang Anda butuhkan dengan mudah dan efisien
+                  </p>
+                </div>
+                <div class="col-6 col-lg-3 item">
+                  <div class="icon-circle">
+                    <i class="bi bi-book"></i>
+                  </div>
+                  <h3 class="feature-title">Terintegrasi</h3>
+                  <p class="feature-text">Terhubung dengan website resmi PT TUN Jakarta</p>
+                </div>
+
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
+
+
   </div>
 </template>
 
