@@ -674,37 +674,124 @@ footer {
   padding: 60px 0 40px;
 }
 
-footer h4 {
+footer h4, footer .footer-title {
   color: #fff;
-  font-weight: 700;
+  font-family: 'Georgia', serif;
+  font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
-footer .seal-lg {
-  width: 78px;
-  height: 78px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold) 60%, #a67c37);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 1.7rem;
+footer .gold-text {
+  color: #dfc493; /* Warna emas untuk judul kolom */
+  font-family: 'Georgia', serif;
 }
 
 footer .footer-rule {
-  width: 25 0px;
+  width: 100%;
+  max-width: 250px;
   height: 2px;
-  background: var(--gold);
+  background: #c5a059; /* atau var(--gold) */
   margin-top: 14px;
 }
 
-footer .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, .12);
+footer .seal-lg {
+  width: 90px;
+  height: 90px;
+}
+
+footer .main-seal-img {
+  width: 100%;
+  height: auto;
+}
+
+footer .footer-links {
+  list-style: none;
+  padding-left: 0;
+}
+
+footer .footer-links li {
+  margin-bottom: 12px;
+}
+
+footer .footer-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+footer .footer-links a:hover {
+  color: #dfc493;
+}
+
+footer .table-jam,
+footer .table-jam tr,
+footer .table-jam td {
+  background-color: transparent !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.footer-bottom {
+  border-top: 1px solid #c5a059; /* Garis emas tipis di atas footer bottom */
   margin-top: 40px;
-  padding-top: 20px;
-  font-size: .82rem;
-  color: rgba(255, 255, 255, .55);
-  text-align: center;
+  padding-top: 25px;
+}
+
+.copyright-text {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+.vertical-rule {
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  height: 40px;
+  width: 1px;
+}
+
+.label-dev {
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.logo-container {
+  padding: 8px 16px;
+  border-radius: 12px; /* Membuat sudut membulat/curved seperti di gambar */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 130px; /* Ukuran lebar proporsional agar tidak kebesaran */
+  height: auto;
+  flex-shrink: 0;
+}
+
+.dev-logo {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.info-dev-text {
+  line-height: 1.5;
+}
+
+.info-dev-text .text-white {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.info-dev-text .text-job {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .col-md-8 {
+    gap: 15px !important;
+  }
+  .info-dev-text {
+    text-align: center !important;
+  }
 }
 
 @media (max-width: 767px) {

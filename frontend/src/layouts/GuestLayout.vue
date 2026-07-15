@@ -75,20 +75,124 @@
 
     <footer class="footer-fluid">
       <div class="container">
-        <div class="d-flex align-items-center gap-3 py-4">
-          <div class="seal-lg">
-            <img src="@/assets/images/logo_Ma.png" alt="" class="main-seal-img">
+        <div class="row g-4">
+          <div class="col-lg-5 col-md-6">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="seal-lg">
+                <img src="@/assets/images/logo_Ma.png" alt="Logo MA" class="main-seal-img">
+              </div>
+              <div>
+                <h4 class="mb-0 text-uppercase h5 fw-bold">Perpustakaan Digital</h4>
+                <h4 class="mb-0 text-uppercase h5 fw-bold">PT TUN Jakarta</h4>
+                <div class="footer-rule"></div>
+              </div>
+            </div>
+            <p class="small lh-lg mt-4 opacity-75 pe-lg-4">
+              Pusat Informasi dan referensi hukum di bidang Peradilan Tata Usaha Negara yang
+              terpercaya, lengkap, dan mudah diakses.
+            </p>
           </div>
-          <div>
-            <h4 class="mb-0">Perpustakaan Digital</h4>
-            <h4 class="mb-0">PT TUN Jakarta</h4>
-            <div class="footer-rule"></div>
+
+          <!-- Kolom 2: Navigasi -->
+          <div class="col-lg-2 col-md-3 col-6">
+            <h5 class="gold-text mb-4 d-flex align-items-center gap-2">
+              <i class="bi bi-book"></i> Navigasi
+            </h5>
+            <ul class="footer-links small">
+              <li><a href="#"><i class="bi bi-chevron-right me-2 small"></i>Beranda</a></li>
+              <li><a href="#"><i class="bi bi-chevron-right me-2 small"></i>Katalog Buku</a></li>
+              <li><a href="#"><i class="bi bi-chevron-right me-2 small"></i>Kategori</a></li>
+              <li><a href="#"><i class="bi bi-chevron-right me-2 small"></i>Layanan</a></li>
+              <li><a href="#"><i class="bi bi-chevron-right me-2 small"></i>Tentang</a></li>
+              <li><a href="#"><i class="bi bi-chevron-right me-2 small"></i>Kontak Kami</a></li>
+            </ul>
+          </div>
+
+          <!-- Kolom 3: Layanan -->
+          <div class="col-lg-2 col-md-3 col-6">
+            <h5 class="gold-text mb-4 d-flex align-items-center gap-2">
+              <i class="bi bi-book"></i> Layanan
+            </h5>
+            <ul class="footer-links small">
+              <li><a href="#"><i class="bi bi-chevron-right me-2 small"></i>Katalog Buku</a></li>
+              <li><a href="#"><i class="bi bi-chevron-right me-2 small"></i>Buku Terbaru</a></li>
+              <li><a href="#"><i class="bi bi-chevron-right me-2 small"></i>Kategori Koleksi</a>
+              </li>
+              <li><a href="#"><i class="bi bi-chevron-right me-2 small"></i>Panduan Penggunaan</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h5 class="gold-text mb-3 d-flex align-items-center gap-2">
+              <i class="bi bi-book"></i> Kontak Kami
+            </h5>
+            <div class="small d-flex flex-column gap-2 mb-4 opacity-90">
+              <div class="d-flex align-items-start gap-2">
+                <i class="bi bi-geo-alt-fill text-warning mt-1"></i>
+                <span>Jalan Cikini Raya No. 117, Menteng, Jakarta Pusat, 10330</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-telephone-fill text-warning"></i>
+                <span>(021) 319 26163</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-envelope-fill text-warning"></i>
+                <span>pttun.jakarta@gmail.com</span>
+              </div>
+            </div>
+            <h5 class="gold-text mb-3 d-flex align-items-center gap-2">
+              <i class="bi bi-book"></i> Jam Operasional
+            </h5>
+            <table class="table table-borderless table-sm m-0 table-jam">
+              <tbody>
+                <tr>
+                  <td width="40%">Senin - Kamis</td>
+                  <td width="5%">:</td>
+                  <td>08.00 - 16.30 WIB</td>
+                </tr>
+                <tr>
+                  <td>Jumat</td>
+                  <td>:</td>
+                  <td>08.00 - 17.00 WIB</td>
+                </tr>
+                <tr>
+                  <td>Sabtu - Minggu</td>
+                  <td>:</td>
+                  <td>Tutup</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+        <div class="footer-bottom">
+          <div class="row align-items-center text-center text-md-start g-3">
+            <div class="col-md-4">
+              <p class="m-0 text-md-start copyright-text">
+                <i class="bi bi-c-circle"></i> 2026 Perpustakaan Digital PT TUN Jakarta.<br
+                  class="d-none d-md-block"> All rights reserved.
+              </p>
+            </div>
+            <div
+              class="col-md-8 d-flex flex-column flex-md-row align-items-center justify-content-md-end gap-4">
+              <div class="vertical-rule d-none d-md-block"></div>
+              <div class="text-nowrap">
+                <span class="opacity-75 label-dev">Dikembangkan oleh:</span>
+              </div>
+              <div class="logo-container shadow-sm">
+                <img src="/frontend/src/assets/images/cep-ccit.png" alt="Logo CEP CCIT"
+                  class="dev-logo">
+              </div>
+              <div class="vertical-rule d-none d-md-block"></div>
+              <div class="text-md-start text-center info-dev-text">
+                <span class="fw-semibold text-white d-block">CEP CCIT-FTUI</span>
+                <span class="small opacity-75 d-block text-job">Jurusan Teknologi Informasi - Full
+                  Stack Developer</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="footer-bottom py-3">
-          &copy; {{ year }} Pengadilan Tinggi Tata Usaha Negara Jakarta — Mahkamah Agung Republik
-          Indonesia. Seluruh hak cipta dilindungi.
-        </div>
+
       </div>
     </footer>
 

@@ -155,18 +155,6 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- <p v-if="sedangMemuat">Memuat data buku...</p>
-    <p v-else-if="pesanError" class="error-message">{{ pesanError }}</p>
-    <p v-else-if="daftarBuku.length === 0">Belum ada data buku.</p>
-
-    <ul v-else class="book-list">
-      <li v-for="buku in daftarBuku" :key="buku.id_buku || buku.id">
-        <strong>{{ buku.judul || buku.judul_buku || buku.nama_buku || 'Judul belum tersedia' }}</strong>
-        <span v-if="buku.penulis || buku.pengarang">
-          {{ buku.penulis || buku.pengarang }}
-        </span>
-      </li>
-    </ul> -->
   </div>
 </template>
 
