@@ -6,18 +6,15 @@
         <path d="M 0,60 Q 180,60 300,0 L 300,60 Z" fill="#D4AD65" />
       </svg>
 
-      <div class="container d-flex align-items-center gap-4 py-3 position-relative"
-        style="z-index: 2;">
+      <div class="container d-flex gap-5 position-relative" style="z-index: 2;">
         <div class="seal-container">
           <img src="@/assets/images/logo_Ma.png" alt="Logo Mahkamah Agung" class="main-seal-img" />
         </div>
-
-        <div class="vertical-divider-gold"></div>
-
         <div class="topbar-text-content">
-          <h4 class="topbar-title mb-1">MAHKAMAH AGUNG REPUBLIK INDONESIA</h4>
-          <h3 class="topbar-subtitle mb-3">Pengadilan Tinggi Tata Usaha Negara Jakarta</h3>
-          <div class="contact-grid d-flex flex-column gap-2">
+          <h4 class="topbar-title mb-1">MAHKAMAH AGUNG REPUBLIK INDONESIA
+            <br>DIREKTORAT JENDERAL BADAN PERADILAN MILITER<br>DAN PERADILAN TATA USAHA NEGARA <br> PENGADILAN
+            TINGGI TATA USAHA NEGARA</h4>
+          <div class="contact-grid d-flex flex-column gap-0">
             <div class="contact-item d-flex align-items-start gap-2">
               <i class="bi bi-geo-alt-fill text-gold"></i>
               <span class="contact-text">{{ contact.address }}</span>
@@ -39,6 +36,9 @@
 
             </div>
           </div>
+        </div>
+        <div class="seal-container">
+          <img src="@/assets/images/logo_tatausaha.png" alt="Logo Mahkamah Agung" class="main-seal-img" />
         </div>
       </div>
     </div>
@@ -76,7 +76,7 @@
     <footer class="footer-fluid">
       <div class="container">
         <div class="row g-4">
-          <div class="col-lg-5 col-md-6">
+          <div class="col-lg-5 col-md-4">
             <div class="d-flex align-items-center gap-3 mb-3">
               <div class="seal-lg">
                 <img src="@/assets/images/logo_Ma.png" alt="Logo MA" class="main-seal-img">
