@@ -25,6 +25,14 @@ a {
     flex-direction: column;
   }
 
+  .seal-container {
+    width: 170px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
   /* Container Utama Topbar */
   .topbar-fluid {
     position: relative;
@@ -44,14 +52,13 @@ a {
   }
 
   .topbar-title {
-    width: 100%;
     font-family: 'Times New Roman', Times, serif;
-    font-weight: 600;
-    color: #000000;
-    font-size: 22px;
+    font-weight: 700;
     text-align: center;
-    letter-spacing: 4.5px;
-    line-height: 1.5;
+    font-size: 21px;
+    letter-spacing: 3px;
+    line-height: 1.35;
+    margin-bottom: 8px;
   }
 
   .topbar-text-content {
@@ -59,27 +66,29 @@ a {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    flex: 1;
+    padding: 0 12px;
   }
 
   .gold-curve-decorator {
     position: absolute;
     right: -20px;
     bottom: -4px;
-    width: 180px;
-    height: 90px;
+    width: 160px;
+    height: 80px;
     background-color: #C99738;
     border-top-left-radius: 120px;
     z-index: 1;
   }
 
   .main-seal-img {
-    height: 200px;
-    width: 150px;
+    width: 140px;
+    height: auto;
     object-fit: contain;
   }
 
   .contact-grid {
-    margin-top: 8px;
+    margin-top: 4px;
     align-items: center;
   }
 
@@ -87,7 +96,7 @@ a {
     position: relative;
     width: 100%;
     background-color: #ffffff;
-    padding: 15px 0;
+    padding: 10px 0;
     overflow: hidden;
     border-bottom: 5px solid #D4AD65;
   }
@@ -100,7 +109,7 @@ a {
   }
 
   .contact-item {
-    font-size: 0.88rem;
+    font-size: 0.82rem;
     color: #333333;
     display: inline-flex;
     align-items: center;
@@ -265,7 +274,7 @@ h3,
 .toggle-knob {
   width: 42px;
   height: 42px;
-  background-color:#0c2454;
+  background-color: #0c2454;
   border-radius: 50%;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease;
@@ -292,24 +301,28 @@ h3,
   background: linear-gradient(rgba(10, 29, 55, 0.85), rgba(10, 29, 55, 0.85)),
     url('../images/gedung.jpg') no-repeat center 35%;
   background-size: cover;
-  padding: 100px 0;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  padding: 60px 0;
   color: white;
 }
 
 .hero h1 {
-  font-size: 2.9rem;
-  font-weight: 700;
-  margin-bottom: .3rem;
-  width: 68.25rem;
+  font-size: 2.7rem;
+  line-height: 1.2;
+  max-width: 900px;
+  width: 100%;
+  margin-bottom: 28px;
 }
 
 .hero .row-hero {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   font-size: 18px;
   color: #D4AD65;
   align-items: center;
-  margin-bottom: 1.2rem;
+  margin-bottom: 20px;
 }
 
 .hero .row-hero img {
@@ -319,7 +332,7 @@ h3,
 
 .hero h2 {
   font-family: 'Manrope', sans-serif;
-  font-size: 1.35rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: var(--gold-light);
   margin-bottom: 0;
@@ -327,36 +340,41 @@ h3,
 }
 
 .hero p.lead {
-  margin: 0 auto 2rem;
-  color: rgba(255, 255, 255, .85);
-  font-size: 28px;
+  font-size: 18px;
+  max-width: 720px;
+  line-height: 1.7;
+  margin-bottom: 40px;
 }
 
 .hero-rule {
   width: 174px;
-  border: 3px solid var(--gold);
-  margin: 30px 0 30px;
+  border: 1.5px solid var(--gold);
+  margin: 22px 0 30px;
 }
 
 .btn-gold {
   color: #D4AD65 !important;
-  border: solid 3px #D4AD65 !important;
-  padding: 19px 30px;
-  border-radius: 16px;
-  font-weight: 600;
+  border: solid 2px #D4AD65 !important;
+  padding: 15px 28px;
+  border-radius: 10px;
+  font-weight: 500;
   opacity: .85;
   letter-spacing: .3px;
 }
 
 .hero .btn-gold {
-  display: block; 
-  margin-left: auto; 
+  display: block;
+  margin-left: auto;
   margin-right: auto;
   margin-top: 50px;
 }
 
 .btn-gold i {
   margin-left: 40px;
+}
+
+.logo-pttun {
+  width: 30px;
 }
 
 /* ===== Section heading pattern ===== */
@@ -727,7 +745,8 @@ footer {
   padding: 60px 0 40px;
 }
 
-footer h4, footer .footer-title {
+footer h4,
+footer .footer-title {
   color: #fff;
   font-family: 'Georgia', serif;
   font-weight: 500;
@@ -735,7 +754,8 @@ footer h4, footer .footer-title {
 }
 
 footer .gold-text {
-  color: #dfc493; /* Warna emas untuk judul kolom */
+  color: #dfc493;
+  /* Warna emas untuk judul kolom */
   font-family: 'Georgia', serif;
 }
 
@@ -765,7 +785,7 @@ footer .main-seal-img {
 .footer-rule {
   width: 120px;
   height: 2.5px;
-  background-color:#D4AD65; 
+  background-color: #D4AD65;
   margin-top: 8px;
 }
 
@@ -800,7 +820,8 @@ footer .table-jam td {
 }
 
 .footer-bottom {
-  border-top: 1px solid #c5a059; /* Garis emas tipis di atas footer bottom */
+  border-top: 1px solid #c5a059;
+  /* Garis emas tipis di atas footer bottom */
   margin-top: 40px;
   padding-top: 25px;
 }
@@ -824,11 +845,13 @@ footer .table-jam td {
 
 .logo-container {
   padding: 8px 16px;
-  border-radius: 12px; /* Membuat sudut membulat/curved seperti di gambar */
+  border-radius: 12px;
+  /* Membuat sudut membulat/curved seperti di gambar */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 130px; /* Ukuran lebar proporsional agar tidak kebesaran */
+  width: 130px;
+  /* Ukuran lebar proporsional agar tidak kebesaran */
   height: auto;
   flex-shrink: 0;
 }
@@ -858,6 +881,7 @@ footer .table-jam td {
   .col-md-8 {
     gap: 15px !important;
   }
+
   .info-dev-text {
     text-align: center !important;
   }
