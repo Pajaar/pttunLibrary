@@ -32,6 +32,33 @@ a {
     background-color: #ffffff;
     overflow: hidden;
     margin-bottom: 8px;
+    align-items: center;
+  }
+
+  .topbar-fluid .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .topbar-title {
+    width: 100%;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 600;
+    color: #000000;
+    font-size: 22px;
+    text-align: center;
+    letter-spacing: 4.5px;
+    line-height: 1.5;
+  }
+
+  .topbar-text-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   .gold-curve-decorator {
@@ -46,18 +73,14 @@ a {
   }
 
   .main-seal-img {
-    height: 110px;
-    width: auto;
+    height: 200px;
+    width: 150px;
     object-fit: contain;
   }
 
-  /* Garis Pembatas Vertikal Emas */
-  .vertical-divider-gold {
-    width: 4px;
-    height: 130px;
-    background-color: #C99738;
-    border-radius: 2px;
-    margin: 0 10px;
+  .contact-grid {
+    margin-top: 8px;
+    align-items: center;
   }
 
   .topbar-fluid {
@@ -242,7 +265,7 @@ h3,
 .toggle-knob {
   width: 42px;
   height: 42px;
-  background-color: #806000;
+  background-color:#0c2454;
   border-radius: 50%;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease;
@@ -271,13 +294,27 @@ h3,
   background-size: cover;
   padding: 100px 0;
   color: white;
-  text-align: center;
 }
 
 .hero h1 {
   font-size: 2.9rem;
   font-weight: 700;
   margin-bottom: .3rem;
+  width: 68.25rem;
+}
+
+.hero .row-hero {
+  display: flex;
+  gap: 12px;
+  font-size: 18px;
+  color: #D4AD65;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.hero .row-hero img {
+  width: 36px;
+  height: 36px;
 }
 
 .hero h2 {
@@ -285,25 +322,41 @@ h3,
   font-size: 1.35rem;
   font-weight: 600;
   color: var(--gold-light);
-  margin-bottom: 1.1rem;
+  margin-bottom: 0;
+  margin-top: 10px;
 }
 
 .hero p.lead {
-  max-width: 680px;
   margin: 0 auto 2rem;
   color: rgba(255, 255, 255, .85);
-  font-size: 1.02rem;
+  font-size: 28px;
+}
+
+.hero-rule {
+  width: 174px;
+  border: 3px solid var(--gold);
+  margin: 30px 0 30px;
 }
 
 .btn-gold {
-  background: #D4AD65 !important;
-  color: #fff;
-  border: none;
-  padding: 12px 34px;
-  border-radius: 8px;
+  color: #D4AD65 !important;
+  border: solid 3px #D4AD65 !important;
+  padding: 19px 30px;
+  border-radius: 16px;
   font-weight: 600;
   opacity: .85;
   letter-spacing: .3px;
+}
+
+.hero .btn-gold {
+  display: block; 
+  margin-left: auto; 
+  margin-right: auto;
+  margin-top: 50px;
+}
+
+.btn-gold i {
+  margin-left: 40px;
 }
 
 /* ===== Section heading pattern ===== */
@@ -690,18 +743,34 @@ footer .footer-rule {
   width: 100%;
   max-width: 250px;
   height: 2px;
-  background: #c5a059; /* atau var(--gold) */
+  background: #c5a059;
   margin-top: 14px;
 }
 
-footer .seal-lg {
-  width: 90px;
-  height: 90px;
+.seal-lg {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 footer .main-seal-img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
+}
+
+.footer-rule {
+  width: 120px;
+  height: 2.5px;
+  background-color:#D4AD65; 
+  margin-top: 8px;
+}
+
+.text-uppercase {
+  color: #ffffff;
 }
 
 footer .footer-links {
