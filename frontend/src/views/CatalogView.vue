@@ -25,7 +25,6 @@
   })
 
 </script>
-
 <template>
   <div class="catalog-page container-fluid">
     <div class="cat-head container d-flex justify-content-center align-items-center">
@@ -33,10 +32,8 @@
       <span class="px-3 fs-1 text-dark fw-bold">Katalog Buku</span>
       <hr class="flex-grow-1 my-auto opacity-100" style="border-color: #D4AD65; opacity: 1;">
     </div>
-
     <span class="text-center fs-5 d-flex justify-content-center">Temukan koleksi buku hukum,
       peraturan, dan referensi yang tersedia di <br> Perpustakaan PTTUN Jakarta</span>
-
     <div class="container mt-4 mb-4">
       <div class="search-container">
         <i class="fas fa-search search-icon"></i>
@@ -45,29 +42,23 @@
         <button class="search-button"> Cari Buku </button>
       </div>
     </div>
-
     <div class="container my-5">
       <div class="row g-4">
-
-        <!-- Sidebar Filter -->
         <div class="col-lg-3">
           <div class="filter-box">
             <h6>Kategori</h6>
-
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="hukum-administrasi">
               <label class="form-check-label" for="hukum-administrasi">
                 Hukum Administrasi Negara
               </label>
             </div>
-
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="hukum-perdata">
               <label class="form-check-label" for="hukum-perdata">
                 Hukum Perdata
               </label>
             </div>
-
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="hukum-pidana">
               <label class="form-check-label" for="hukum-pidana">
@@ -75,46 +66,37 @@
               </label>
             </div>
           </div>
-
           <div class="filter-box">
             <h6>Tipe Buku</h6>
-
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="jurnal">
               <label class="form-check-label" for="jurnal">Jurnal</label>
             </div>
-
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="putusan">
               <label class="form-check-label" for="putusan">Putusan</label>
             </div>
-
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="laporan">
               <label class="form-check-label" for="laporan">Laporan</label>
             </div>
           </div>
-
           <div class="filter-box">
             <h6>Ketersediaan</h6>
-
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="semua">
               <label class="form-check-label" for="semua">Semua</label>
             </div>
-
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="tersedia">
               <label class="form-check-label" for="tersedia">Tersedia</label>
             </div>
-
             <div class="form-check">
               <input class="form-check-input" type="checkbox" id="dipinjam">
               <label class="form-check-label" for="dipinjam">Sedang Dipinjam</label>
             </div>
           </div>
         </div>
-
         <!-- Book Content -->
         <div class="col-lg-9">
           <div class="d-flex justify-content-between align-items-center book-header">
@@ -122,43 +104,30 @@
               Menampilkan <span>{{ daftarBuku.length }}</span> dari
               <span>{{ daftarBuku.length }}</span> buku
             </h4>
-
             <select class="form-select sort-select">
               <option>Paling Relevan</option>
               <option>Terbaru</option>
               <option>Judul A-Z</option>
             </select>
           </div>
-
           <hr>
-
           <p v-if="sedangMemuat">Memuat data buku...</p>
-
           <p v-else-if="pesanError" class="error-message">
             {{ pesanError }}
           </p>
-
           <p v-else-if="daftarBuku.length === 0">
             Belum ada data buku.
           </p>
-
           <div class="row g-4 mt-2">
             <div class="col-md-4" v-for="buku in daftarBuku" :key="buku.id_buku || buku.id">
               <div class="book-card">
-
-                <!-- Wrapper untuk gambar dan badge -->
                 <div class="book-img-wrapper">
-                  <!-- Menggunakan data cover dinamis, jika kosong akan pakai cadangan Logo_Ma.png -->
-                  <!-- Note: Sesuaikan path relative-nya dari komponen ini ke folder assets kamu -->
                   <img
                     :src="buku.cover || buku.cover_buku || defaultCover"
                     alt="Cover Buku" class="book-img">
-                  <!-- Badge kategori melayang di atas gambar -->
                   <span
                     class="category-badge">{{ buku.kategori || buku.nama_kategori || 'Hukum Pidana' }}</span>
                 </div>
-
-                <!-- Konten detail buku -->
                 <div class="book-body">
                   <div class="d-flex justify-content-between align-items-start gap-2">
                     <h6 class="book-title">{{ buku.judul || buku.judul_buku || 'Judul Buku' }}</h6>
@@ -169,19 +138,16 @@
                     {{ buku.penulis || buku.pengarang || 'Penulis belum tersedia' }}</p>
                   <small
                     class="book-year">{{ buku.tahun || buku.tahun_terbit || 'Tahun tidak tersedia' }}</small>
-                  <button class="book-btn">Lihat Buku</button>
+                  <a href="/buku/{{ buku.id }}"><button class="book-btn">Lihat Buku</button></a>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </div>
-
   </div>
 </template>
-
 <style scoped>
   .catalog-page {
     padding: 2rem 0;

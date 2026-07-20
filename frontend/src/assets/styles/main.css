@@ -27,99 +27,120 @@ a {
 
   /* Container Utama Topbar */
   .topbar-fluid {
-    position: relative;
-    width: 100%;
-    background-color: #ffffff;
-    overflow: hidden;
-    margin-bottom: 8px;
-    align-items: center;
+  position: relative;
+  width: 100%;
+  background-color: #ffffff;
+  padding: 15px 0;
+  overflow: hidden;
+  border-bottom: 5px solid #D4AD65;
+}
+
+.topbar-fluid .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px; /* Sedikit dirapatkan agar memberikan ruang bagi teks */
+  width: 100%;
+}
+
+.seal-container {
+  flex-shrink: 0; /* Mengunci wadah logo agar tidak gepeng */
+}
+
+.main-seal-img {
+  height: 200px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.topbar-text-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1; 
+  min-width: 0; /* Mencegah flex item meluber keluar batas */
+}
+
+.topbar-title {
+  width: 100%;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 600;
+  color: #000000;
+  font-size: 20px;
+  text-align: center;
+  letter-spacing: 2px;
+  line-height: 1.4;
+}
+
+.contact-grid {
+  margin-top: 8px;
+  width: 100%;
+  text-align: center;
+  align-items: center;
+}
+
+.contact-sub-row {
+  justify-content: center;
+}
+
+.contact-item {
+  font-size: 0.8rem;
+  color: #333333;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.text-gold {
+  color: #D4AD65 !important;
+}
+
+.gold-curve-svg {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  width: 90px;
+  height: 80px;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .topbar-fluid {
+    padding: 10px 0;
   }
 
   .topbar-fluid .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    width: 100%;
-  }
-
-  .topbar-title {
-    width: 100%;
-    font-family: 'Times New Roman', Times, serif;
-    font-weight: 600;
-    color: #000000;
-    font-size: 22px;
-    text-align: center;
-    letter-spacing: 4.5px;
-    line-height: 1.5;
-  }
-
-  .topbar-text-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .gold-curve-decorator {
-    position: absolute;
-    right: -20px;
-    bottom: -4px;
-    width: 180px;
-    height: 90px;
-    background-color: #C99738;
-    border-top-left-radius: 120px;
-    z-index: 1;
+    gap: 8px; /* Mempersempit jarak antar elemen di HP */
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   .main-seal-img {
-    height: 200px;
-    width: 150px;
-    object-fit: contain;
+    height: 45px; /* Ukuran pas untuk HP agar tidak makan space */
   }
 
-  .contact-grid {
-    margin-top: 8px;
-    align-items: center;
+  .topbar-title {
+    font-size: 9px;
+    letter-spacing: 0.2px;
+    line-height: 1.3;
   }
 
-  .topbar-fluid {
-    position: relative;
-    width: 100%;
-    background-color: #ffffff;
-    padding: 15px 0;
-    overflow: hidden;
-    border-bottom: 5px solid #D4AD65;
-  }
-
-  .topbar-subtitle {
-    font-family: 'Times New Roman', Times, serif;
-    font-weight: 600;
-    color: #000000;
-    font-size: 1.55rem;
-  }
-
+  /* Mengatur bagian kontak agar hemat ruang di layar mobile */
   .contact-item {
-    font-size: 0.88rem;
-    color: #333333;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    font-size: 0.65rem;
+  }
+  
+  .contact-sub-row {
+    gap: 10px !important; /* Merapatkan spasi ikon telp, fax, email */
+    justify-content: center;
   }
 
-  .text-gold {
-    color: #D4AD65 !important;
+  .gold-curve-svg {
+    display: none; /* Disembunyikan di HP agar tidak menabrak susunan logo */
   }
-
-  @media (max-width: 768px) {
-    .vertical-divider-gold {
-      display: none;
-    }
-
-    .gold-curve-decorator {
-      display: none;
-    }
-  }
+}
 
   .gold-curve-svg {
     position: absolute;
@@ -757,9 +778,11 @@ footer .footer-rule {
 }
 
 footer .main-seal-img {
-  width: 100%;
-  height: 100%;
+  width: 110px;
+  height: 110px;
   object-fit: contain;
+  display: block;
+  padding: 5px;
 }
 
 .footer-rule {
