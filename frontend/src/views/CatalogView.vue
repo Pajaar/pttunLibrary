@@ -15,12 +15,29 @@
   const pesanError = ref('')
 
   const searchQuery = ref('')
-  const selectedCategory = ref('')
+  const selectedCategories = ref([])
   const selectedStatus = ref('')
   const selectedRak = ref('')
   const selectedSection = ref('')
   const selectedYear = ref('')
   const sortBy = ref('relevan')
+
+  const KATEGORI_LIST = [
+    'Pidana Materiil',
+    'Pidana Khusus',
+    'Perdata',
+    'Peraturan',
+    'Biografi',
+    'Monografi Hukum',
+    'TUN',
+    'Hukum Acara',
+    'Hukum Publik',
+    'Majalah',
+    'Lain-lain',
+    'Sejarah',
+    'Statistika',
+    'Ketentuan',
+  ]
 
   onMounted(async () => {
     try {
@@ -40,7 +57,6 @@
     return [...new Set(values)].sort((a, b) => String(a).localeCompare(String(b)))
   }
 
-  const kategoriOptions = computed(() => uniqueSorted(daftarBuku.value, 'nama_category'))
   const statusOptions = computed(() => uniqueSorted(daftarBuku.value, 'status_buku'))
   const rakOptions = computed(() => uniqueSorted(daftarBuku.value, 'nama_rak'))
   const sectionOptions = computed(() => uniqueSorted(daftarBuku.value, 'nama_section'))
@@ -58,7 +74,9 @@
           (field || '').toLowerCase().includes(query)
         )
 
-      const matchesCategory = !selectedCategory.value || buku.nama_category === selectedCategory.value
+      const matchesCategory =
+        selectedCategories.value.length === 0 ||
+        selectedCategories.value.includes(buku.nama_category)
       const matchesStatus = !selectedStatus.value || buku.status_buku === selectedStatus.value
       const matchesRak = !selectedRak.value || buku.nama_rak === selectedRak.value
       const matchesSection = !selectedSection.value || buku.nama_section === selectedSection.value
@@ -74,6 +92,10 @@
       )
     })
   })
+
+  function resetKategori() {
+    selectedCategories.value = []
+  }
 
   const sortedBuku = computed(() => {
     const list = [...filteredBuku.value]
@@ -119,13 +141,29 @@
         <!-- Sidebar Filter -->
         <div class="col-lg-3">
           <div class="filter-box">
-            <h6>Kategori</h6>
-            <select class="form-select" v-model="selectedCategory">
-              <option value="">Semua Kategori</option>
-              <option v-for="kategori in kategoriOptions" :key="kategori" :value="kategori">
-                {{ kategori }}
-              </option>
-            </select>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">Kategori</h6>
+              <button
+                v-if="selectedCategories.length"
+                type="button"
+                class="btn-reset-filter"
+                @click="resetKategori">
+                Reset
+              </button>
+            </div>
+            <div class="kategori-checkbox-list">
+              <div class="form-check" v-for="kategori in KATEGORI_LIST" :key="kategori">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  :id="`kategori-${kategori}`"
+                  :value="kategori"
+                  v-model="selectedCategories">
+                <label class="form-check-label" :for="`kategori-${kategori}`">
+                  {{ kategori }}
+                </label>
+              </div>
+            </div>
           </div>
 
           <div class="filter-box">
@@ -217,7 +255,7 @@
                 <div class="book-body">
                   <div class="d-flex justify-content-between align-items-start gap-2">
                     <h6 class="book-title">{{ buku.judul_buku }}</h6>
-                    <span class="status" :class="{ 'status-tidak-tersedia': buku.status_buku !== 'tersedia' }">• {{ buku.status_buku }}</span>
+                    <span class="status">• {{ buku.status_buku }}</span>
                   </div>
                   <p class="book-author">{{ buku.pengarang || 'Penulis belum tersedia' }}</p>
                   <small class="book-year">{{ buku.tahun_terbit || 'Tahun tidak tersedia' }}</small>
@@ -253,7 +291,7 @@
     width: 100%;
     height: 60px;
     border-radius: 30px;
-    background-color: rgba(212, 173, 101, 0.15);
+    background-color: #ebedf278;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
     padding: 5px 25px 5px 5px;
   }
@@ -290,7 +328,7 @@
     padding: 0 23px;
     border: none;
     border-radius: 30px;
-    background-color: #735505;
+    background-color: #0B1E3F;
     color: white;
     font-weight: 600;
     white-space: nowrap;
@@ -333,6 +371,26 @@
   .form-check-input:checked {
     background-color: #735505;
     border-color: #735505;
+  }
+
+  .kategori-checkbox-list {
+    max-height: 240px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .btn-reset-filter {
+    border: none;
+    background: none;
+    color: #735505;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .btn-reset-filter:hover {
+    text-decoration: underline;
   }
 
   /* Book Header */
@@ -432,10 +490,6 @@
     white-space: nowrap;
     /* Mencegah kata membungkus ke bawah */
     text-transform: capitalize;
-  }
-
-  .status-tidak-tersedia {
-    color: #dc2626;
   }
 
   /* Nama Penulis */
