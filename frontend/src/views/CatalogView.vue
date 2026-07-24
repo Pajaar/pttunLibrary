@@ -1,6 +1,7 @@
 <script setup>
   import {
     ref,
+    computed,
     onMounted
   } from 'vue'
   import {
@@ -13,6 +14,14 @@
   const sedangMemuat = ref(true)
   const pesanError = ref('')
 
+  const searchQuery = ref('')
+  const selectedCategory = ref('')
+  const selectedStatus = ref('')
+  const selectedRak = ref('')
+  const selectedSection = ref('')
+  const selectedYear = ref('')
+  const sortBy = ref('relevan')
+
   onMounted(async () => {
     try {
       const response = await getBuku()
@@ -24,6 +33,61 @@
     }
   })
 
+  function uniqueSorted(list, key) {
+    const values = list
+      .map((item) => item[key])
+      .filter((value) => value !== null && value !== undefined && value !== '')
+    return [...new Set(values)].sort((a, b) => String(a).localeCompare(String(b)))
+  }
+
+  const kategoriOptions = computed(() => uniqueSorted(daftarBuku.value, 'nama_category'))
+  const statusOptions = computed(() => uniqueSorted(daftarBuku.value, 'status_buku'))
+  const rakOptions = computed(() => uniqueSorted(daftarBuku.value, 'nama_rak'))
+  const sectionOptions = computed(() => uniqueSorted(daftarBuku.value, 'nama_section'))
+  const tahunOptions = computed(() =>
+    uniqueSorted(daftarBuku.value, 'tahun_terbit').sort((a, b) => b - a)
+  )
+
+  const filteredBuku = computed(() => {
+    const query = searchQuery.value.trim().toLowerCase()
+
+    return daftarBuku.value.filter((buku) => {
+      const matchesSearch =
+        !query ||
+        [buku.judul_buku, buku.pengarang, buku.penerbit].some((field) =>
+          (field || '').toLowerCase().includes(query)
+        )
+
+      const matchesCategory = !selectedCategory.value || buku.nama_category === selectedCategory.value
+      const matchesStatus = !selectedStatus.value || buku.status_buku === selectedStatus.value
+      const matchesRak = !selectedRak.value || buku.nama_rak === selectedRak.value
+      const matchesSection = !selectedSection.value || buku.nama_section === selectedSection.value
+      const matchesYear = !selectedYear.value || String(buku.tahun_terbit) === String(selectedYear.value)
+
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesStatus &&
+        matchesRak &&
+        matchesSection &&
+        matchesYear
+      )
+    })
+  })
+
+  const sortedBuku = computed(() => {
+    const list = [...filteredBuku.value]
+
+    if (sortBy.value === 'terbaru') {
+      return list.sort((a, b) => (b.tahun_terbit || 0) - (a.tahun_terbit || 0))
+    }
+
+    if (sortBy.value === 'judul') {
+      return list.sort((a, b) => (a.judul_buku || '').localeCompare(b.judul_buku || ''))
+    }
+
+    return list
+  })
 </script>
 
 <template>
@@ -40,9 +104,12 @@
     <div class="container mt-4 mb-4">
       <div class="search-container">
         <i class="fas fa-search search-icon"></i>
-        <input type="text" class="form-control search-input"
-          placeholder="Cari berdasarkan judul buku... ">
-        <button class="search-button"> Cari Buku </button>
+        <input
+          type="text"
+          class="form-control search-input"
+          placeholder="Cari berdasarkan judul buku, pengarang, atau penerbit..."
+          v-model="searchQuery">
+        <button class="search-button" type="button"> Cari Buku </button>
       </div>
     </div>
 
@@ -53,65 +120,52 @@
         <div class="col-lg-3">
           <div class="filter-box">
             <h6>Kategori</h6>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="hukum-administrasi">
-              <label class="form-check-label" for="hukum-administrasi">
-                Hukum Administrasi Negara
-              </label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="hukum-perdata">
-              <label class="form-check-label" for="hukum-perdata">
-                Hukum Perdata
-              </label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="hukum-pidana">
-              <label class="form-check-label" for="hukum-pidana">
-                Hukum Pidana
-              </label>
-            </div>
-          </div>
-
-          <div class="filter-box">
-            <h6>Tipe Buku</h6>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="jurnal">
-              <label class="form-check-label" for="jurnal">Jurnal</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="putusan">
-              <label class="form-check-label" for="putusan">Putusan</label>
-            </div>
-
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="laporan">
-              <label class="form-check-label" for="laporan">Laporan</label>
-            </div>
+            <select class="form-select" v-model="selectedCategory">
+              <option value="">Semua Kategori</option>
+              <option v-for="kategori in kategoriOptions" :key="kategori" :value="kategori">
+                {{ kategori }}
+              </option>
+            </select>
           </div>
 
           <div class="filter-box">
             <h6>Ketersediaan</h6>
+            <select class="form-select" v-model="selectedStatus">
+              <option value="">Semua Status</option>
+              <option v-for="status in statusOptions" :key="status" :value="status">
+                {{ status }}
+              </option>
+            </select>
+          </div>
 
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="semua">
-              <label class="form-check-label" for="semua">Semua</label>
-            </div>
+          <div class="filter-box">
+            <h6>Rak</h6>
+            <select class="form-select" v-model="selectedRak">
+              <option value="">Semua Rak</option>
+              <option v-for="rak in rakOptions" :key="rak" :value="rak">
+                {{ rak }}
+              </option>
+            </select>
+          </div>
 
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="tersedia">
-              <label class="form-check-label" for="tersedia">Tersedia</label>
-            </div>
+          <div class="filter-box">
+            <h6>Section</h6>
+            <select class="form-select" v-model="selectedSection">
+              <option value="">Semua Section</option>
+              <option v-for="section in sectionOptions" :key="section" :value="section">
+                {{ section }}
+              </option>
+            </select>
+          </div>
 
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="dipinjam">
-              <label class="form-check-label" for="dipinjam">Sedang Dipinjam</label>
-            </div>
+          <div class="filter-box">
+            <h6>Tahun Terbit</h6>
+            <select class="form-select" v-model="selectedYear">
+              <option value="">Semua Tahun</option>
+              <option v-for="tahun in tahunOptions" :key="tahun" :value="tahun">
+                {{ tahun }}
+              </option>
+            </select>
           </div>
         </div>
 
@@ -119,14 +173,14 @@
         <div class="col-lg-9">
           <div class="d-flex justify-content-between align-items-center book-header">
             <h4 class="mb-0 book-count">
-              Menampilkan <span>{{ daftarBuku.length }}</span> dari
+              Menampilkan <span>{{ sortedBuku.length }}</span> dari
               <span>{{ daftarBuku.length }}</span> buku
             </h4>
 
-            <select class="form-select sort-select">
-              <option>Paling Relevan</option>
-              <option>Terbaru</option>
-              <option>Judul A-Z</option>
+            <select class="form-select sort-select" v-model="sortBy">
+              <option value="relevan">Paling Relevan</option>
+              <option value="terbaru">Terbaru</option>
+              <option value="judul">Judul A-Z</option>
             </select>
           </div>
 
@@ -142,33 +196,31 @@
             Belum ada data buku.
           </p>
 
-          <div class="row g-4 mt-2">
-            <div class="col-md-4" v-for="buku in daftarBuku" :key="buku.id_buku || buku.id">
+          <p v-else-if="sortedBuku.length === 0">
+            Tidak ada buku yang cocok dengan filter Anda.
+          </p>
+
+          <div v-else class="row g-4 mt-2">
+            <div class="col-md-4" v-for="buku in sortedBuku" :key="buku.id_buku">
               <div class="book-card">
 
                 <!-- Wrapper untuk gambar dan badge -->
                 <div class="book-img-wrapper">
-                  <!-- Menggunakan data cover dinamis, jika kosong akan pakai cadangan Logo_Ma.png -->
-                  <!-- Note: Sesuaikan path relative-nya dari komponen ini ke folder assets kamu -->
                   <img
-                    :src="buku.cover || buku.cover_buku || defaultCover"
+                    :src="buku.image_url || defaultCover"
                     alt="Cover Buku" class="book-img">
                   <!-- Badge kategori melayang di atas gambar -->
-                  <span
-                    class="category-badge">{{ buku.kategori || buku.nama_kategori || 'Hukum Pidana' }}</span>
+                  <span class="category-badge">{{ buku.nama_category || 'Tanpa Kategori' }}</span>
                 </div>
 
                 <!-- Konten detail buku -->
                 <div class="book-body">
                   <div class="d-flex justify-content-between align-items-start gap-2">
-                    <h6 class="book-title">{{ buku.judul || buku.judul_buku || 'Judul Buku' }}</h6>
-                    <span class="status">•
-                      {{ buku.status || buku.ketersediaan || 'Tersedia' }}</span>
+                    <h6 class="book-title">{{ buku.judul_buku }}</h6>
+                    <span class="status">• {{ buku.status_buku }}</span>
                   </div>
-                  <p class="book-author">
-                    {{ buku.penulis || buku.pengarang || 'Penulis belum tersedia' }}</p>
-                  <small
-                    class="book-year">{{ buku.tahun || buku.tahun_terbit || 'Tahun tidak tersedia' }}</small>
+                  <p class="book-author">{{ buku.pengarang || 'Penulis belum tersedia' }}</p>
+                  <small class="book-year">{{ buku.tahun_terbit || 'Tahun tidak tersedia' }}</small>
                   <button class="book-btn">Lihat Buku</button>
                 </div>
               </div>
