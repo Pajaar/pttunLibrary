@@ -4,14 +4,14 @@
       <div class="container">
         <div class="row-hero">
           <img src="@/assets/images/maki_town-hall.png" alt="Logo PTTUN" class="logo-pttun">
-          <h2>Pengadilan Tinggi Tata Usaha Negara Jakarta</h2>
+          <h2>MAHKAMAH AGUNG REPUBLIK INDONESIA</h2>
         </div>
-        <h1>DIREKTORAT JENDERAL
-          BADAN PERADILAN MILITER
+        <h1>DIREKTORAT JENDERAL<br>
+          BADAN PERADILAN MILITER<br>
           DAN PERADILAN TATA USAHA NEGARA PENGADILAN TINGGI TATA USAHA NEGARA</h1>
           <div class="hero-rule"></div>
         <p class="lead">Melayani masyarakat melalui layanan perpustakaan digital yang cepat, <br>mudah, dan transparan.</p>
-        <button class="btn btn-gold btn-hero">Cari Buku <i class="bi bi-chevron-right"></i></button>
+        <button class="btn btn-gold btn-hero">Cari Buku<i class="bi bi-chevron-right"></i></button>
       </div>
     </section>
 
