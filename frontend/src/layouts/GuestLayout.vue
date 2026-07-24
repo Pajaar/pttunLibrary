@@ -6,7 +6,7 @@
         <path d="M 0,60 Q 180,60 300,0 L 300,60 Z" fill="#D4AD65" />
       </svg>
 
-      <div class="container d-flex gap-5 position-relative" style="z-index: 2;">
+      <div class="container d-flex align-items-center justify-content-between">
         <div class="seal-container">
           <img src="@/assets/images/logo_Ma.png" alt="Logo Mahkamah Agung" class="main-seal-img" />
         </div>
@@ -20,7 +20,7 @@
               <span class="contact-text">{{ contact.address }}</span>
             </div>
 
-            <div class="contact-sub-row d-flex flex-wrap gap-4 mt-2">
+            <div class="contact-sub-row d-flex flex-wrap gap-3 mt-1">
               <div class="contact-item d-flex align-items-center gap-2">
                 <i class="bi bi-telephone-fill text-gold"></i>
                 <span class="contact-text">{{ contact.phone }}</span>
