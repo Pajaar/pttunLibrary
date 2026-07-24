@@ -43,3 +43,28 @@ __screenshots__/
 
 # Vite
 *.timestamp-*-*.mjs
+
+# ==== Database dumps / data files (don't push real PTTUN data to a public repo) ====
+*.sql
+*.sqlite
+*.sqlite3
+/backend/data/
+/backend/dumps/
+Data_Buku_PTTUN_terbaru.xlsx
+*.xlsx
+*.csv
+
+# ==== Claude Code local state ====
+.claude/settings.local.json
+.claude/history/
+.claude/logs/
+
+# ==== Editor / OS junk ====
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ==== Logs ====
+*.log
+logs/
