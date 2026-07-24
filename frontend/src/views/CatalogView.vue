@@ -217,7 +217,7 @@
                 <div class="book-body">
                   <div class="d-flex justify-content-between align-items-start gap-2">
                     <h6 class="book-title">{{ buku.judul_buku }}</h6>
-                    <span class="status">• {{ buku.status_buku }}</span>
+                    <span class="status" :class="{ 'status-tidak-tersedia': buku.status_buku !== 'tersedia' }">• {{ buku.status_buku }}</span>
                   </div>
                   <p class="book-author">{{ buku.pengarang || 'Penulis belum tersedia' }}</p>
                   <small class="book-year">{{ buku.tahun_terbit || 'Tahun tidak tersedia' }}</small>
@@ -432,6 +432,10 @@
     white-space: nowrap;
     /* Mencegah kata membungkus ke bawah */
     text-transform: capitalize;
+  }
+
+  .status-tidak-tersedia {
+    color: #dc2626;
   }
 
   /* Nama Penulis */
