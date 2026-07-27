@@ -65,3 +65,44 @@ exports.searchBuku = async (req, res) => {
     })
   }
 }
+
+// Get buku by category
+exports.getBukuByCategory = async (req, res) => {
+  const { category } = req.params
+
+  try {
+    const buku = await BukuModel.getBukuByCategory(category)
+
+    if (buku.length === 0) {
+      return res.status(404).json({
+        message: 'Tidak ada buku ditemukan untuk kategori ini',
+      })
+    }
+
+    res.json({
+      message: 'Data buku berhasil ditemukan',
+      data: buku,
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: 'Gagal mencari data buku berdasarkan kategori',
+      error: error.message,
+    })
+  }
+}
+
+// Get all categories
+exports.getCategory = async (req, res) => {
+  try {
+    const categories = await BukuModel.getCategory()
+    res.json({
+      message: 'Data kategori berhasil diambil',
+      data: categories,
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: 'Gagal mengambil data kategori',
+      error: error.message,
+    })
+  }
+}

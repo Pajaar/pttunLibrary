@@ -36,3 +36,22 @@ exports.searchBuku = async (keyword) => {
   return rows
 }
 
+exports.getBukuByCategory = async (key_category) => {
+  const [rows] = await db.promise().query(
+    `SELECT b.*, c.nama_category
+    FROM buku b
+    JOIN category c ON b.id_category = c.id_category
+    WHERE c.nama_category = ?`,
+    [key_category],
+  )
+
+  return rows
+}
+
+exports.getCategory = async () => {
+  const [rows] = await db.promise().query(
+    'SELECT * FROM category WHERE nama_category IS NOT NULL AND nama_category != ""',
+  )
+  return rows
+}
+
