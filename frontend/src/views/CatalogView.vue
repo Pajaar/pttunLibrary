@@ -2,6 +2,7 @@
   import {
     ref,
     computed,
+    watch,
     onMounted
   } from 'vue'
   import {
@@ -19,7 +20,7 @@
   const selectedCategories = ref([])
   const selectedStatus = ref('')
   const selectedRak = ref('')
-  const selectedSection = ref('')
+  // const selectedSection = ref('')
   const selectedYear = ref('')
   const sortBy = ref('relevan')
 
@@ -55,7 +56,7 @@
 
   const statusOptions = computed(() => uniqueSorted(daftarBuku.value, 'status_buku'))
   const rakOptions = computed(() => uniqueSorted(daftarBuku.value, 'nama_rak'))
-  const sectionOptions = computed(() => uniqueSorted(daftarBuku.value, 'nama_section'))
+  // const sectionOptions = computed(() => uniqueSorted(daftarBuku.value, 'nama_section'))
   const tahunOptions = computed(() =>
     uniqueSorted(daftarBuku.value, 'tahun_terbit').sort((a, b) => b - a)
   )
@@ -75,7 +76,7 @@
         selectedCategories.value.includes(buku.nama_category)
       const matchesStatus = !selectedStatus.value || buku.status_buku === selectedStatus.value
       const matchesRak = !selectedRak.value || buku.nama_rak === selectedRak.value
-      const matchesSection = !selectedSection.value || buku.nama_section === selectedSection.value
+      // const matchesSection = !selectedSection.value || buku.nama_section === selectedSection.value
       const matchesYear = !selectedYear.value || String(buku.tahun_terbit) === String(selectedYear.value)
 
       return (
@@ -83,7 +84,7 @@
         matchesCategory &&
         matchesStatus &&
         matchesRak &&
-        matchesSection &&
+        // matchesSection &&
         matchesYear
       )
     })
@@ -106,6 +107,55 @@
 
     return list
   })
+
+  const BOOKS_PER_PAGE = 9
+  const currentPage = ref(1)
+
+  const totalPages = computed(() => Math.ceil(sortedBuku.value.length / BOOKS_PER_PAGE))
+
+  const pagedBuku = computed(() => {
+    const start = (currentPage.value - 1) * BOOKS_PER_PAGE
+    return sortedBuku.value.slice(start, start + BOOKS_PER_PAGE)
+  })
+
+  const pageNumbers = computed(() => {
+    const total = totalPages.value
+    const current = currentPage.value
+
+    if (total <= 1) return []
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1)
+    }
+
+    const siblingCount = 1
+    const start = Math.max(2, current - siblingCount)
+    const end = Math.min(total - 1, current + siblingCount)
+
+    const pages = [1]
+    if (start > 2) pages.push('...')
+    for (let i = start; i <= end; i++) pages.push(i)
+    if (end < total - 1) pages.push('...')
+    pages.push(total)
+
+    return pages
+  })
+
+  watch(sortedBuku, () => {
+    currentPage.value = 1
+  })
+
+  function goToPage(page) {
+    if (page < 1 || page > totalPages.value || page === currentPage.value) return
+    currentPage.value = page
+  }
+
+  function prevPage() {
+    goToPage(currentPage.value - 1)
+  }
+
+  function nextPage() {
+    goToPage(currentPage.value + 1)
+  }
 </script>
 
 <template>
@@ -182,7 +232,7 @@
             </select>
           </div>
 
-          <div class="filter-box">
+          <!-- <div class="filter-box">
             <h6>Section</h6>
             <select class="form-select" v-model="selectedSection">
               <option value="">Semua Section</option>
@@ -190,7 +240,7 @@
                 {{ section }}
               </option>
             </select>
-          </div>
+          </div> -->
 
           <div class="filter-box">
             <h6>Tahun Terbit</h6>
@@ -235,7 +285,7 @@
           </p>
 
           <div v-else class="row g-4 mt-2">
-            <div class="col-md-4" v-for="buku in sortedBuku" :key="buku.id_buku">
+            <div class="col-md-4" v-for="buku in pagedBuku" :key="buku.id_buku">
               <div class="book-card">
 
                 <!-- Wrapper untuk gambar dan badge -->
@@ -260,6 +310,38 @@
               </div>
             </div>
           </div>
+
+          <nav v-if="totalPages > 1" class="pagination-nav" aria-label="Navigasi halaman">
+            <button
+              v-if="currentPage > 1"
+              type="button"
+              class="page-arrow"
+              @click="prevPage"
+              aria-label="Halaman sebelumnya">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <template v-for="(page, index) in pageNumbers" :key="`${page}-${index}`">
+              <span v-if="page === '...'" class="page-ellipsis">...</span>
+              <button
+                v-else
+                type="button"
+                class="page-number"
+                :class="{ active: page === currentPage }"
+                @click="goToPage(page)">
+                {{ page }}
+              </button>
+            </template>
+
+            <button
+              v-if="currentPage < totalPages"
+              type="button"
+              class="page-arrow"
+              @click="nextPage"
+              aria-label="Halaman berikutnya">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </nav>
         </div>
 
       </div>
@@ -562,6 +644,66 @@
   .error-message {
     color: #a33a1f;
     font-weight: 600;
+  }
+
+  /* Pagination */
+  .pagination-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .page-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #D4AD65;
+    background-color: #fff;
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .page-number:hover {
+    background-color: #f8f0dc;
+  }
+
+  .page-number.active {
+    background-color: #735505;
+    border-color: #735505;
+    color: #fff;
+  }
+
+  .page-ellipsis {
+    width: 36px;
+    text-align: center;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .page-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: none;
+    color: #735505;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .page-arrow:hover {
+    color: #1e293b;
   }
 
   /* Responsive */
