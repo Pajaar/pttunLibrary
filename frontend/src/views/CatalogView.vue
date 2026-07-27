@@ -147,6 +147,7 @@
   function goToPage(page) {
     if (page < 1 || page > totalPages.value || page === currentPage.value) return
     currentPage.value = page
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   function prevPage() {
