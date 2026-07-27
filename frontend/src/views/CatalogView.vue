@@ -5,7 +5,8 @@
     onMounted
   } from 'vue'
   import {
-    getBuku
+    getBuku,
+    getCategories
   } from '../services/bookService'
 
   import defaultCover from '@/assets/images/Logo_Ma.png';
@@ -22,22 +23,7 @@
   const selectedYear = ref('')
   const sortBy = ref('relevan')
 
-  const KATEGORI_LIST = [
-    'Pidana Materiil',
-    'Pidana Khusus',
-    'Perdata',
-    'Peraturan',
-    'Biografi',
-    'Monografi Hukum',
-    'TUN',
-    'Hukum Acara',
-    'Hukum Publik',
-    'Majalah',
-    'Lain-lain',
-    'Sejarah',
-    'Statistika',
-    'Ketentuan',
-  ]
+  const kategoriOptions = ref([])
 
   onMounted(async () => {
     try {
@@ -47,6 +33,16 @@
       pesanError.value = error.message || 'Data buku belum bisa dimuat'
     } finally {
       sedangMemuat.value = false
+    }
+
+    try {
+      const response = await getCategories()
+      const categories = Array.isArray(response.data) ? response.data : []
+      kategoriOptions.value = categories
+        .map((category) => category.nama_category)
+        .filter((nama) => !!nama)
+    } catch (error) {
+      console.error('Gagal memuat daftar kategori', error)
     }
   })
 
@@ -152,7 +148,7 @@
               </button>
             </div>
             <div class="kategori-checkbox-list">
-              <div class="form-check" v-for="kategori in KATEGORI_LIST" :key="kategori">
+              <div class="form-check" v-for="kategori in kategoriOptions" :key="kategori">
                 <input
                   class="form-check-input"
                   type="checkbox"
