@@ -6,24 +6,28 @@
         <path d="M 0,60 Q 180,60 300,0 L 300,60 Z" fill="#D4AD65" />
       </svg>
 
-      <div class="container position-relative" style="z-index: 2;">
-        <div
-          class="d-flex align-items-center justify-content-between w-100 text-center position-relative">
-          <div class="seal-container text-start" style="flex: 0 0 auto;">
-            <img src="@/assets/images/logo_Ma.png" alt="Logo Mahkamah Agung"
-              class="main-seal-img" />
-          </div>
-          <div class="topbar-text-content" style="flex: 1 1 auto; min-width: 0; padding: 0 5px;">
-            <h4 class="topbar-title mb-1">
-              MAHKAMAH AGUNG REPUBLIK INDONESIA<br>
-              DIREKTORAT JENDERAL BADAN PERADILAN MILITER<br>
-              DAN PERADILAN TATA USAHA NEGARA<br>
-              PENGADILAN TINGGI TATA USAHA NEGARA
-            </h4>
-            <div class="contact-grid d-flex flex-column gap-0">
-              <div class="contact-item d-flex align-items-start justify-content-center gap-2">
-                <i class="bi bi-geo-alt-fill text-gold"></i>
-                <span class="contact-text">{{ contact.address }}</span>
+      <div class="container d-flex align-items-center justify-content-between">
+        <div class="seal-container">
+          <img src="@/assets/images/logo_Ma.png" alt="Logo Mahkamah Agung" class="main-seal-img" />
+        </div>
+        <div class="topbar-text-content">
+          <h4 class="topbar-title mb-1">MAHKAMAH AGUNG REPUBLIK INDONESIA
+            <br>DIREKTORAT JENDERAL BADAN PERADILAN MILITER<br>DAN PERADILAN TATA USAHA NEGARA <br> PENGADILAN
+            TINGGI TATA USAHA NEGARA</h4>
+          <div class="contact-grid d-flex flex-column gap-0">
+            <div class="contact-item d-flex align-items-start gap-2">
+              <i class="bi bi-geo-alt-fill text-gold"></i>
+              <span class="contact-text">{{ contact.address }}</span>
+            </div>
+
+            <div class="contact-sub-row d-flex flex-wrap gap-3 mt-1">
+              <div class="contact-item d-flex align-items-center gap-2">
+                <i class="bi bi-telephone-fill text-gold"></i>
+                <span class="contact-text">{{ contact.phone }}</span>
+              </div>
+              <div class="contact-item d-flex align-items-center gap-2">
+                <i class="bi bi-printer-fill text-gold"></i>
+                <span class="contact-text">{{ contact.fax }}</span>
               </div>
               <div
                 class="contact-sub-row d-flex flex-wrap gap-1 gap-md-4 mt-2 justify-content-center">

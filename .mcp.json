@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "mysql": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@benborla29/mcp-server-mysql"
+      ],
+      "env": {
+        "MYSQL_HOST": "${DB_HOST}",
+        "MYSQL_PORT": "${DB_PORT}",
+        "MYSQL_USER": "${DB_USER}",
+        "MYSQL_PASS": "${DB_PASSWORD}",
+        "MYSQL_DB": "${DB_NAME}"
+      }
+    }
+  }
+}

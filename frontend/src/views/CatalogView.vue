@@ -1,10 +1,13 @@
 <script setup>
   import {
     ref,
+    computed,
+    watch,
     onMounted
   } from 'vue'
   import {
-    getBuku
+    getBuku,
+    getCategories
   } from '../services/bookService'
 
   import defaultCover from '@/assets/images/Logo_Ma.png';
@@ -12,6 +15,16 @@
   const daftarBuku = ref([])
   const sedangMemuat = ref(true)
   const pesanError = ref('')
+
+  const searchQuery = ref('')
+  const selectedCategories = ref([])
+  const selectedStatus = ref('')
+  const selectedRak = ref('')
+  // const selectedSection = ref('')
+  const selectedYear = ref('')
+  const sortBy = ref('relevan')
+
+  const kategoriOptions = ref([])
 
   onMounted(async () => {
     try {
@@ -22,8 +35,128 @@
     } finally {
       sedangMemuat.value = false
     }
+
+    try {
+      const response = await getCategories()
+      const categories = Array.isArray(response.data) ? response.data : []
+      kategoriOptions.value = categories
+        .map((category) => category.nama_category)
+        .filter((nama) => !!nama)
+    } catch (error) {
+      console.error('Gagal memuat daftar kategori', error)
+    }
   })
 
+  function uniqueSorted(list, key) {
+    const values = list
+      .map((item) => item[key])
+      .filter((value) => value !== null && value !== undefined && value !== '')
+    return [...new Set(values)].sort((a, b) => String(a).localeCompare(String(b)))
+  }
+
+  const statusOptions = computed(() => uniqueSorted(daftarBuku.value, 'status_buku'))
+  const rakOptions = computed(() => uniqueSorted(daftarBuku.value, 'nama_rak'))
+  // const sectionOptions = computed(() => uniqueSorted(daftarBuku.value, 'nama_section'))
+  const tahunOptions = computed(() =>
+    uniqueSorted(daftarBuku.value, 'tahun_terbit').sort((a, b) => b - a)
+  )
+
+  const filteredBuku = computed(() => {
+    const query = searchQuery.value.trim().toLowerCase()
+
+    return daftarBuku.value.filter((buku) => {
+      const matchesSearch =
+        !query ||
+        [buku.judul_buku, buku.pengarang, buku.penerbit].some((field) =>
+          (field || '').toLowerCase().includes(query)
+        )
+
+      const matchesCategory =
+        selectedCategories.value.length === 0 ||
+        selectedCategories.value.includes(buku.nama_category)
+      const matchesStatus = !selectedStatus.value || buku.status_buku === selectedStatus.value
+      const matchesRak = !selectedRak.value || buku.nama_rak === selectedRak.value
+      // const matchesSection = !selectedSection.value || buku.nama_section === selectedSection.value
+      const matchesYear = !selectedYear.value || String(buku.tahun_terbit) === String(selectedYear.value)
+
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesStatus &&
+        matchesRak &&
+        // matchesSection &&
+        matchesYear
+      )
+    })
+  })
+
+  function resetKategori() {
+    selectedCategories.value = []
+  }
+
+  const sortedBuku = computed(() => {
+    const list = [...filteredBuku.value]
+
+    if (sortBy.value === 'terbaru') {
+      return list.sort((a, b) => (b.tahun_terbit || 0) - (a.tahun_terbit || 0))
+    }
+
+    if (sortBy.value === 'judul') {
+      return list.sort((a, b) => (a.judul_buku || '').localeCompare(b.judul_buku || ''))
+    }
+
+    return list
+  })
+
+  const BOOKS_PER_PAGE = 9
+  const currentPage = ref(1)
+
+  const totalPages = computed(() => Math.ceil(sortedBuku.value.length / BOOKS_PER_PAGE))
+
+  const pagedBuku = computed(() => {
+    const start = (currentPage.value - 1) * BOOKS_PER_PAGE
+    return sortedBuku.value.slice(start, start + BOOKS_PER_PAGE)
+  })
+
+  const pageNumbers = computed(() => {
+    const total = totalPages.value
+    const current = currentPage.value
+
+    if (total <= 1) return []
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1)
+    }
+
+    const siblingCount = 1
+    const start = Math.max(2, current - siblingCount)
+    const end = Math.min(total - 1, current + siblingCount)
+
+    const pages = [1]
+    if (start > 2) pages.push('...')
+    for (let i = start; i <= end; i++) pages.push(i)
+    if (end < total - 1) pages.push('...')
+    pages.push(total)
+
+    return pages
+  })
+
+  watch(sortedBuku, () => {
+    currentPage.value = 1
+  })
+
+  function goToPage(page) {
+    if (page < 1 || page > totalPages.value || page === currentPage.value) return
+    currentPage.value = page
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function prevPage() {
+    goToPage(currentPage.value - 1)
+  }
+
+  function nextPage() {
+    goToPage(currentPage.value + 1)
+  }
 </script>
 <template>
   <div class="catalog-page container-fluid">
@@ -37,77 +170,93 @@
     <div class="container mt-4 mb-4">
       <div class="search-container">
         <i class="fas fa-search search-icon"></i>
-        <input type="text" class="form-control search-input"
-          placeholder="Cari berdasarkan judul buku... ">
-        <button class="search-button"> Cari Buku </button>
+        <input
+          type="text"
+          class="form-control search-input"
+          placeholder="Cari berdasarkan judul buku, pengarang, atau penerbit..."
+          v-model="searchQuery">
+        <button class="search-button" type="button"> Cari Buku </button>
       </div>
     </div>
     <div class="container my-5">
       <div class="row g-4">
         <div class="col-lg-3">
           <div class="filter-box">
-            <h6>Kategori</h6>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="hukum-administrasi">
-              <label class="form-check-label" for="hukum-administrasi">
-                Hukum Administrasi Negara
-              </label>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0">Kategori</h6>
+              <button
+                v-if="selectedCategories.length"
+                type="button"
+                class="btn-reset-filter"
+                @click="resetKategori">
+                Reset
+              </button>
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="hukum-perdata">
-              <label class="form-check-label" for="hukum-perdata">
-                Hukum Perdata
-              </label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="hukum-pidana">
-              <label class="form-check-label" for="hukum-pidana">
-                Hukum Pidana
-              </label>
-            </div>
-          </div>
-          <div class="filter-box">
-            <h6>Tipe Buku</h6>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="jurnal">
-              <label class="form-check-label" for="jurnal">Jurnal</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="putusan">
-              <label class="form-check-label" for="putusan">Putusan</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="laporan">
-              <label class="form-check-label" for="laporan">Laporan</label>
+            <div class="kategori-checkbox-list">
+              <div class="form-check" v-for="kategori in kategoriOptions" :key="kategori">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  :id="`kategori-${kategori}`"
+                  :value="kategori"
+                  v-model="selectedCategories">
+                <label class="form-check-label" :for="`kategori-${kategori}`">
+                  {{ kategori }}
+                </label>
+              </div>
             </div>
           </div>
           <div class="filter-box">
             <h6>Ketersediaan</h6>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="semua">
-              <label class="form-check-label" for="semua">Semua</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="tersedia">
-              <label class="form-check-label" for="tersedia">Tersedia</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="dipinjam">
-              <label class="form-check-label" for="dipinjam">Sedang Dipinjam</label>
-            </div>
+            <select class="form-select" v-model="selectedStatus">
+              <option value="">Semua Status</option>
+              <option v-for="status in statusOptions" :key="status" :value="status">
+                {{ status }}
+              </option>
+            </select>
+          </div>
+          <div class="filter-box">
+            <h6>Rak</h6>
+            <select class="form-select" v-model="selectedRak">
+              <option value="">Semua Rak</option>
+              <option v-for="rak in rakOptions" :key="rak" :value="rak">
+                {{ rak }}
+              </option>
+            </select>
+          </div>
+
+          <!-- <div class="filter-box">
+            <h6>Section</h6>
+            <select class="form-select" v-model="selectedSection">
+              <option value="">Semua Section</option>
+              <option v-for="section in sectionOptions" :key="section" :value="section">
+                {{ section }}
+              </option>
+            </select>
+          </div> -->
+
+          <div class="filter-box">
+            <h6>Tahun Terbit</h6>
+            <select class="form-select" v-model="selectedYear">
+              <option value="">Semua Tahun</option>
+              <option v-for="tahun in tahunOptions" :key="tahun" :value="tahun">
+                {{ tahun }}
+              </option>
+            </select>
           </div>
         </div>
         <!-- Book Content -->
         <div class="col-lg-9">
           <div class="d-flex justify-content-between align-items-center book-header">
             <h4 class="mb-0 book-count">
-              Menampilkan <span>{{ daftarBuku.length }}</span> dari
+              Menampilkan <span>{{ sortedBuku.length }}</span> dari
               <span>{{ daftarBuku.length }}</span> buku
             </h4>
-            <select class="form-select sort-select">
-              <option>Paling Relevan</option>
-              <option>Terbaru</option>
-              <option>Judul A-Z</option>
+
+            <select class="form-select sort-select" v-model="sortBy">
+              <option value="relevan">Paling Relevan</option>
+              <option value="terbaru">Terbaru</option>
+              <option value="judul">Judul A-Z</option>
             </select>
           </div>
           <hr>
@@ -118,31 +267,65 @@
           <p v-else-if="daftarBuku.length === 0">
             Belum ada data buku.
           </p>
-          <div class="row g-4 mt-2">
-            <div class="col-md-4" v-for="buku in daftarBuku" :key="buku.id_buku || buku.id">
+
+          <p v-else-if="sortedBuku.length === 0">
+            Tidak ada buku yang cocok dengan filter Anda.
+          </p>
+
+          <div v-else class="row g-4 mt-2">
+            <div class="col-md-4" v-for="buku in pagedBuku" :key="buku.id_buku">
               <div class="book-card">
                 <div class="book-img-wrapper">
                   <img
-                    :src="buku.cover || buku.cover_buku || defaultCover"
+                    :src="buku.image_url || defaultCover"
                     alt="Cover Buku" class="book-img">
-                  <span
-                    class="category-badge">{{ buku.kategori || buku.nama_kategori || 'Hukum Pidana' }}</span>
+                  <!-- Badge kategori melayang di atas gambar -->
+                  <span class="category-badge">{{ buku.nama_category || 'Tanpa Kategori' }}</span>
                 </div>
                 <div class="book-body">
                   <div class="d-flex justify-content-between align-items-start gap-2">
-                    <h6 class="book-title">{{ buku.judul || buku.judul_buku || 'Judul Buku' }}</h6>
-                    <span class="status">•
-                      {{ buku.status || buku.ketersediaan || 'Tersedia' }}</span>
+                    <h6 class="book-title">{{ buku.judul_buku }}</h6>
+                    <span class="status">• {{ buku.status_buku }}</span>
                   </div>
-                  <p class="book-author">
-                    {{ buku.penulis || buku.pengarang || 'Penulis belum tersedia' }}</p>
-                  <small
-                    class="book-year">{{ buku.tahun || buku.tahun_terbit || 'Tahun tidak tersedia' }}</small>
-                  <a href="/buku/{{ buku.id }}"><button class="book-btn">Lihat Buku</button></a>
+                  <p class="book-author">{{ buku.pengarang || 'Penulis belum tersedia' }}</p>
+                  <small class="book-year">{{ buku.tahun_terbit || 'Tahun tidak tersedia' }}</small>
+                  <button class="book-btn">Lihat Buku</button>
                 </div>
               </div>
             </div>
           </div>
+
+          <nav v-if="totalPages > 1" class="pagination-nav" aria-label="Navigasi halaman">
+            <button
+              v-if="currentPage > 1"
+              type="button"
+              class="page-arrow"
+              @click="prevPage"
+              aria-label="Halaman sebelumnya">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <template v-for="(page, index) in pageNumbers" :key="`${page}-${index}`">
+              <span v-if="page === '...'" class="page-ellipsis">...</span>
+              <button
+                v-else
+                type="button"
+                class="page-number"
+                :class="{ active: page === currentPage }"
+                @click="goToPage(page)">
+                {{ page }}
+              </button>
+            </template>
+
+            <button
+              v-if="currentPage < totalPages"
+              type="button"
+              class="page-arrow"
+              @click="nextPage"
+              aria-label="Halaman berikutnya">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </nav>
         </div>
       </div>
     </div>
@@ -167,7 +350,7 @@
     width: 100%;
     height: 60px;
     border-radius: 30px;
-    background-color: rgba(212, 173, 101, 0.15);
+    background-color: #ebedf278;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
     padding: 5px 25px 5px 5px;
   }
@@ -204,7 +387,7 @@
     padding: 0 23px;
     border: none;
     border-radius: 30px;
-    background-color: #735505;
+    background-color: #0B1E3F;
     color: white;
     font-weight: 600;
     white-space: nowrap;
@@ -247,6 +430,26 @@
   .form-check-input:checked {
     background-color: #735505;
     border-color: #735505;
+  }
+
+  .kategori-checkbox-list {
+    max-height: 240px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .btn-reset-filter {
+    border: none;
+    background: none;
+    color: #735505;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .btn-reset-filter:hover {
+    text-decoration: underline;
   }
 
   /* Book Header */
@@ -422,6 +625,66 @@
   .error-message {
     color: #a33a1f;
     font-weight: 600;
+  }
+
+  /* Pagination */
+  .pagination-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .page-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #D4AD65;
+    background-color: #fff;
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .page-number:hover {
+    background-color: #f8f0dc;
+  }
+
+  .page-number.active {
+    background-color: #735505;
+    border-color: #735505;
+    color: #fff;
+  }
+
+  .page-ellipsis {
+    width: 36px;
+    text-align: center;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .page-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: none;
+    color: #735505;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .page-arrow:hover {
+    color: #1e293b;
   }
 
   /* Responsive */
