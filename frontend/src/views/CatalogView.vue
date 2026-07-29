@@ -158,7 +158,6 @@
     goToPage(currentPage.value + 1)
   }
 </script>
-
 <template>
   <div class="catalog-page container-fluid">
     <div class="cat-head container d-flex justify-content-center align-items-center">
@@ -166,10 +165,8 @@
       <span class="px-3 fs-1 text-dark fw-bold">Katalog Buku</span>
       <hr class="flex-grow-1 my-auto opacity-100" style="border-color: #D4AD65; opacity: 1;">
     </div>
-
     <span class="text-center fs-5 d-flex justify-content-center">Temukan koleksi buku hukum,
       peraturan, dan referensi yang tersedia di <br> Perpustakaan PTTUN Jakarta</span>
-
     <div class="container mt-4 mb-4">
       <div class="search-container">
         <i class="fas fa-search search-icon"></i>
@@ -181,11 +178,8 @@
         <button class="search-button" type="button"> Cari Buku </button>
       </div>
     </div>
-
     <div class="container my-5">
       <div class="row g-4">
-
-        <!-- Sidebar Filter -->
         <div class="col-lg-3">
           <div class="filter-box">
             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -212,7 +206,6 @@
               </div>
             </div>
           </div>
-
           <div class="filter-box">
             <h6>Ketersediaan</h6>
             <select class="form-select" v-model="selectedStatus">
@@ -222,7 +215,6 @@
               </option>
             </select>
           </div>
-
           <div class="filter-box">
             <h6>Rak</h6>
             <select class="form-select" v-model="selectedRak">
@@ -253,7 +245,6 @@
             </select>
           </div>
         </div>
-
         <!-- Book Content -->
         <div class="col-lg-9">
           <div class="d-flex justify-content-between align-items-center book-header">
@@ -268,15 +259,11 @@
               <option value="judul">Judul A-Z</option>
             </select>
           </div>
-
           <hr>
-
           <p v-if="sedangMemuat">Memuat data buku...</p>
-
           <p v-else-if="pesanError" class="error-message">
             {{ pesanError }}
           </p>
-
           <p v-else-if="daftarBuku.length === 0">
             Belum ada data buku.
           </p>
@@ -288,8 +275,6 @@
           <div v-else class="row g-4 mt-2">
             <div class="col-md-4" v-for="buku in pagedBuku" :key="buku.id_buku">
               <div class="book-card">
-
-                <!-- Wrapper untuk gambar dan badge -->
                 <div class="book-img-wrapper">
                   <img
                     :src="buku.image_url || defaultCover"
@@ -297,8 +282,6 @@
                   <!-- Badge kategori melayang di atas gambar -->
                   <span class="category-badge">{{ buku.nama_category || 'Tanpa Kategori' }}</span>
                 </div>
-
-                <!-- Konten detail buku -->
                 <div class="book-body">
                   <div class="d-flex justify-content-between align-items-start gap-2">
                     <h6 class="book-title">{{ buku.judul_buku }}</h6>
@@ -344,13 +327,10 @@
             </button>
           </nav>
         </div>
-
       </div>
     </div>
-
   </div>
 </template>
-
 <style scoped>
   .catalog-page {
     padding: 2rem 0;

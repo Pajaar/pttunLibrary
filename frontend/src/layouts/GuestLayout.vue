@@ -29,16 +29,26 @@
                 <i class="bi bi-printer-fill text-gold"></i>
                 <span class="contact-text">{{ contact.fax }}</span>
               </div>
-              <div class="contact-item d-flex align-items-center gap-2">
-                <i class="bi bi-envelope-fill text-gold"></i>
-                <span class="contact-text">{{ contact.email }}</span>
+              <div
+                class="contact-sub-row d-flex flex-wrap gap-1 gap-md-4 mt-2 justify-content-center">
+                <div class="contact-item d-flex align-items-center gap-1 gap-md-2">
+                  <i class="bi bi-telephone-fill text-gold"></i>
+                  <span class="contact-text">{{ contact.phone }}</span>
+                </div>
+                <div class="contact-item d-flex align-items-center gap-1 gap-md-2">
+                  <i class="bi bi-printer-fill text-gold"></i>
+                  <span class="contact-text">{{ contact.fax }}</span>
+                </div>
+                <div class="contact-item d-flex align-items-center gap-1 gap-md-2">
+                  <i class="bi bi-envelope-fill text-gold"></i>
+                  <span class="contact-text">{{ contact.email }}</span>
+                </div>
               </div>
-
             </div>
           </div>
-        </div>
-        <div class="seal-container">
-          <img src="@/assets/images/logo_tatausaha.png" alt="Logo Mahkamah Agung" class="main-seal-img" />
+          <div class="seal-container text-end" style="flex: 0 0 auto;">
+            <img src="@/assets/images/logo_tatausaha.png" alt="Logo PTTUN" class="main-seal-img" />
+          </div>
         </div>
       </div>
     </div>
@@ -68,11 +78,9 @@
         </div>
       </div>
     </nav>
-
     <main class="main-content">
       <router-view />
     </main>
-
     <footer class="footer-fluid">
       <div class="container">
         <div class="row g-4">
