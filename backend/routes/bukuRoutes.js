@@ -5,6 +5,8 @@ const bukuController = require('../controllers/BukuController');
 
 router.get('/', bukuController.getSemuaBuku);
 router.get('/search', bukuController.searchBuku);
+router.get('/categories', bukuController.getCategory);
+router.get('/category/:category', bukuController.getBukuByCategory);
 router.get('/:id', bukuController.getBukuById);
 
 module.exports = router;
