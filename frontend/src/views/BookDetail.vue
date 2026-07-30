@@ -1,150 +1,206 @@
 <template>
   <div class="container book-detail-container my-5">
-  <!-- Breadcrumb -->
-  <nav aria-label="breadcrumb" class="mb-4">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="#" class="text-muted">Katalog Buku</a></li>
-      <li class="breadcrumb-item active text-navy font-display" aria-current="page">Informasi Buku</li>
-    </ol>
-  </nav>
-
-  <!-- Main Detail Section -->
-  <div class="row g-4 mb-5">
-    <!-- Cover Buku -->
-    <div class="col-12 col-md-4 text-center text-md-start">
-      <div class="detail-cover-wrapper">
-        <img src="/frontend/src/assets/images/hukum.png" alt="Cover Buku" class="img-fluid detail-cover-img" />
+    <!-- Loading State -->
+    <div v-if="loading" class="text-center py-5">
+      <div class="spinner-border text-navy" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
+      <p class="mt-2 text-muted">Memuat detail buku...</p>
     </div>
 
-    <!-- Informasi Detail -->
-    <div class="col-12 col-md-8 d-flex flex-column justify-content-between">
-      <div class="book-info-header">
-        <span class="badge bg-navy px-3 py-2 mb-2">Hukum Pidana</span>
-        <h1 class="book-detail-title font-display">Hukum Pidana-Ishaq</h1>
-        <p class="book-detail-author">Penulis: <strong>Dr. H. Ishaq, S.H., M.Hum.</strong></p>
-      </div>
-
-      <hr class="my-4 text-muted opacity-25">
-
-      <div class="row g-5">
-        <div class="col-6 col-sm-6 col-md-6">
-          <div class="info-label text-uppercase text-muted">Penerbit</div>
-          <div class="info-value">Rajawali Pers</div>
-        </div>
-        <div class="col-6 col-sm-6 col-md-6">
-          <div class="info-label text-uppercase text-muted">Tahun Terbit</div>
-          <div class="info-value">2021</div>
-        </div>
-        <div class="col-6 col-sm-6 col-md-6">
-          <div class="info-label text-uppercase text-muted">Halaman</div>
-          <div class="info-value">312 Halaman</div>
-        </div>
-        <div class="col-6 col-sm-6 col-md-6">
-          <div class="info-label text-uppercase text-muted">Lokasi Rak</div>
-          <div class="info-value">Rak 1</div>
-        </div>
-      </div>
-
-      <hr class="my-4 text-muted opacity-25">
-
-      <!-- Status & Aksi -->
-      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div class="status-indicator d-flex align-items-center gap-2 text-success fw-semibold">
-          <span class="dot-status"></span> Tersedia
-        </div>
-        <button class="btn btn-navy-action px-4 py-2 rounded-pill shadow-sm">Pinjam Buku</button>
-      </div>
+    <!-- Error / Not Found State -->
+    <div v-else-if="!buku" class="text-center py-5">
+      <h3 class="text-navy">Buku Tidak Ditemukan</h3>
+      <p class="text-muted">Data buku tidak tersedia atau telah dihapus.</p>
+      <router-link to="/" class="btn btn-navy-action px-4 py-2 mt-2">Kembali ke Katalog</router-link>
     </div>
+
+    <!-- Content State -->
+    <template v-else>
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <router-link to="/" class="text-muted text-decoration-none">Katalog Buku</router-link>
+          </li>
+          <li class="breadcrumb-item active text-navy font-display" aria-current="page">
+            {{ buku.judul_buku }}
+          </li>
+        </ol>
+      </nav>
+
+      <!-- Main Detail Section -->
+      <div class="row g-4 mb-5">
+        <!-- Cover Gambar -->
+        <div class="col-12 col-md-4 text-center text-md-start">
+          <div class="detail-cover-wrapper">
+            <img 
+              :src="buku.image_url || defaultCover" 
+              :alt="buku.judul_buku" 
+              class="img-fluid detail-cover-img" 
+            />
+          </div>
+        </div>
+
+        <!-- Detail Informasi Buku -->
+        <div class="col-12 col-md-8 d-flex flex-column justify-content-between">
+          <div class="book-info-header">
+            <span class="badge bg-navy px-3 py-2 mb-2">{{ buku.nama_category || 'Tanpa Kategori' }}</span>
+            <h1 class="book-detail-title font-display">{{ buku.judul_buku }}</h1>
+            <p class="book-detail-author">Penulis: <strong>{{ buku.pengarang || 'Penulis belum tersedia' }}</strong></p>
+          </div>
+
+          <hr class="my-4 text-muted opacity-25">
+
+          <!-- Information Grid -->
+          <div class="row g-4">
+            <div class="col-6 col-sm-6 col-md-6">
+              <div class="info-label text-uppercase text-muted">Penerbit</div>
+              <div class="info-value">{{ buku.penerbit || '-' }}</div>
+            </div>
+            <div class="col-6 col-sm-6 col-md-6">
+              <div class="info-label text-uppercase text-muted">Tahun Terbit</div>
+              <div class="info-value">{{ buku.tahun_terbit || '-' }}</div>
+            </div>
+            <div class="col-6 col-sm-6 col-md-6">
+              <div class="info-label text-uppercase text-muted">Lokasi Rak</div>
+              <div class="info-value">{{ buku.nama_rak || '-' }}</div>
+            </div>
+            <div class="col-6 col-sm-6 col-md-6">
+              <div class="info-label text-uppercase text-muted">Section</div>
+              <div class="info-value">{{ buku.nama_section || '-' }}</div>
+            </div>
+          </div>
+
+          <hr class="my-4 text-muted opacity-25">
+
+          <!-- Status & Pinjam Button -->
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="status-indicator d-flex align-items-center gap-2 fw-semibold"
+                 :class="buku.status_buku === 'Tersedia' ? 'text-success' : 'text-danger'">
+              <span class="dot-status" :class="buku.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span> 
+              {{ buku.status_buku || 'Tersedia' }}
+            </div>
+            <button class="btn btn-navy-action px-4 py-2 rounded-pill shadow-sm">Pinjam Buku</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rekomendasi Buku Kategori Serupa -->
+      <div v-if="rekomendasiBuku.length > 0" class="recommendation-section mt-5 pt-4">
+        <h3 class="section-title font-display text-navy mb-1">Rekomendasi Buku</h3>
+        <p class="text-muted small mb-4">Temukan buku lain dengan pembahasan yang serupa.</p>
+
+        <div class="row g-4">
+          <div 
+            v-for="item in rekomendasiBuku" 
+            :key="item.id_buku" 
+            class="col-12 col-sm-6 col-md-4"
+          >
+            <div 
+              class="card card-recommendation h-100 shadow-sm border-0 clickable-card" 
+              @click="goToDetail(item.id_buku)"
+            >
+              <div class="card-img-wrapper position-relative">
+                <span class="badge bg-navy position-absolute top-0 start-0 m-3 btn-sm">
+                  {{ item.nama_category || 'Tanpa Kategori' }}
+                </span>
+                <img :src="item.image_url || defaultCover" class="card-img-top" :alt="item.judul_buku">
+              </div>
+              <div class="card-body d-flex flex-column justify-content-between p-3">
+                <div>
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title font-display mb-0 text-truncate" style="max-width: 180px;">
+                      {{ item.judul_buku }}
+                    </h5>
+                    <span class="small fw-semibold d-flex align-items-center gap-1"
+                          :class="item.status_buku === 'Tersedia' ? 'text-success' : 'text-danger'">
+                      <span class="dot-status-sm" :class="item.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span> 
+                      {{ item.status_buku }}
+                    </span>
+                  </div>
+                  <p class="card-author text-muted mb-1">{{ item.pengarang || 'Penulis belum tersedia' }}</p>
+                  <p class="card-year text-muted mb-3">{{ item.tahun_terbit || '-' }}</p>
+                </div>
+                <button class="btn btn-outline-navy w-100 py-2">Lihat Buku</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
-
-  <!-- Section Rekomendasi Buku -->
-  <div class="recommendation-section mt-5 pt-4">
-    <h3 class="section-title font-display text-navy mb-1">Rekomendasi Buku</h3>
-    <p class="text-muted small mb-4">Temukan buku lain dengan topik dan pembahasan yang serupa.</p>
-
-    <div class="row g-4">
-      <!-- Card Rekomendasi 1 (Ulangi sesuai data) -->
-      <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-        <div class="card card-recommendation h-100 shadow-sm border-0">
-          <div class="card-img-wrapper position-relative">
-            <span class="badge bg-navy position-absolute top-0 start-0 m-3 btn-sm">Hukum Pidana</span>
-            <img src="/frontend/src/assets/images/hukum.png" class="card-img-top" alt="Cover Rekomendasi">
-          </div>
-          <div class="card-body d-flex flex-column justify-content-between p-3">
-            <div>
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <h5 class="card-title font-display mb-0">Hukum Pidana-Ishaq</h5>
-                <span class="text-success small fw-semibold d-flex align-items-center gap-1">
-                  <span class="dot-status-sm"></span> Tersedia
-                </span>
-              </div>
-              <p class="card-author text-muted mb-1">Dr. H. Ishaq, S.H., M.Hum.</p>
-              <p class="card-year text-muted mb-3">2021</p>
-            </div>
-            <button class="btn btn-outline-navy w-100 py-2">Lihat Buku</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card Rekomendasi 2 -->
-      <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-        <div class="card card-recommendation h-100 shadow-sm border-0">
-          <div class="card-img-wrapper position-relative">
-            <span class="badge bg-navy position-absolute top-0 start-0 m-3 btn-sm">Hukum Pidana</span>
-            <img src="/frontend/src/assets/images/hukum.png" class="card-img-top" alt="Cover Rekomendasi">
-          </div>
-          <div class="card-body d-flex flex-column justify-content-between p-3">
-            <div>
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <h5 class="card-title font-display mb-0">Hukum Pidana-Ishaq</h5>
-                <span class="text-success small fw-semibold d-flex align-items-center gap-1">
-                  <span class="dot-status-sm"></span> Tersedia
-                </span>
-              </div>
-              <p class="card-author text-muted mb-1">Dr. H. Ishaq, S.H., M.Hum.</p>
-              <p class="card-year text-muted mb-3">2021</p>
-            </div>
-            <button class="btn btn-outline-navy w-100 py-2">Lihat Buku</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card Rekomendasi 3 -->
-      <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-        <div class="card card-recommendation h-100 shadow-sm border-0">
-          <div class="card-img-wrapper position-relative">
-            <span class="badge bg-navy position-absolute top-0 start-0 m-3 btn-sm">Hukum Pidana</span>
-            <img src="/frontend/src/assets/images/hukum.png" class="card-img-top" alt="Cover Rekomendasi">
-          </div>
-          <div class="card-body d-flex flex-column justify-content-between p-3">
-            <div>
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <h5 class="card-title font-display mb-0">Hukum Pidana-Ishaq</h5>
-                <span class="text-success small fw-semibold d-flex align-items-center gap-1">
-                  <span class="dot-status-sm"></span> Tersedia
-                </span>
-              </div>
-              <p class="card-author text-muted mb-1">Dr. H. Ishaq, S.H., M.Hum.</p>
-              <p class="card-year text-muted mb-3">2021</p>
-            </div>
-            <button class="btn btn-outline-navy w-100 py-2">Lihat Buku</button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
 </template>
 
-<style>
+<script setup>
+import { ref, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { getBuku } from '../services/bookService'
+import defaultCover from '@/assets/images/Logo_Ma.png'
+
+const route = useRoute()
+const router = useRouter()
+
+const buku = ref(null)
+const rekomendasiBuku = ref([])
+const loading = ref(true)
+
+const loadData = async () => {
+  loading.value = true
+  try {
+    const idParam = route.params.id
+
+    // Memanggil getBuku() seperti halnya pada CatalogView
+    const response = await getBuku()
+    const allBuku = Array.isArray(response.data) ? response.data : []
+
+    // Mencari buku spesifik berdasarkan id_buku dari URL
+    buku.value = allBuku.find(item => String(item.id_buku) === String(idParam)) || null
+
+    // Menyiapkan rekomendasi (kategori sama, ID berbeda)
+    if (buku.value) {
+      rekomendasiBuku.value = allBuku
+        .filter(item => 
+          String(item.id_buku) !== String(idParam) && 
+          item.nama_category === buku.value.nama_category
+        )
+        .slice(0, 3)
+    }
+  } catch (err) {
+    console.error('Gagal memuat detail buku:', err)
+    buku.value = null
+  } finally {
+    loading.value = false
+  }
+}
+
+const goToDetail = (id) => {
+  router.push({ name: 'book-detail', params: { id } })
+}
+
+onMounted(() => {
+  loadData()
+})
+
+// Watcher agar navigasi antar rekomendasi buku berjalan lancar
+watch(
+  () => route.params.id,
+  (newId) => {
+    if (newId) {
+      loadData()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+)
+</script>
+
+<style scoped>
 .text-navy {
-  color: #0c2454 !important;
+  color: #0b1e3f !important;
 }
 
 .bg-navy {
-  background-color: #0c2454 !important;
+  background-color: #0b1e3f !important;
   color: #ffffff !important;
 }
 
@@ -152,22 +208,30 @@
   font-family: 'Playfair Display', serif;
 }
 
-.detail-cover-wrapper {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  border-radius: 12px;
-  overflow: hidden;
-  display: inline-block;
+.clickable-card {
+  cursor: pointer;
 }
 
+.detail-cover-wrapper {
+  position: relative;
+  width: 100%;
+  height: 420px; /* Ketinggian proporsional untuk detail */
+  background-color: #f8fafc;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Gambar Utama Detail (Samakan style dengan catalog) */
 .detail-cover-img {
-  max-height: 480px;
-  object-fit: cover;
-  border-radius: 12px;
-  transition: transform 0.3s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Mencegah gambar gepeng/terdistorsi */
+  display: block;
 }
 
 .book-detail-title {
-  color: #0c2454;
+  color: #0b1e3f;
   font-weight: 700;
   font-size: 2.25rem;
   margin-top: 10px;
@@ -194,7 +258,6 @@
 .dot-status {
   width: 10px;
   height: 10px;
-  background-color: #198754;
   border-radius: 50%;
   display: inline-block;
 }
@@ -202,13 +265,12 @@
 .dot-status-sm {
   width: 7px;
   height: 7px;
-  background-color: #198754;
   border-radius: 50%;
   display: inline-block;
 }
 
 .btn-navy-action {
-  background-color: #0c2454;
+  background-color: #0b1e3f;
   color: #ffffff;
   font-weight: 600;
   border: none;
@@ -216,9 +278,8 @@
 }
 
 .btn-navy-action:hover {
-  background-color: #081a3d;
-  color: #e0b877;
-  transform: translateY(-2px);
+  background-color: #5f4604;
+  color: #ffffff;
 }
 
 .card-recommendation {
@@ -226,93 +287,44 @@
   border-radius: 16px !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12) !important;
   overflow: hidden !important; 
-  border: none !important;
+  border: 1px solid #e2e8f0 !important;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card-recommendation:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.18) !important;
 }
 
-.card-recommendation .card-img-wrapper {
+card-recommendation .card-img-wrapper {
   position: relative;
   width: 100%;
-  background-color: #f8f9fa; /* Menjaga area belakang jika cover transparan */
+  height: 320px; /* Ketinggian presisi untuk rekomendasi */
+  background-color: #f8fafc;
+  overflow: hidden;
 }
 
+/* Gambar pada Rekomendasi Buku (Samakan dengan .book-img di catalog) */
 .card-recommendation img.card-img-top {
-  max-height: auto;
-  object-fit: cover;
-  border-radius: 12px;
-  transition: transform 0.3s ease;
-}
-
-.card-recommendation .card-body {
-  padding: 1.25rem !important;
-}
-
-.card-recommendation .card-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #0c2454;
-  margin-bottom: 4px;
-}
-
-.card-recommendation .card-author {
-  font-size: 0.85rem;
-  color: #555555;
-  margin-bottom: 2px;
-}
-
-.card-recommendation .card-year {
-  font-size: 0.85rem;
-  color: #888888;
-  margin-bottom: 15px; /* Memberi jarak ke tombol di bawahnya */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Mencegah gambar gepeng/terdistorsi */
+  display: block;
 }
 
 .btn-outline-navy {
-  border: 1px solid #0c2454 !important;
-  color: #0c2454 !important;
+  border: 1.5px solid #0b1e3f !important;
+  color: #0b1e3f !important;
   background-color: transparent !important;
   border-radius: 30px !important; 
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 500;
   padding: 10px 0 !important;
   width: 100%;
   transition: all 0.3s ease;
 }
 
 .btn-outline-navy:hover {
-  background-color: #0c2454 !important;
+  background-color: #0b1e3f !important;
   color: #ffffff !important;
 }
-
-@media (max-width: 767px) {
-  /* Di layar HP tinggi gambar sedikit diturunkan agar seimbang */
-  .card-recommendation img.card-img-top {
-    height: 380px !important; 
-  }
-}
-
-@media (max-width: 767px) {
-  .book-detail-title {
-    font-size: 1.65rem;
-  }
-  
-  .info-value {
-    font-size: 0.95rem;
-  }
-
-  .detail-cover-img {
-    max-height: 320px;
-    margin-bottom: 15px;
-  }
-
-  .card-recommendation img {
-    height: 260px;
-  }
-}
 </style>
-

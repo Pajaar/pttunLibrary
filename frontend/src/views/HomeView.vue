@@ -72,25 +72,6 @@
       </div>
     </section>
 
-    <section class="section" style="background: var(--cream-2);">
-      <div class="container">
-        <div class="text-center mb-5">
-          <div class="eyebrow">Jelajahi</div>
-          <div class="section-rule-broken"></div>
-          <h2 class="section-title">Kategori Populer</h2>
-          <p class="section-sub">Temukan berbagai koleksi buku hukum berdasarkan kategori yang
-            tersedia.</p>
-        </div>
-        <div class="row g-4">
-          <div class="col-md-4" v-for="(c, i) in photoCategories" :key="i">
-            <div class="cat-photo" :style="{backgroundImage: 'url(' + c.img + ')'}">
-              <span>{{ c.name }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <section class="section">
       <div class="container">
         <div class="text-center mb-5">
