@@ -1,190 +1,216 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { getBuku, getCategories } from '../services/bookService'
-import defaultCover from '@/assets/images/Logo_Ma.png'
+  import {
+    ref,
+    computed,
+    watch,
+    onMounted
+  } from 'vue'
+  import {
+    useRoute,
+    useRouter
+  } from 'vue-router'
+  import {
+    getBuku,
+    getCategories
+  } from '../services/bookService'
+  import defaultCover from '@/assets/images/Logo_Ma.png'
 
-const route = useRoute()
-const router = useRouter()
+  const route = useRoute()
+  const router = useRouter()
 
-const daftarBuku = ref([])
-const sedangMemuat = ref(true)
-const pesanError = ref('')
+  const daftarBuku = ref([])
+  const sedangMemuat = ref(true)
+  const pesanError = ref('')
 
-// Inisialisasi variabel filter membaca Query Parameter URL (agar ingat saat ditekan tombol BACK)
-const searchQuery = ref((route.query.q) || '')
-const selectedCategories = ref(
-  route.query.category 
-    ? (Array.isArray(route.query.category) ? route.query.category : [route.query.category]) 
-    : []
-)
-const selectedStatus = ref((route.query.status) || '')
-const selectedRak = ref((route.query.rak) || '')
-const selectedYear = ref((route.query.year) || '')
-const sortBy = ref((route.query.sort) || 'relevan')
-const currentPage = ref(Number(route.query.page) || 1)
+  // Inisialisasi variabel filter membaca Query Parameter URL (agar ingat saat ditekan tombol BACK)
+  const searchQuery = ref((route.query.q) || '')
+  const selectedCategories = ref(
+    route.query.category ?
+    (Array.isArray(route.query.category) ? route.query.category : [route.query.category]) :
+    []
+  )
+  const selectedStatus = ref((route.query.status) || '')
+  const selectedRak = ref((route.query.rak) || '')
+  const selectedYear = ref((route.query.year) || '')
+  const sortBy = ref((route.query.sort) || 'relevan')
+  const currentPage = ref(Number(route.query.page) || 1)
 
-const kategoriOptions = ref([])
+  const kategoriOptions = ref([])
 
-onMounted(async () => {
-  try {
-    const response = await getBuku()
-    daftarBuku.value = Array.isArray(response.data) ? response.data : []
-  } catch (error) {
-    pesanError.value = error.message || 'Data buku belum bisa dimuat'
-  } finally {
-    sedangMemuat.value = false
-  }
+  onMounted(async () => {
+    try {
+      const response = await getBuku()
+      daftarBuku.value = Array.isArray(response.data) ? response.data : []
+    } catch (error) {
+      pesanError.value = error.message || 'Data buku belum bisa dimuat'
+    } finally {
+      sedangMemuat.value = false
+    }
 
-  try {
-    const response = await getCategories()
-    const categories = Array.isArray(response.data) ? response.data : []
-    kategoriOptions.value = categories
-      .map((category) => category.nama_category)
-      .filter((nama) => !!nama)
-  } catch (error) {
-    console.error('Gagal memuat daftar kategori', error)
-  }
-})
-
-function uniqueSorted(list, key) {
-  const values = list
-    .map((item) => item[key])
-    .filter((value) => value !== null && value !== undefined && value !== '')
-  return [...new Set(values)].sort((a, b) => String(a).localeCompare(String(b)))
-}
-
-const statusOptions = computed(() => uniqueSorted(daftarBuku.value, 'status_buku'))
-const rakOptions = computed(() => uniqueSorted(daftarBuku.value, 'nama_rak'))
-const tahunOptions = computed(() =>
-  uniqueSorted(daftarBuku.value, 'tahun_terbit').sort((a, b) => b - a)
-)
-
-const filteredBuku = computed(() => {
-  const query = searchQuery.value.trim().toLowerCase()
-
-  return daftarBuku.value.filter((buku) => {
-    const matchesSearch = !query || [buku.judul_buku, buku.pengarang, buku.penerbit].some(
-      (field) => (field || '').toLowerCase().includes(query)
-    )
-
-    const matchesCategory =
-      selectedCategories.value.length === 0 ||
-      selectedCategories.value.includes(buku.nama_category)
-    const matchesStatus = !selectedStatus.value || buku.status_buku === selectedStatus.value
-    const matchesRak = !selectedRak.value || buku.nama_rak === selectedRak.value
-    const matchesYear = !selectedYear.value || String(buku.tahun_terbit) === String(selectedYear.value)
-
-    return (
-      matchesSearch &&
-      matchesCategory &&
-      matchesStatus &&
-      matchesRak &&
-      matchesYear
-    )
+    try {
+      const response = await getCategories()
+      const categories = Array.isArray(response.data) ? response.data : []
+      kategoriOptions.value = categories
+        .map((category) => category.nama_category)
+        .filter((nama) => !!nama)
+    } catch (error) {
+      console.error('Gagal memuat daftar kategori', error)
+    }
   })
-})
 
-function resetKategori() {
-  selectedCategories.value = []
-}
-
-const sortedBuku = computed(() => {
-  const list = [...filteredBuku.value]
-
-  if (sortBy.value === 'terbaru') {
-    return list.sort((a, b) => (b.tahun_terbit || 0) - (a.tahun_terbit || 0))
+  function uniqueSorted(list, key) {
+    const values = list
+      .map((item) => item[key])
+      .filter((value) => value !== null && value !== undefined && value !== '')
+    return [...new Set(values)].sort((a, b) => String(a).localeCompare(String(b)))
   }
 
-  if (sortBy.value === 'judul') {
-    return list.sort((a, b) => (a.judul_buku || '').localeCompare(b.judul_buku || ''))
-  }
+  const statusOptions = computed(() => uniqueSorted(daftarBuku.value, 'status_buku'))
+  const rakOptions = computed(() => uniqueSorted(daftarBuku.value, 'nama_rak'))
+  const tahunOptions = computed(() =>
+    uniqueSorted(daftarBuku.value, 'tahun_terbit').sort((a, b) => b - a)
+  )
 
-  return list
-})
+  const filteredBuku = computed(() => {
+    const query = searchQuery.value.trim().toLowerCase()
 
-const BOOKS_PER_PAGE = 9
+    return daftarBuku.value.filter((buku) => {
+      const matchesSearch = !query || [buku.judul_buku, buku.pengarang, buku.penerbit].some(
+        (field) => (field || '').toLowerCase().includes(query)
+      )
 
-const totalPages = computed(() => Math.ceil(sortedBuku.value.length / BOOKS_PER_PAGE))
+      const matchesCategory =
+        selectedCategories.value.length === 0 ||
+        selectedCategories.value.includes(buku.nama_category)
+      const matchesStatus = !selectedStatus.value || buku.status_buku === selectedStatus
+        .value
+      const matchesRak = !selectedRak.value || buku.nama_rak === selectedRak.value
+      const matchesYear = !selectedYear.value || String(buku.tahun_terbit) === String(
+        selectedYear.value)
 
-const pagedBuku = computed(() => {
-  const start = (currentPage.value - 1) * BOOKS_PER_PAGE
-  return sortedBuku.value.slice(start, start + BOOKS_PER_PAGE)
-})
-
-const pageNumbers = computed(() => {
-  const total = totalPages.value
-  const current = currentPage.value
-
-  if (total <= 1) return []
-  if (total <= 7) {
-    return Array.from({ length: total }, (_, i) => i + 1)
-  }
-
-  const siblingCount = 1
-  const start = Math.max(2, current - siblingCount)
-  const end = Math.min(total - 1, current + siblingCount)
-
-  const pages = [1]
-  if (start > 2) pages.push('...')
-  for (let i = start; i <= end; i++) pages.push(i)
-  if (end < total - 1) pages.push('...')
-  pages.push(total)
-
-  return pages
-})
-
-// Fungsi untuk sinkronisasi seluruh state filter ke Query String URL
-const updateQueryParams = () => {
-  const query = {}
-
-  if (searchQuery.value) query.q = searchQuery.value
-  if (selectedCategories.value.length) query.category = selectedCategories.value
-  if (selectedStatus.value) query.status = selectedStatus.value
-  if (selectedRak.value) query.rak = selectedRak.value
-  if (selectedYear.value) query.year = selectedYear.value
-  if (sortBy.value !== 'relevan') query.sort = sortBy.value
-  if (currentPage.value > 1) query.page = currentPage.value
-
-  router.replace({ query })
-}
-
-// Watcher untuk memantau perubahan filter dan memperbarui URL
-watch(
-  [searchQuery, selectedCategories, selectedStatus, selectedRak, selectedYear, sortBy, currentPage],
-  () => {
-    updateQueryParams()
-  },
-  { deep: true }
-)
-
-// Saat hasil pencarian/filter berubah, kembalikan ke halaman 1 jika nomor halaman melebihi total halaman baru
-watch(sortedBuku, () => {
-  if (currentPage.value > totalPages.value && totalPages.value > 0) {
-    currentPage.value = 1
-  }
-})
-
-function goToPage(page) {
-  if (page < 1 || page > totalPages.value || page === currentPage.value) return
-  currentPage.value = page
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesStatus &&
+        matchesRak &&
+        matchesYear
+      )
+    })
   })
-}
 
-function prevPage() {
-  goToPage(currentPage.value - 1)
-}
+  function resetKategori() {
+    selectedCategories.value = []
+  }
 
-function nextPage() {
-  goToPage(currentPage.value + 1)
-}
+  const sortedBuku = computed(() => {
+    const list = [...filteredBuku.value]
 
-const goToDetail = (id) => {
-  router.push({ name: 'book-detail', params: { id } })
-}
+    if (sortBy.value === 'terbaru') {
+      return list.sort((a, b) => (b.tahun_terbit || 0) - (a.tahun_terbit || 0))
+    }
+
+    if (sortBy.value === 'judul') {
+      return list.sort((a, b) => (a.judul_buku || '').localeCompare(b.judul_buku || ''))
+    }
+
+    return list
+  })
+
+  const BOOKS_PER_PAGE = 9
+
+  const totalPages = computed(() => Math.ceil(sortedBuku.value.length / BOOKS_PER_PAGE))
+
+  const pagedBuku = computed(() => {
+    const start = (currentPage.value - 1) * BOOKS_PER_PAGE
+    return sortedBuku.value.slice(start, start + BOOKS_PER_PAGE)
+  })
+
+  const pageNumbers = computed(() => {
+    const total = totalPages.value
+    const current = currentPage.value
+
+    if (total <= 1) return []
+    if (total <= 7) {
+      return Array.from({
+        length: total
+      }, (_, i) => i + 1)
+    }
+
+    const siblingCount = 1
+    const start = Math.max(2, current - siblingCount)
+    const end = Math.min(total - 1, current + siblingCount)
+
+    const pages = [1]
+    if (start > 2) pages.push('...')
+    for (let i = start; i <= end; i++) pages.push(i)
+    if (end < total - 1) pages.push('...')
+    pages.push(total)
+
+    return pages
+  })
+
+  // Fungsi untuk sinkronisasi seluruh state filter ke Query String URL
+  const updateQueryParams = () => {
+    const query = {}
+
+    if (searchQuery.value) query.q = searchQuery.value
+    if (selectedCategories.value.length) query.category = selectedCategories.value
+    if (selectedStatus.value) query.status = selectedStatus.value
+    if (selectedRak.value) query.rak = selectedRak.value
+    if (selectedYear.value) query.year = selectedYear.value
+    if (sortBy.value !== 'relevan') query.sort = sortBy.value
+    if (currentPage.value > 1) query.page = currentPage.value
+
+    router.replace({
+      query
+    })
+  }
+
+  // Watcher untuk memantau perubahan filter dan memperbarui URL
+  watch(
+    [searchQuery, selectedCategories, selectedStatus, selectedRak, selectedYear, sortBy,
+      currentPage
+    ],
+    () => {
+      updateQueryParams()
+    }, {
+      deep: true
+    }
+  )
+
+  // Saat hasil pencarian/filter berubah, kembalikan ke halaman 1 jika nomor halaman melebihi total halaman baru
+  watch(sortedBuku, () => {
+    if (currentPage.value > totalPages.value && totalPages.value > 0) {
+      currentPage.value = 1
+    }
+  })
+
+  function goToPage(page) {
+    if (page < 1 || page > totalPages.value || page === currentPage.value) return
+    currentPage.value = page
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  }
+
+  function prevPage() {
+    goToPage(currentPage.value - 1)
+  }
+
+  function nextPage() {
+    goToPage(currentPage.value + 1)
+  }
+
+  const goToDetail = (id) => {
+    router.push({
+      name: 'book-detail',
+      params: {
+        id
+      }
+    })
+  }
+
 </script>
 
 <template>
@@ -195,17 +221,15 @@ const goToDetail = (id) => {
       <hr class="flex-grow-1 my-auto opacity-100" style="border-color: #D4AD65; opacity: 1;">
     </div>
     <span class="text-center fs-5 d-flex justify-content-center">
-      Temukan koleksi buku hukum, peraturan, dan referensi yang tersedia di <br> Perpustakaan PTTUN Jakarta
+      Temukan koleksi buku hukum, peraturan, dan referensi yang tersedia di <br> Perpustakaan PTTUN
+      Jakarta
     </span>
     <div class="container mt-4 mb-4">
       <div class="search-container">
         <i class="fas fa-search search-icon"></i>
-        <input 
-          type="text" 
-          class="form-control search-input"
+        <input type="text" class="form-control search-input"
           placeholder="Cari berdasarkan judul buku, pengarang, atau penerbit..."
-          v-model="searchQuery"
-        >
+          v-model="searchQuery">
         <button class="search-button" type="button"> Cari Buku </button>
       </div>
     </div>
@@ -216,24 +240,15 @@ const goToDetail = (id) => {
           <div class="filter-box">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h6 class="mb-0">Kategori</h6>
-              <button 
-                v-if="selectedCategories.length" 
-                type="button" 
-                class="btn-reset-filter"
-                @click="resetKategori"
-              >
+              <button v-if="selectedCategories.length" type="button" class="btn-reset-filter"
+                @click="resetKategori">
                 Reset
               </button>
             </div>
             <div class="kategori-checkbox-list">
               <div class="form-check" v-for="kategori in kategoriOptions" :key="kategori">
-                <input 
-                  class="form-check-input" 
-                  type="checkbox" 
-                  :id="`kategori-${kategori}`"
-                  :value="kategori" 
-                  v-model="selectedCategories"
-                >
+                <input class="form-check-input" type="checkbox" :id="`kategori-${kategori}`"
+                  :value="kategori" v-model="selectedCategories">
                 <label class="form-check-label" :for="`kategori-${kategori}`">
                   {{ kategori }}
                 </label>
@@ -250,7 +265,6 @@ const goToDetail = (id) => {
               </option>
             </select>
           </div>
-
           <div class="filter-box">
             <h6>Rak</h6>
             <select class="form-select" v-model="selectedRak">
@@ -301,7 +315,10 @@ const goToDetail = (id) => {
 
           <div v-else class="row g-4 mt-2">
             <div class="col-md-4" v-for="buku in pagedBuku" :key="buku.id_buku">
-              <div class="book-card clickable-card" @click="goToDetail(buku.id_buku)">
+              <!-- Bungkus seluruh card dengan router-link -->
+              <router-link :to="{ name: 'book-detail', params: { id: buku.id_buku } }"
+                class="book-card text-decoration-none text-reset d-block">
+
                 <div class="book-img-wrapper">
                   <img :src="buku.image_url || defaultCover" alt="Cover Buku" class="book-img">
                   <span class="category-badge">{{ buku.nama_category || 'Tanpa Kategori' }}</span>
@@ -315,42 +332,28 @@ const goToDetail = (id) => {
                   <small class="book-year">{{ buku.tahun_terbit || 'Tahun tidak tersedia' }}</small>
                   <button class="book-btn">Lihat Buku</button>
                 </div>
-              </div>
+
+              </router-link>
             </div>
           </div>
 
           <!-- Pagination -->
           <nav v-if="totalPages > 1" class="pagination-nav" aria-label="Navigasi halaman">
-            <button 
-              v-if="currentPage > 1" 
-              type="button" 
-              class="page-arrow" 
-              @click="prevPage"
-              aria-label="Halaman sebelumnya"
-            >
+            <button v-if="currentPage > 1" type="button" class="page-arrow" @click="prevPage"
+              aria-label="Halaman sebelumnya">
               <i class="fas fa-chevron-left"></i>
             </button>
 
             <template v-for="(page, index) in pageNumbers" :key="`${page}-${index}`">
               <span v-if="page === '...'" class="page-ellipsis">...</span>
-              <button 
-                v-else 
-                type="button" 
-                class="page-number"
-                :class="{ active: page === currentPage }" 
-                @click="goToPage(page)"
-              >
+              <button v-else type="button" class="page-number"
+                :class="{ active: page === currentPage }" @click="goToPage(page)">
                 {{ page }}
               </button>
             </template>
 
-            <button 
-              v-if="currentPage < totalPages" 
-              type="button" 
-              class="page-arrow"
-              @click="nextPage" 
-              aria-label="Halaman berikutnya"
-            >
+            <button v-if="currentPage < totalPages" type="button" class="page-arrow"
+              @click="nextPage" aria-label="Halaman berikutnya">
               <i class="fas fa-chevron-right"></i>
             </button>
           </nav>
@@ -733,4 +736,5 @@ const goToDetail = (id) => {
       left: 22px;
     }
   }
+
 </style>

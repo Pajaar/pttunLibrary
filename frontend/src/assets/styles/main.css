@@ -51,84 +51,6 @@ a {
   width: 100%;
 }
 
-.seal-container {
-  flex-shrink: 0;
-  justify-content: space-between;
-  display: flex;
-}
-
-.main-seal-img {
-  height: 200px;
-  width: auto;
-  object-fit: contain;
-  display: block;
-}
-
-.topbar-text-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1; 
-  min-width: 0; /* Mencegah flex item meluber keluar batas */
-}
-
-.topbar-title {
-  width: 100%;
-  font-family: 'Times New Roman', Times, serif;
-  font-weight: 600;
-  color: #000000;
-  font-size: 20px;
-  text-align: center;
-  letter-spacing: 2px;
-  line-height: 1.4;
-}
-
-.contact-grid {
-  margin-top: 8px;
-  width: 100%;
-  text-align: center;
-  align-items: center;
-}
-
-.contact-sub-row {
-  justify-content: center;
-}
-
-.contact-item {
-  font-size: 0.8rem;
-  color: #333333;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.text-gold {
-  color: #D4AD65 !important;
-}
-
-.gold-curve-svg {
-  position: absolute;
-  right: 0;
-  bottom: -1px;
-  width: 90px;
-  height: 80px;
-  z-index: 1;
-}
-
-@media (max-width: 768px) {
-  .topbar-fluid {
-    padding: 10px 0;
-  }
-
-  .topbar-fluid .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    width: 100%;
-  }
-
   .topbar-title {
     font-family: 'Times New Roman', Times, serif;
     font-weight: 700;
@@ -170,6 +92,20 @@ a {
     align-items: center;
   }
 
+.text-gold {
+  color: #D4AD65 !important;
+}
+
+.gold-curve-svg {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  width: 90px;
+  height: 80px;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
   .topbar-fluid {
     position: relative;
     width: 100%;
@@ -179,20 +115,34 @@ a {
     border-bottom: 5px solid #D4AD65;
   }
 
-  .topbar-subtitle {
-    font-family: 'Times New Roman', Times, serif;
-    font-weight: 600;
-    color: #000000;
-    font-size: 1.55rem;
+  .topbar-fluid .container {
+    gap: 8px; /* Mempersempit jarak antar elemen di HP */
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
-  /* Mengatur bagian kontak agar hemat ruang di layar mobile */
   .contact-item {
     font-size: 0.82rem;
     color: #333333;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+  }
+
+  .topbar-title {
+    font-size: 9px;
+    letter-spacing: 0.2px;
+    line-height: 1.3;
+  }
+
+  /* Mengatur bagian kontak agar hemat ruang di layar mobile */
+  .contact-item {
+    font-size: 0.65rem;
+  }
+  
+  .contact-sub-row {
+    gap: 10px !important; /* Merapatkan spasi ikon telp, fax, email */
+    justify-content: center;
   }
 
   .gold-curve-svg {

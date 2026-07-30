@@ -35,6 +35,10 @@
                 <i class="bi bi-telephone-fill text-gold"></i>
                 <span class="contact-text">{{ contact.phone }}</span>
               </div>
+              <div class="contact-item d-flex align-items-center gap-2">
+                <i class="bi bi-printer-fill text-gold"></i>
+                <span class="contact-text">{{ contact.fax }}</span>
+              </div>
               <div class="contact-item d-flex align-items-center gap-1">
                 <i class="bi bi-printer-fill text-gold"></i>
                 <span class="contact-text">{{ contact.fax }}</span>
