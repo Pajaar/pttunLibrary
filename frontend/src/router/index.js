@@ -55,7 +55,7 @@ const router = createRouter({
           component: CatalogView,
         },
         {
-          path: 'buku/:id', // Mengakses '/buku/1' (Untuk halaman detail buku nanti)
+          path: 'buku/:id',
           name: 'book-detail',
           component: () => import('../views/BookDetail.vue'),
         }

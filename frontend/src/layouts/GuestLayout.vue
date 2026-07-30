@@ -7,21 +7,31 @@
       </svg>
 
       <div class="container d-flex align-items-center justify-content-between">
-        <div class="seal-container">
+        <!-- Logo Kiri -->
+        <div class="seal-container" style="flex: 0 0 auto;">
           <img src="@/assets/images/logo_Ma.png" alt="Logo Mahkamah Agung" class="main-seal-img" />
         </div>
-        <div class="topbar-text-content">
-          <h4 class="topbar-title mb-1">MAHKAMAH AGUNG REPUBLIK INDONESIA
-            <br>DIREKTORAT JENDERAL BADAN PERADILAN MILITER<br>DAN PERADILAN TATA USAHA NEGARA <br> PENGADILAN
-            TINGGI TATA USAHA NEGARA</h4>
-          <div class="contact-grid d-flex flex-column gap-0">
-            <div class="contact-item d-flex align-items-start gap-2">
+
+        <!-- Teks & Kontak Tengah -->
+        <div class="topbar-text-content text-center px-3 flex-grow-1">
+          <h4 class="topbar-title mb-2 fw-bold">
+            MAHKAMAH AGUNG REPUBLIK INDONESIA<br>
+            DIREKTORAT JENDERAL BADAN PERADILAN MILITER<br>
+            DAN PERADILAN TATA USAHA NEGARA<br>
+            PENGADILAN TINGGI TATA USAHA NEGARA
+          </h4>
+
+          <div class="contact-info d-flex flex-column align-items-center gap-1">
+            <!-- Alamat -->
+            <div class="contact-item d-flex align-items-center gap-2">
               <i class="bi bi-geo-alt-fill text-gold"></i>
               <span class="contact-text">{{ contact.address }}</span>
             </div>
 
-            <div class="contact-sub-row d-flex flex-wrap gap-3 mt-1">
-              <div class="contact-item d-flex align-items-center gap-2">
+            <!-- Telepon, Fax, Email -->
+            <div
+              class="contact-sub-row d-flex flex-wrap align-items-center justify-content-center gap-3 mt-1">
+              <div class="contact-item d-flex align-items-center gap-1">
                 <i class="bi bi-telephone-fill text-gold"></i>
                 <span class="contact-text">{{ contact.phone }}</span>
               </div>
@@ -29,26 +39,21 @@
                 <i class="bi bi-printer-fill text-gold"></i>
                 <span class="contact-text">{{ contact.fax }}</span>
               </div>
-              <div
-                class="contact-sub-row d-flex flex-wrap gap-1 gap-md-4 mt-2 justify-content-center">
-                <div class="contact-item d-flex align-items-center gap-1 gap-md-2">
-                  <i class="bi bi-telephone-fill text-gold"></i>
-                  <span class="contact-text">{{ contact.phone }}</span>
-                </div>
-                <div class="contact-item d-flex align-items-center gap-1 gap-md-2">
-                  <i class="bi bi-printer-fill text-gold"></i>
-                  <span class="contact-text">{{ contact.fax }}</span>
-                </div>
-                <div class="contact-item d-flex align-items-center gap-1 gap-md-2">
-                  <i class="bi bi-envelope-fill text-gold"></i>
-                  <span class="contact-text">{{ contact.email }}</span>
-                </div>
+              <div class="contact-item d-flex align-items-center gap-1">
+                <i class="bi bi-printer-fill text-gold"></i>
+                <span class="contact-text">{{ contact.fax }}</span>
+              </div>
+              <div class="contact-item d-flex align-items-center gap-1">
+                <i class="bi bi-envelope-fill text-gold"></i>
+                <span class="contact-text">{{ contact.email }}</span>
               </div>
             </div>
           </div>
-          <div class="seal-container text-end" style="flex: 0 0 auto;">
-            <img src="@/assets/images/logo_tatausaha.png" alt="Logo PTTUN" class="main-seal-img" />
-          </div>
+        </div>
+
+        <!-- Logo Kanan -->
+        <div class="seal-container" style="flex: 0 0 auto;">
+          <img src="@/assets/images/logo_tatausaha.png" alt="Logo PTTUN" class="main-seal-img" />
         </div>
       </div>
     </div>
@@ -231,16 +236,12 @@
       to: '/katalog'
     },
     {
-      label: 'Kategori',
-      to: '/kategori'
-    },
-    {
       label: 'Layanan',
-      to: '/layanan'
+      to: '/'
     },
     {
       label: 'Tentang',
-      to: '/about'
+      to: '/'
     },
   ])
 

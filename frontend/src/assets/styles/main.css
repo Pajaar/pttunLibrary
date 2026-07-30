@@ -47,7 +47,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px; /* Sedikit dirapatkan agar memberikan ruang bagi teks */
+  gap: 15px;
   width: 100%;
 }
 
@@ -603,84 +603,6 @@ h3,
   font-size: .88rem;
 }
 
-/* ===== Category ===== */
-
-.cat-photo {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  height: 190px;
-  background-size: cover;
-  background-position: center;
-}
-
-.cat-photo::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(8, 20, 50, .25), rgba(8, 20, 50, .65));
-}
-
-.section-rule {
-  width: 90px;
-  height: 2px;
-  background: var(--gold);
-  margin: 30px auto 20px;
-}
-
-.cat-photo span {
-  position: relative;
-  z-index: 2;
-  color: #fff;
-  font-family: 'Playfair Display', serif;
-  font-size: 1.15rem;
-  font-weight: 600;
-  text-align: center;
-  padding: 0 16px;
-}
-
-.cat-photo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cat-list-card {
-  background: linear-gradient(180deg, #fbf1dd, #f6e4c2);
-  border-radius: 14px;
-  padding: 26px 20px;
-  text-align: center;
-  height: 100%;
-  border: 1px solid #ecd8ab;
-}
-
-.cat-list-card .icon-circle {
-  background: #fff;
-  color: var(--gold);
-}
-
-.cat-list-card h6 {
-  font-weight: 700;
-  color: var(--navy);
-  margin-bottom: 6px;
-}
-
-.cat-list-card .count {
-  font-size: .8rem;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-
-.cat-list-card a {
-  color: var(--gold);
-  font-weight: 600;
-  font-size: .85rem;
-  text-decoration: none;
-}
-
-.cat-list-card a:hover {
-  color: var(--navy);
-}
 
 /* ===== About ===== */
 .image img {

@@ -12,6 +12,7 @@ exports.getSemuaBuku = async () => {
      LEFT JOIN category c ON b.id_category = c.id_category
      LEFT JOIN rak r ON d.id_rak = r.id_rak
      LEFT JOIN section sec ON d.id_section = sec.id_section`
+     
   )
   return rows
 }
