@@ -21,7 +21,7 @@
       <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <router-link to="/" class="text-muted text-decoration-none">Katalog Buku</router-link>
+            <router-link to="/katalog" class="text-muted text-decoration-none">Katalog Buku</router-link>
           </li>
           <li class="breadcrumb-item active text-navy font-display" aria-current="page">
             {{ buku.judul_buku }}
@@ -34,11 +34,7 @@
         <!-- Cover Gambar -->
         <div class="col-12 col-md-4 text-center text-md-start">
           <div class="detail-cover-wrapper">
-            <img 
-              :src="buku.image_url || defaultCover" 
-              :alt="buku.judul_buku" 
-              class="img-fluid detail-cover-img" 
-            />
+            <img :src="buku.image_url || defaultCover" :alt="buku.judul_buku" class="img-fluid detail-cover-img" />
           </div>
         </div>
 
@@ -77,8 +73,8 @@
           <!-- Status & Pinjam Button -->
           <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
             <div class="status-indicator d-flex align-items-center gap-2 fw-semibold"
-                 :class="buku.status_buku === 'Tersedia' ? 'text-success' : 'text-danger'">
-              <span class="dot-status" :class="buku.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span> 
+              :class="buku.status_buku === 'Tersedia' ? 'text-success' : 'text-danger'">
+              <span class="dot-status" :class="buku.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span>
               {{ buku.status_buku || 'Tersedia' }}
             </div>
             <button class="btn btn-navy-action px-4 py-2 rounded-pill shadow-sm">Pinjam Buku</button>
@@ -92,15 +88,9 @@
         <p class="text-muted small mb-4">Temukan buku lain dengan pembahasan yang serupa.</p>
 
         <div class="row g-4">
-          <div 
-            v-for="item in rekomendasiBuku" 
-            :key="item.id_buku" 
-            class="col-12 col-sm-6 col-md-4"
-          >
-            <div 
-              class="card card-recommendation h-100 shadow-sm border-0 clickable-card" 
-              @click="goToDetail(item.id_buku)"
-            >
+          <div v-for="item in rekomendasiBuku" :key="item.id_buku" class="col-12 col-sm-6 col-md-4">
+            <div class="card card-recommendation h-100 shadow-sm border-0 clickable-card"
+              @click="goToDetail(item.id_buku)">
               <div class="card-img-wrapper position-relative">
                 <span class="badge bg-navy position-absolute top-0 start-0 m-3 btn-sm">
                   {{ item.nama_category || 'Tanpa Kategori' }}
@@ -114,8 +104,9 @@
                       {{ item.judul_buku }}
                     </h5>
                     <span class="small fw-semibold d-flex align-items-center gap-1"
-                          :class="item.status_buku === 'Tersedia' ? 'text-success' : 'text-danger'">
-                      <span class="dot-status-sm" :class="item.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span> 
+                      :class="item.status_buku === 'Tersedia' ? 'text-success' : 'text-danger'">
+                      <span class="dot-status-sm"
+                        :class="item.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span>
                       {{ item.status_buku }}
                     </span>
                   </div>
@@ -160,8 +151,8 @@ const loadData = async () => {
     // Menyiapkan rekomendasi (kategori sama, ID berbeda)
     if (buku.value) {
       rekomendasiBuku.value = allBuku
-        .filter(item => 
-          String(item.id_buku) !== String(idParam) && 
+        .filter(item =>
+          String(item.id_buku) !== String(idParam) &&
           item.nama_category === buku.value.nama_category
         )
         .slice(0, 3)
@@ -215,7 +206,8 @@ watch(
 .detail-cover-wrapper {
   position: relative;
   width: 100%;
-  height: 420px; /* Ketinggian proporsional untuk detail */
+  height: 420px;
+  /* Ketinggian proporsional untuk detail */
   background-color: #f8fafc;
   border-radius: 16px;
   overflow: hidden;
@@ -226,7 +218,8 @@ watch(
 .detail-cover-img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Mencegah gambar gepeng/terdistorsi */
+  object-fit: cover;
+  /* Mencegah gambar gepeng/terdistorsi */
   display: block;
 }
 
@@ -286,7 +279,7 @@ watch(
   background: #ffffff;
   border-radius: 16px !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12) !important;
-  overflow: hidden !important; 
+  overflow: hidden !important;
   border: 1px solid #e2e8f0 !important;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -298,7 +291,8 @@ watch(
 card-recommendation .card-img-wrapper {
   position: relative;
   width: 100%;
-  height: 320px; /* Ketinggian presisi untuk rekomendasi */
+  height: 320px;
+  /* Ketinggian presisi untuk rekomendasi */
   background-color: #f8fafc;
   overflow: hidden;
 }
@@ -307,7 +301,8 @@ card-recommendation .card-img-wrapper {
 .card-recommendation img.card-img-top {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Mencegah gambar gepeng/terdistorsi */
+  object-fit: cover;
+  /* Mencegah gambar gepeng/terdistorsi */
   display: block;
 }
 
@@ -315,7 +310,7 @@ card-recommendation .card-img-wrapper {
   border: 1.5px solid #0b1e3f !important;
   color: #0b1e3f !important;
   background-color: transparent !important;
-  border-radius: 30px !important; 
+  border-radius: 30px !important;
   font-size: 0.85rem;
   font-weight: 500;
   padding: 10px 0 !important;

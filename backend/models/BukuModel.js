@@ -4,15 +4,18 @@ exports.getSemuaBuku = async () => {
   const [rows] = await db.promise().query(
     `SELECT b.id_buku, b.judul_buku,
             c.nama_category,
-            d.pengarang, d.penerbit, d.tahun_terbit, d.stok_tersedia,
-            d.status_buku, d.image_url,
-            r.nama_rak, sec.nama_section
+            MIN(d.pengarang) AS pengarang, MIN(d.penerbit) AS penerbit,
+            MIN(d.tahun_terbit) AS tahun_terbit,
+            SUM(d.stok_tersedia) AS stok_tersedia,
+            CASE WHEN SUM(d.stok_tersedia) > 0 THEN 'Tersedia' ELSE 'Tidak Tersedia' END AS status_buku,
+            MIN(d.image_url) AS image_url,
+            MIN(r.nama_rak) AS nama_rak, MIN(sec.nama_section) AS nama_section
      FROM buku b
      INNER JOIN detail_buku d ON b.id_buku = d.id_buku
      LEFT JOIN category c ON b.id_category = c.id_category
      LEFT JOIN rak r ON d.id_rak = r.id_rak
-     LEFT JOIN section sec ON d.id_section = sec.id_section`
-     
+     LEFT JOIN section sec ON d.id_section = sec.id_section
+     GROUP BY b.id_buku, b.judul_buku, c.nama_category`
   )
   return rows
 }
