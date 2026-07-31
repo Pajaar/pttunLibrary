@@ -59,3 +59,26 @@ exports.getCategory = async () => {
   return rows
 }
 
+exports.getBukuTerbaru = async (limit) => {
+  const [rows] = await db.promise().query(
+    `SELECT b.id_buku, b.judul_buku, d.image_url, d.pengarang, d.created_at, c.nama_category
+     FROM buku b
+     INNER JOIN detail_buku d ON b.id_buku = d.id_buku
+     LEFT JOIN category c ON b.id_category = c.id_category
+     ORDER BY d.created_at DESC
+     LIMIT ?`,
+    [limit],
+  )
+
+  const formatter = new Intl.DateTimeFormat('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+
+  return rows.map(({ created_at, ...row }) => ({
+    ...row,
+    tanggal_ditambahkan: formatter.format(new Date(created_at)),
+  }))
+}
+
