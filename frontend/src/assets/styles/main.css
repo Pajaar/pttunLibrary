@@ -507,46 +507,19 @@ h3,
 }
 
 .book-cover {
-  background: linear-gradient(160deg, #1c428a, #102454);
   width: 160px;
   min-width: 160px;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
-  padding: 10px;
   border-radius: 6px;
+  overflow: hidden;
 }
 
-.book-cover .frame {
-  border: 1.5px solid #C99738;
+.book-cover-img {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px 8px;
-}
-
-.book-cover .title-mark {
-  font-family: 'Playfair Display', 'Times New Roman', serif;
-  color: #ffffff;
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  text-align: center;
-  line-height: 1.2;
-}
-
-.book-cover .author-mark {
-  color: rgba(255, 255, 255, .8);
-  font-size: .55rem;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+  object-fit: cover;
+  display: block;
 }
 
 .book-body {
@@ -590,6 +563,8 @@ h3,
   font-size: .75rem;
   font-weight: 500;
   margin-top: 20px;
+  background: var(--navy);
+  color: var(--gold-light);
 }
 
 .book-body .year {
@@ -601,6 +576,11 @@ h3,
 .book-body .year i {
   color: #595959;
   font-size: .88rem;
+}
+
+.error-message {
+  color: #a33a1f;
+  font-weight: 600;
 }
 
 

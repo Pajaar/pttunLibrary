@@ -44,26 +44,26 @@
           <button class="btn btn-outline-gold">Lihat Semua Buku <i
               class="bi bi-chevron-right ms-1"></i></button>
         </div>
-        <div class="row g-4">
-          <div class="col-12 col-xl-4" v-for="(b, i) in books" :key="i">
+        <p v-if="sedangMemuatBuku">Memuat buku terbaru...</p>
+        <p v-else-if="pesanErrorBuku" class="error-message">{{ pesanErrorBuku }}</p>
+        <p v-else-if="books.length === 0">Belum ada buku terbaru.</p>
+        <div v-else class="row g-4">
+          <div class="col-12 col-xl-4" v-for="b in books" :key="b.id_buku">
             <div class="book-card d-flex">
               <div class="book-cover">
-                <div class="frame">
-                  <div class="title-mark">Book<br>Name</div>
-                  <div class="author-mark">AUTHOR NAME</div>
-                </div>
+                <img :src="b.image_url || defaultCover" alt="Cover buku" class="book-cover-img">
               </div>
               <div class="book-body">
-                <h5><a href="#">{{ b.title }}</a></h5>
-                <div class="author">Penulis Buku</div>
+                <h5><a href="#">{{ b.judul_buku }}</a></h5>
+                <div class="author">{{ b.pengarang || 'Penulis tidak diketahui' }}</div>
                 <div class="badge-wrapper">
-                  <span class="badge-tag" :style="{ background: b.tagBg, color: b.tagColor }">
-                    {{ b.tag }}
+                  <span class="badge-tag">
+                    {{ b.nama_category || 'Tanpa Kategori' }}
                   </span>
                 </div>
                 <div class="year d-flex align-items-center gap-2">
                   <i class="bi bi-calendar-fill"></i>
-                  <span>{{ b.year }}</span>
+                  <span>{{ b.tanggal_ditambahkan }}</span>
                 </div>
               </div>
             </div>
@@ -147,8 +147,11 @@
 
 <script setup>
   import {
-    ref
+    ref,
+    onMounted
   } from 'vue'
+  import { getBukuTerbaru } from '../services/bookService'
+  import defaultCover from '@/assets/images/Logo_Ma.png'
 
   const focusSearch = () => {
     alert('Fitur pencarian buku akan segera hadir.')
@@ -176,28 +179,20 @@
     },
   ])
 
-  const books = ref([{
-      title: 'Hukum Administrasi Negara',
-      tag: 'Hukum Administrasi',
-      tagBg: '#e7defb',
-      tagColor: '#6b4fbb',
-      year: 2024
-    },
-    {
-      title: 'Peradilan Tata Usaha Negara',
-      tag: 'Peradilan',
-      tagBg: '#f5f0b8',
-      tagColor: '#8a7a10',
-      year: 2024
-    },
-    {
-      title: 'Dasar-dasar Hukum Indonesia',
-      tag: 'Hukum',
-      tagBg: '#fbdac9',
-      tagColor: '#c1571f',
-      year: 2024
-    },
-  ])
+  const books = ref([])
+  const sedangMemuatBuku = ref(true)
+  const pesanErrorBuku = ref('')
+
+  onMounted(async () => {
+    try {
+      const response = await getBukuTerbaru()
+      books.value = Array.isArray(response.data) ? response.data : []
+    } catch (error) {
+      pesanErrorBuku.value = error.message || 'Buku terbaru belum bisa dimuat'
+    } finally {
+      sedangMemuatBuku.value = false
+    }
+  })
 
   const photoCategories = ref([{
       name: 'Hukum Administrasi Negara',
