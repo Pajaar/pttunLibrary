@@ -90,7 +90,9 @@ LIMIT ?
 
 `limit` query param parsed via `Number.parseInt`, then clamped:
 - default **3** if missing, non-numeric, or `<= 0`
-- max **20** (prevents accidental/abusive large requests)
+- max **3** — hard cap, since this endpoint exists specifically for the
+  landing page's 3-book card. A `limit` value above 3 (e.g. `limit=5`,
+  `limit=20`) is clamped down to 3, not honored as-is.
 
 This keeps the SQL injection-safe guarantee (only a validated integer ever
 reaches the query) without needing a separate validation endpoint/middleware.
@@ -116,9 +118,10 @@ still true). Verification is manual:
 - `GET /buku?sort=terbaru` → 3 books, lightweight shape (including
   `pengarang` and `tanggal_ditambahkan` formatted like `"31 Juli 2026"`),
   ordered by `created_at` descending.
-- `GET /buku?sort=terbaru&limit=5` → 5 books.
+- `GET /buku?sort=terbaru&limit=5` → still only 3 books (clamped down, not 5).
 - `GET /buku?sort=terbaru&limit=abc` (invalid) → falls back to default 3.
-- `GET /buku?sort=terbaru&limit=999` → clamped to 20.
+- `GET /buku?sort=terbaru&limit=999` → clamped to 3.
+- `GET /buku?sort=terbaru&limit=2` → 2 books (below cap is honored as-is).
 
 ## Files touched
 
