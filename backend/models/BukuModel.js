@@ -65,7 +65,7 @@ exports.getBukuTerbaru = async (limit) => {
      FROM buku b
      INNER JOIN detail_buku d ON b.id_buku = d.id_buku
      LEFT JOIN category c ON b.id_category = c.id_category
-     ORDER BY d.created_at DESC
+     ORDER BY d.created_at DESC, b.id_buku DESC
      LIMIT ?`,
     [limit],
   )
@@ -74,11 +74,11 @@ exports.getBukuTerbaru = async (limit) => {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
+    timeZone: 'Asia/Jakarta',
   })
 
   return rows.map(({ created_at, ...row }) => ({
     ...row,
-    tanggal_ditambahkan: formatter.format(new Date(created_at)),
+    tanggal_ditambahkan: created_at ? formatter.format(new Date(created_at)) : null,
   }))
 }
-

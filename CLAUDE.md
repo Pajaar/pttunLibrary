@@ -24,7 +24,8 @@ Tables: `buku`, `detail_buku`, `category`, `rak`, `section`, `peminjaman`
   Holds location + stock: `rak`, `section`, `jumlah_eksemplar`,
   `stok_tersedia`, `status_buku` (tersedia/tidak tersedia — derived from
   stok_tersedia), `pengarang`, `penerbit`, `tahun_terbit`, `halaman`,
-  `image_url` (VARCHAR(500), nullable). `pengarang`/`penerbit` have no fixed
+  `image_url` (VARCHAR(500), nullable), `created_at` (TIMESTAMP, added to support
+  sorting "buku terbaru" / newest-books endpoint). `pengarang`/`penerbit` have no fixed
   varchar length (some titles/names are long).
   Rule: 1 buku = 1 detail_buku, always.
 - **category**: 14 fixed categories, full names only (never abbreviate):
