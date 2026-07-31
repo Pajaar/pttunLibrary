@@ -54,7 +54,7 @@ the user chose the query-param approach.
 ### 3. New model function: `getBukuTerbaru(limit)`
 
 ```sql
-SELECT b.id_buku, b.judul_buku, d.image_url, c.nama_category
+SELECT b.id_buku, b.judul_buku, d.image_url, d.pengarang, d.created_at, c.nama_category
 FROM buku b
 INNER JOIN detail_buku d ON b.id_buku = d.id_buku
 LEFT JOIN category c ON b.id_category = c.id_category
@@ -63,15 +63,28 @@ LIMIT ?
 ```
 
 - `INNER JOIN detail_buku` — schema guarantees exactly 1 row per buku, and
-  `created_at` lives on `detail_buku`.
+  `created_at`/`pengarang` live on `detail_buku`.
 - `LEFT JOIN category` — defensive, consistent with `getSemuaBuku`.
 - `limit` is parameterized (`?`), passed in as an already-validated integer
   (see below) — never string-interpolated.
+- Raw `created_at` is selected here; it's reshaped into the display-formatted
+  field after the query (see #4), not formatted in SQL.
 
-### 4. Response shape: lightweight, card-only fields
+### 4. Response shape: lightweight, card-only fields + author + formatted date
 
-`id_buku, judul_buku, image_url, nama_category` — per user's choice, not the
-full `getSemuaBuku` shape (no pengarang/penerbit/tahun_terbit/stok/rak/section).
+`id_buku, judul_buku, image_url, nama_category, pengarang, tanggal_ditambahkan`.
+
+- `pengarang` — added per user request, straight passthrough from
+  `detail_buku`.
+- `tanggal_ditambahkan` — derived from `detail_buku.created_at`, formatted as
+  a long-form Indonesian date string (e.g. `"31 Juli 2026"`), not the raw
+  timestamp. Formatting happens in `BukuModel.getBukuTerbaru`, after the
+  query, via `Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long',
+  year: 'numeric' })` (Node's built-in ICU covers `id-ID` — no extra
+  dependency needed). The raw `created_at` value is not included in the
+  response, only the formatted string.
+- Still excludes `penerbit`/`tahun_terbit`/`stok`/`rak`/`section` — out of
+  scope per earlier decision, unchanged.
 
 ### 5. Limit validation (in the controller)
 
@@ -100,8 +113,9 @@ No automated test framework exists in the backend (per prior spec's finding,
 still true). Verification is manual:
 - `GET /buku` (no params) → confirm response shape/content unchanged from
   before this change (regression check for `CatalogView.vue`).
-- `GET /buku?sort=terbaru` → 3 books, lightweight shape, ordered by
-  `created_at` descending.
+- `GET /buku?sort=terbaru` → 3 books, lightweight shape (including
+  `pengarang` and `tanggal_ditambahkan` formatted like `"31 Juli 2026"`),
+  ordered by `created_at` descending.
 - `GET /buku?sort=terbaru&limit=5` → 5 books.
 - `GET /buku?sort=terbaru&limit=abc` (invalid) → falls back to default 3.
 - `GET /buku?sort=terbaru&limit=999` → clamped to 20.
