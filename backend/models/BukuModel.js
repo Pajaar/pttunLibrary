@@ -95,3 +95,63 @@ exports.getBukuTerbaru = async (limit) => {
     tanggal_ditambahkan: created_at ? formatter.format(new Date(created_at)) : null,
   }))
 }
+
+const REKOMENDASI_STOPWORDS = new Set([
+  'dan', 'di', 'ke', 'dari', 'untuk', 'atau', 'dengan', 'pada',
+  'yang', 'ini', 'itu', 'adalah', 'oleh', 'atas', 'dalam',
+])
+
+function tokenizeJudul(judul) {
+  return new Set(
+    (judul || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter(word => word.length > 2 && !REKOMENDASI_STOPWORDS.has(word)),
+  )
+}
+
+exports.getBukuRekomendasi = async (id_buku, limit = 6) => {
+  const [targetRows] = await db.promise().query(
+    `SELECT b.id_category, b.judul_buku, d.pengarang
+     FROM buku b
+     JOIN detail_buku d ON b.id_buku = d.id_buku
+     WHERE b.id_buku = ?`,
+    [id_buku],
+  )
+  const target = targetRows[0]
+  if (!target) return []
+
+  const [candidates] = await db.promise().query(
+    `SELECT b.id_buku, b.judul_buku, b.id_category,
+            c.nama_category, d.pengarang, d.tahun_terbit, d.image_url,
+            CASE WHEN d.stok_tersedia > 0 THEN 'Tersedia' ELSE 'Tidak Tersedia' END AS status_buku
+     FROM buku b
+     JOIN detail_buku d ON b.id_buku = d.id_buku
+     LEFT JOIN category c ON b.id_category = c.id_category
+     WHERE b.id_buku != ?
+       AND (b.id_category = ? OR d.pengarang = ?)`,
+    [id_buku, target.id_category, target.pengarang],
+  )
+
+  const targetWords = tokenizeJudul(target.judul_buku)
+
+  const scored = candidates.map((candidate) => {
+    let score = 0
+    if (target.id_category != null && candidate.id_category === target.id_category) score += 2
+    if (target.pengarang != null && candidate.pengarang === target.pengarang) score += 3
+
+    const candidateWords = tokenizeJudul(candidate.judul_buku)
+    for (const word of candidateWords) {
+      if (targetWords.has(word)) score += 1
+    }
+
+    return { ...candidate, score }
+  })
+
+  return scored
+    .filter(candidate => candidate.score > 0)
+    .sort((a, b) => b.score - a.score || (b.tahun_terbit || 0) - (a.tahun_terbit || 0))
+    .slice(0, limit)
+    .map(({ score, id_category, ...rest }) => rest)
+}

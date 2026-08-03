@@ -132,3 +132,20 @@ exports.getCategory = async (req, res) => {
     })
   }
 }
+
+// Get rekomendasi buku berdasarkan id
+exports.getBukuRekomendasi = async (req, res) => {
+  const { id } = req.params
+  try {
+    const rekomendasi = await BukuModel.getBukuRekomendasi(id)
+    res.json({
+      message: 'Data rekomendasi buku berhasil diambil',
+      data: rekomendasi,
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: 'Gagal mengambil data rekomendasi buku',
+      error: error.message,
+    })
+  }
+}
