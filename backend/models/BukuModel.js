@@ -21,7 +21,20 @@ exports.getSemuaBuku = async () => {
 }
 
 exports.getBukuById = async (id_buku) => {
-  const [rows] = await db.promise().query('SELECT * FROM buku WHERE id_buku = ?', [id_buku])
+  const [rows] = await db.promise().query(
+    `SELECT b.id_buku, b.judul_buku, b.id_category,
+            c.nama_category,
+            d.pengarang, d.penerbit, d.tahun_terbit, d.image_url,
+            r.nama_rak, sec.nama_section,
+            CASE WHEN d.stok_tersedia > 0 THEN 'Tersedia' ELSE 'Tidak Tersedia' END AS status_buku
+     FROM buku b
+     JOIN detail_buku d ON b.id_buku = d.id_buku
+     LEFT JOIN category c ON b.id_category = c.id_category
+     LEFT JOIN rak r ON d.id_rak = r.id_rak
+     LEFT JOIN section sec ON d.id_section = sec.id_section
+     WHERE b.id_buku = ?`,
+    [id_buku],
+  )
   return rows[0]
 }
 
