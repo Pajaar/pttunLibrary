@@ -10,7 +10,16 @@ export const apiRequest = async (path, options = {}) => {
   });
 
   if (!response.ok) {
-    throw new Error('Permintaan ke server gagal');
+    let message = 'Permintaan ke server gagal';
+    try {
+      const body = await response.json();
+      if (body && body.message) {
+        message = body.message;
+      }
+    } catch {
+      // Response bukan JSON valid (mis. halaman error HTML) — pakai pesan default.
+    }
+    throw new Error(message);
   }
 
   return response.json();
