@@ -82,8 +82,10 @@
                 :class="buku.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span>
               {{ buku.status_buku || 'Tersedia' }}
             </div>
-            <button class="btn btn-navy-action px-4 py-2 rounded-pill shadow-sm">Pinjam
-              Buku</button>
+            <button class="btn btn-navy-action px-4 py-2 rounded-pill shadow-sm"
+              @click="router.push({ name: 'peminjaman-form', params: { id: buku.id_buku } })">
+              Pinjam Buku
+            </button>
           </div>
         </div>
       </div>
