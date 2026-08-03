@@ -12,7 +12,7 @@
     <div v-else-if="!buku" class="text-center py-5">
       <h3 class="text-navy">Buku Tidak Ditemukan</h3>
       <p class="text-muted">Data buku tidak tersedia atau telah dihapus.</p>
-      <router-link to="/" class="btn btn-navy-action px-4 py-2 mt-2">Kembali ke Katalog
+      <router-link to="/katalog" class="btn btn-navy-action px-4 py-2 mt-2">Kembali ke Katalog
       </router-link>
     </div>
 
@@ -35,7 +35,8 @@
         <!-- Cover Gambar -->
         <div class="col-12 col-md-4 text-center text-md-start">
           <div class="detail-cover-wrapper">
-            <img :src="buku.image_url || defaultCover" :alt="buku.judul_buku" class="img-fluid detail-cover-img" />
+            <img :src="buku.image_url || defaultCover" :alt="buku.judul_buku"
+              class="img-fluid detail-cover-img" />
           </div>
         </div>
 
@@ -77,7 +78,8 @@
           <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
             <div class="status-indicator d-flex align-items-center gap-2 fw-semibold"
               :class="buku.status_buku === 'Tersedia' ? 'text-success' : 'text-danger'">
-              <span class="dot-status" :class="buku.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span>
+              <span class="dot-status"
+                :class="buku.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span>
               {{ buku.status_buku || 'Tersedia' }}
             </div>
             <button class="btn btn-navy-action px-4 py-2 rounded-pill shadow-sm">Pinjam
@@ -89,12 +91,15 @@
       <!-- Rekomendasi Buku Kategori Serupa -->
       <div v-if="rekomendasiBuku.length > 0" class="recommendation-section mt-5 pt-4">
         <h3 class="section-title font-display text-navy mb-1">Rekomendasi Buku</h3>
-        <p class="text-muted small mb-4">Temukan buku lain dengan pembahasan yang serupa.</p>
+        <p class="text-muted small mb-4">Temukan buku lain dengan topik dan pembahasan yang serupa.
+        </p>
 
-        <div class="row g-4">
-          <div v-for="item in rekomendasiBuku" :key="item.id_buku" class="col-12 col-sm-6 col-md-4">
+        <!-- Container Flexbox Rata Kiri -->
+        <div class="d-flex flex-wrap justify-content-start gap-4">
+          <div v-for="item in rekomendasiBuku" :key="item.id_buku" class="recommendation-col">
             <div class="card card-recommendation h-100 shadow-sm border-0 clickable-card"
               @click="goToDetail(item.id_buku)">
+              <!-- Area Cover Gambar Jangkung/Vertikal -->
               <div class="card-img-wrapper position-relative">
                 <span class="badge bg-navy position-absolute top-0 start-0 m-3 btn-sm">
                   {{ item.nama_category || 'Tanpa Kategori' }}
@@ -153,7 +158,8 @@
     useRouter
   } from 'vue-router'
   import {
-    getBuku
+    getBukuById,
+    getBukuRekomendasi
   } from '../services/bookService'
   import defaultCover from '@/assets/images/Logo_Ma.png'
 
@@ -166,28 +172,25 @@
 
   const loadData = async () => {
     loading.value = true
+    rekomendasiBuku.value = []
     try {
       const idParam = route.params.id
 
-      // Memanggil getBuku() seperti halnya pada CatalogView
-      const response = await getBuku()
-      const allBuku = Array.isArray(response.data) ? response.data : []
+      const [bukuResult, rekoResult] = await Promise.allSettled([
+        getBukuById(idParam),
+        getBukuRekomendasi(idParam)
+      ])
 
-      // Mencari buku spesifik berdasarkan id_buku dari URL
-      buku.value = allBuku.find(item => String(item.id_buku) === String(idParam)) || null
+      buku.value = bukuResult.status === 'fulfilled' ? bukuResult.value.data : null
 
-      // Menyiapkan rekomendasi (kategori sama, ID berbeda)
-      if (buku.value) {
-        rekomendasiBuku.value = allBuku
-          .filter(item =>
-            String(item.id_buku) !== String(idParam) &&
-            item.nama_category === buku.value.nama_category
-          )
-          .slice(0, 3)
+      if (bukuResult.status === 'rejected') {
+        console.error('Gagal memuat detail buku:', bukuResult.reason)
       }
-    } catch (err) {
-      console.error('Gagal memuat detail buku:', err)
-      buku.value = null
+      if (rekoResult.status === 'fulfilled' && Array.isArray(rekoResult.value.data)) {
+        rekomendasiBuku.value = rekoResult.value.data.slice(0, 3)
+      } else if (rekoResult.status === 'rejected') {
+        console.error('Gagal memuat rekomendasi buku:', rekoResult.reason)
+      }
     } finally {
       loading.value = false
     }
