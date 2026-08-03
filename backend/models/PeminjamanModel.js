@@ -57,20 +57,22 @@ exports.buatPeminjaman = async ({ id_detail, nama_peminjam, no_telpon, durasi_ha
 exports.getSemuaPeminjaman = async () => {
   const [rows] = await db.promise().query(
     `SELECT p.id_peminjaman, p.id_detail, p.nama_peminjam, p.no_telpon,
-            p.tanggal_pinjam, p.durasi_hari, p.due_date, p.status,
+            DATE_FORMAT(p.tanggal_pinjam, '%Y-%m-%d') AS tanggal_pinjam,
+            p.durasi_hari,
+            DATE_FORMAT(p.due_date, '%Y-%m-%d') AS due_date,
+            p.status,
             b.judul_buku
      FROM peminjaman p
      JOIN detail_buku d ON d.id_buku = p.id_detail
      JOIN buku b ON b.id_buku = d.id_buku
-     ORDER BY p.tanggal_pinjam DESC`,
+     ORDER BY p.tanggal_pinjam DESC, p.id_peminjaman DESC`,
   )
 
   const dateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' })
   const today = dateFormatter.format(new Date())
 
   return rows.map((row) => {
-    const dueDateStr = dateFormatter.format(new Date(row.due_date))
-    const statusEfektif = row.status === 'dipinjam' && dueDateStr < today ? 'terlambat' : row.status
+    const statusEfektif = row.status === 'dipinjam' && row.due_date < today ? 'terlambat' : row.status
     return { ...row, status: statusEfektif }
   })
 }
@@ -98,6 +100,11 @@ exports.updateStatusPeminjaman = async (id_peminjaman, status) => {
     if (status === 'dikembalikan' && existing.status !== 'dikembalikan') {
       await connection.query(
         'UPDATE detail_buku SET stok_tersedia = stok_tersedia + 1 WHERE id_buku = ?',
+        [existing.id_detail],
+      )
+    } else if (status !== 'dikembalikan' && existing.status === 'dikembalikan') {
+      await connection.query(
+        'UPDATE detail_buku SET stok_tersedia = stok_tersedia - 1 WHERE id_buku = ? AND stok_tersedia > 0',
         [existing.id_detail],
       )
     }
