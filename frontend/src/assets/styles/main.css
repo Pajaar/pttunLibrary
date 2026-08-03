@@ -453,13 +453,20 @@ h3,
   height: 60px;
   border-radius: 50%;
   background: linear-gradient(180deg, var(--gold-light), var(--gold));
-  color: #fff;
+  color: #fff !important;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 16px;
   font-size: 1.3rem;
 }
+
+.icon-circle [class^="bi-"], 
+.icon-circle [class*=" bi-"] {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
 
 .service-card h5 {
   font-weight: 700;

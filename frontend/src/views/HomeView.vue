@@ -102,7 +102,7 @@
                 <!-- Kolom 1 -->
                 <div class="col-6 col-lg-3 item">
                   <div class="icon-circle">
-                    <i class="bi bi-book"></i>
+                    <i class="bi bi-book text-white"></i>
                   </div>
                   <h3 class="feature-title">Koleksi Lengkap</h3>
                   <p class="feature-text">Berbagai Koleksi buku hukum dan refrensi terpercaya</p>
