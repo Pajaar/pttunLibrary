@@ -76,32 +76,47 @@ exports.getSemuaPeminjaman = async () => {
 }
 
 exports.updateStatusPeminjaman = async (id_peminjaman, status) => {
-  const [existingRows] = await db.promise().query(
-    'SELECT * FROM peminjaman WHERE id_peminjaman = ?',
-    [id_peminjaman],
-  )
-  const existing = existingRows[0]
-  if (!existing) return null
+  const connection = await db.promise().getConnection()
+  try {
+    await connection.beginTransaction()
 
-  await db.promise().query(
-    'UPDATE peminjaman SET status = ? WHERE id_peminjaman = ?',
-    [status, id_peminjaman],
-  )
-
-  if (status === 'dikembalikan' && existing.status !== 'dikembalikan') {
-    await db.promise().query(
-      'UPDATE detail_buku SET stok_tersedia = stok_tersedia + 1 WHERE id_buku = ?',
-      [existing.id_detail],
+    const [existingRows] = await connection.query(
+      'SELECT * FROM peminjaman WHERE id_peminjaman = ? FOR UPDATE',
+      [id_peminjaman],
     )
-  }
+    const existing = existingRows[0]
+    if (!existing) {
+      await connection.rollback()
+      return null
+    }
 
-  const [rows] = await db.promise().query(
-    `SELECT p.*, b.judul_buku
-     FROM peminjaman p
-     JOIN detail_buku d ON d.id_buku = p.id_detail
-     JOIN buku b ON b.id_buku = d.id_buku
-     WHERE p.id_peminjaman = ?`,
-    [id_peminjaman],
-  )
-  return rows[0]
+    await connection.query(
+      'UPDATE peminjaman SET status = ? WHERE id_peminjaman = ?',
+      [status, id_peminjaman],
+    )
+
+    if (status === 'dikembalikan' && existing.status !== 'dikembalikan') {
+      await connection.query(
+        'UPDATE detail_buku SET stok_tersedia = stok_tersedia + 1 WHERE id_buku = ?',
+        [existing.id_detail],
+      )
+    }
+
+    const [rows] = await connection.query(
+      `SELECT p.*, b.judul_buku
+       FROM peminjaman p
+       JOIN detail_buku d ON d.id_buku = p.id_detail
+       JOIN buku b ON b.id_buku = d.id_buku
+       WHERE p.id_peminjaman = ?`,
+      [id_peminjaman],
+    )
+
+    await connection.commit()
+    return rows[0]
+  } catch (err) {
+    await connection.rollback()
+    throw err
+  } finally {
+    connection.release()
+  }
 }
