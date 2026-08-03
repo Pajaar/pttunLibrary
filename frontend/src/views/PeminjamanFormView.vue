@@ -68,7 +68,7 @@
               <i class="bi bi-check-circle-fill text-success display-4 mb-3"></i>
               <h5 class="font-display text-navy">Peminjaman Berhasil Diajukan</h5>
               <p class="text-muted mb-1">{{ berhasil.judul_buku }}</p>
-              <p class="text-muted small">Batas pengembalian: <strong>{{ berhasil.due_date }}</strong></p>
+              <p class="text-muted small">Batas pengembalian: <strong>{{ formatDueDate(berhasil.due_date) }}</strong></p>
               <button class="btn btn-navy-action px-4 py-2 rounded-pill mt-3" @click="kembaliKeDetail">
                 Kembali ke Detail Buku
               </button>
@@ -185,6 +185,20 @@
       params: {
         id: route.params.id
       }
+    })
+  }
+
+  const formatDueDate = (rawDueDate) => {
+    if (!rawDueDate) return '-'
+
+    const tanggal = new Date(rawDueDate)
+    if (Number.isNaN(tanggal.getTime())) return rawDueDate || '-'
+
+    return tanggal.toLocaleDateString('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'Asia/Jakarta'
     })
   }
 
