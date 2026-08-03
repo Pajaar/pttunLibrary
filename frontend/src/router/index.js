@@ -58,6 +58,11 @@ const router = createRouter({
           path: 'buku/:id',
           name: 'book-detail',
           component: () => import('../views/BookDetail.vue'),
+        },
+        {
+          path: 'buku/:id/pinjam',
+          name: 'peminjaman-form',
+          component: () => import('../views/PeminjamanFormView.vue'),
         }
       ],
     },
