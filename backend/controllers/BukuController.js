@@ -2,6 +2,32 @@ const BukuModel = require('../models/BukuModel')
 
 // Get data semua buku
 exports.getSemuaBuku = async (req, res) => {
+  const { sort, limit } = req.query
+
+  if (sort === 'terbaru') {
+    let validLimit = 3
+    if (limit !== undefined) {
+      const parsed = Number.parseInt(limit, 10)
+      if (Number.isInteger(parsed) && parsed > 0 && parsed <= 3) {
+        validLimit = parsed
+      }
+    }
+
+    try {
+      const buku = await BukuModel.getBukuTerbaru(validLimit)
+      return res.json({
+        message: 'Data buku terbaru berhasil diambil',
+        data: buku,
+      })
+    }
+    catch (error) {
+      return res.status(500).json({
+        message: 'Gagal mengambil data buku terbaru',
+        error: error.message,
+      })
+    }
+  }
+
   try {
     const buku = await BukuModel.getSemuaBuku()
     res.json({

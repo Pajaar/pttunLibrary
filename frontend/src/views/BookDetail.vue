@@ -22,7 +22,7 @@
       <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <router-link to="/" class="text-muted text-decoration-none">Katalog Buku</router-link>
+            <router-link to="/katalog" class="text-muted text-decoration-none">Katalog Buku</router-link>
           </li>
           <li class="breadcrumb-item active text-navy font-display" aria-current="page">
             {{ buku.judul_buku }}
@@ -35,8 +35,7 @@
         <!-- Cover Gambar -->
         <div class="col-12 col-md-4 text-center text-md-start">
           <div class="detail-cover-wrapper">
-            <img :src="buku.image_url || defaultCover" :alt="buku.judul_buku"
-              class="img-fluid detail-cover-img" />
+            <img :src="buku.image_url || defaultCover" :alt="buku.judul_buku" class="img-fluid detail-cover-img" />
           </div>
         </div>
 
@@ -78,8 +77,7 @@
           <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
             <div class="status-indicator d-flex align-items-center gap-2 fw-semibold"
               :class="buku.status_buku === 'Tersedia' ? 'text-success' : 'text-danger'">
-              <span class="dot-status"
-                :class="buku.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span>
+              <span class="dot-status" :class="buku.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span>
               {{ buku.status_buku || 'Tersedia' }}
             </div>
             <button class="btn btn-navy-action px-4 py-2 rounded-pill shadow-sm">Pinjam
@@ -91,15 +89,12 @@
       <!-- Rekomendasi Buku Kategori Serupa -->
       <div v-if="rekomendasiBuku.length > 0" class="recommendation-section mt-5 pt-4">
         <h3 class="section-title font-display text-navy mb-1">Rekomendasi Buku</h3>
-        <p class="text-muted small mb-4">Temukan buku lain dengan topik dan pembahasan yang serupa.
-        </p>
+        <p class="text-muted small mb-4">Temukan buku lain dengan pembahasan yang serupa.</p>
 
-        <!-- Container Flexbox Rata Kiri -->
-        <div class="d-flex flex-wrap justify-content-start gap-4">
-          <div v-for="item in rekomendasiBuku" :key="item.id_buku" class="recommendation-col">
+        <div class="row g-4">
+          <div v-for="item in rekomendasiBuku" :key="item.id_buku" class="col-12 col-sm-6 col-md-4">
             <div class="card card-recommendation h-100 shadow-sm border-0 clickable-card"
               @click="goToDetail(item.id_buku)">
-              <!-- Area Cover Gambar Jangkung/Vertikal -->
               <div class="card-img-wrapper position-relative">
                 <span class="badge bg-navy position-absolute top-0 start-0 m-3 btn-sm">
                   {{ item.nama_category || 'Tanpa Kategori' }}
