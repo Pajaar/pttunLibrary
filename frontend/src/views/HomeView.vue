@@ -41,8 +41,8 @@
             <div class="eyebrow">Koleksi</div>
             <h2 class="section-title mb-0">Buku Terbaru</h2>
           </div>
-          <button class="btn btn-outline-gold">Lihat Semua Buku <i
-              class="bi bi-chevron-right ms-1"></i></button>
+          <a href="/katalog" class="btn btn-outline-gold">Lihat Semua Buku <i
+              class="bi bi-chevron-right ms-1"></i></a>
         </div>
         <p v-if="sedangMemuatBuku">Memuat buku terbaru...</p>
         <p v-else-if="pesanErrorBuku" class="error-message">{{ pesanErrorBuku }}</p>
