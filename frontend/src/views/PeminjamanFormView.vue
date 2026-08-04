@@ -95,7 +95,7 @@
             </div>
 
             <!-- Form -->
-            <form v-else @submit.prevent="submitForm">
+            <form v-else id="peminjaman-form" @submit.prevent="submitForm">
               <div class="mb-3">
                 <label class="form-label" for="nama_peminjam">Nama Lengkap</label>
                 <div class="input-icon-wrapper">
@@ -138,11 +138,11 @@
               <div v-if="pesanError" class="alert alert-danger py-2">{{ pesanError }}</div>
 
             </form>
-            <div class="d-flex gap-3 mt-5">
+            <div v-if="!berhasil" class="d-flex gap-3 mt-5">
               <button type="button" class="btn btn-outline-navy px-4 py-2 rounded-pill" @click="kembaliKeDetail">
                 Kembali
               </button>
-              <button type="submit" class="btn btn-navy-action px-4 py-2 rounded-pill flex-grow-1"
+              <button type="submit" form="peminjaman-form" class="btn btn-navy-action px-4 py-2 rounded-pill flex-grow-1"
                 :disabled="submitting">
                 <span v-if="submitting" class="spinner-border spinner-border-sm me-2" role="status"></span>
                 {{ submitting ? 'Mengirim...' : 'Ajukan Peminjaman' }}
