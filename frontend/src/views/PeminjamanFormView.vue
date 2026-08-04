@@ -33,34 +33,54 @@
         </ol>
       </nav>
 
-      <div class="text-center mb-4">
-        <h1 class="peminjaman-title font-display text-navy">Formulir Peminjaman Buku</h1>
-        <p class="text-muted">Lengkapi data berikut untuk mengajukan peminjaman buku.</p>
+      <div class="cat-head container d-flex justify-content-center flex-column align-items-center mb-4">
+        <div class="container d-flex justify-content-center align-items-center">
+          <hr class="flex-grow-1 my-auto opacity-100 h-2" style="border-color: #D4AD65; opacity: 1; border-width: 2px;">
+          <span class="px-4 fs-1 text-dark fw-bold title-peminjaman">Formulir Peminjaman Buku</span>
+          <hr class="flex-grow-1 my-auto opacity-100" style="border-color: #D4AD65; opacity: 1; border-width: 2px;">
+        </div>
+        <h2 style="font-size: 20px; margin-top: 15px; font-family: 'Plus Jakarta Sans', sans-serif;">Lengkapi data berikut untuk mengajukan peminjaman buku.</h2>
       </div>
+      
 
       <div class="peminjaman-card">
         <div class="row g-4">
-          <!-- Informasi Buku -->
-          <div class="col-12 col-md-5">
-            <h5 class="section-label font-display text-navy mb-3">Informasi Buku</h5>
-            <div class="book-info-cover-wrapper mb-3">
-              <img :src="buku.image_url || defaultCover" :alt="buku.judul_buku" class="book-info-cover">
+          <div class="col-8 col-md-4 pe-md-4">
+            <div class="section-header mb-3">
+              <h5 class="section-label font-display text-navy mb-2 fw-semibold">Informasi Buku</h5>
+              <div class="gold-line"></div>
             </div>
-            <h5 class="font-display mb-1">{{ buku.judul_buku }}</h5>
-            <p class="text-muted small mb-2">{{ buku.pengarang || 'Penulis belum tersedia' }}</p>
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-              <span class="badge bg-navy px-3 py-2">{{ buku.nama_category || 'Tanpa Kategori' }}</span>
-              <span class="status-indicator d-flex align-items-center gap-1 fw-semibold"
-                :class="buku.status_buku === 'Tersedia' ? 'text-success' : 'text-danger'">
-                <span class="dot-status"
-                  :class="buku.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span>
-                {{ buku.status_buku || 'Tersedia' }}
-              </span>
+            <div class="p-4 rounded-4 bg-light-subtle border border-2 border-dark  border-primary-custom">
+              <div class="book-info-card justify-content-center d-flex flex-column align-items-center mb-3">
+                <div class="book-info-cover-wrapper mb-3">
+                  <img 
+                    :src="buku.image_url || defaultCover" 
+                    :alt="buku.judul_buku" 
+                    class="book-info-cover img-fluid rounded-3 shadow-sm"/>
+                </div>
+              </div>
+              <h5 class="font-display fw-bold text-navy mb-1">{{ buku.judul_buku }}</h5>
+              <p class="text-muted small mb-3">{{ buku.pengarang || 'Penulis belum tersedia' }}</p>
+              <div class="d-flex align-items-center gap-3 flex-wrap">
+                <span class="badge bg-navy px-3 py-2 rounded-pill fw-normal">
+                  {{ buku.nama_category || 'Tanpa Kategori' }}
+                </span>
+  
+                <span 
+                  class="status-indicator d-flex align-items-center gap-2 fw-medium"
+                  :class="buku.status_buku === 'Tersedia' ? 'text-success' : 'text-danger'">
+                  <span 
+                    class="dot-status"
+                    :class="buku.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"
+                  ></span>
+                  {{ buku.status_buku || 'Tersedia' }}
+                </span>
+              </div>
             </div>
-          </div>
+        </div>
 
           <!-- Data Peminjam -->
-          <div class="col-12 col-md-7">
+          <div class="col-14 col-md-8">
             <h5 class="section-label font-display text-navy mb-3">Data Peminjam</h5>
 
             <!-- Sukses -->
@@ -117,17 +137,17 @@
 
               <div v-if="pesanError" class="alert alert-danger py-2">{{ pesanError }}</div>
 
-              <div class="d-flex gap-3">
-                <button type="button" class="btn btn-outline-navy px-4 py-2 rounded-pill" @click="kembaliKeDetail">
-                  Kembali
-                </button>
-                <button type="submit" class="btn btn-navy-action px-4 py-2 rounded-pill flex-grow-1"
-                  :disabled="submitting">
-                  <span v-if="submitting" class="spinner-border spinner-border-sm me-2" role="status"></span>
-                  {{ submitting ? 'Mengirim...' : 'Ajukan Peminjaman' }}
-                </button>
-              </div>
             </form>
+            <div class="d-flex gap-3 mt-5">
+              <button type="button" class="btn btn-outline-navy px-4 py-2 rounded-pill" @click="kembaliKeDetail">
+                Kembali
+              </button>
+              <button type="submit" class="btn btn-navy-action px-4 py-2 rounded-pill flex-grow-1"
+                :disabled="submitting">
+                <span v-if="submitting" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                {{ submitting ? 'Mengirim...' : 'Ajukan Peminjaman' }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -228,8 +248,21 @@
 </script>
 
 <style scoped>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
   .text-navy {
     color: #0b1e3f !important;
+  }
+
+  .title-peminjaman{
+    font-size: 2rem;
+    font-family: 'Cormorant', serif;
+    font-weight: 700;
+  }
+
+  .cat-head h2{
+    font-family: '"Plus Jakarta Sans", sans-serif';
   }
 
   .bg-navy {

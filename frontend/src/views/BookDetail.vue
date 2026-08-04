@@ -95,13 +95,10 @@
         <h3 class="section-title font-display text-navy mb-1">Rekomendasi Buku</h3>
         <p class="text-muted small mb-4">Temukan buku lain dengan topik dan pembahasan yang serupa.
         </p>
-
-        <!-- Container Flexbox Rata Kiri -->
-        <div class="d-flex flex-wrap justify-content-start gap-4">
+        <div class="d-flex flex-wrap justify-content-start gap-5">
           <div v-for="item in rekomendasiBuku" :key="item.id_buku" class="recommendation-col">
             <div class="card card-recommendation h-100 shadow-sm border-0 clickable-card"
               @click="goToDetail(item.id_buku)">
-              <!-- Area Cover Gambar Jangkung/Vertikal -->
               <div class="card-img-wrapper position-relative">
                 <span class="badge bg-navy position-absolute top-0 start-0 m-3 btn-sm">
                   {{ item.nama_category || 'Tanpa Kategori' }}
@@ -189,7 +186,7 @@
         console.error('Gagal memuat detail buku:', bukuResult.reason)
       }
       if (rekoResult.status === 'fulfilled' && Array.isArray(rekoResult.value.data)) {
-        rekomendasiBuku.value = rekoResult.value.data.slice(0, 3)
+        rekomendasiBuku.value = rekoResult.value.data.slice(0, 4)
       } else if (rekoResult.status === 'rejected') {
         console.error('Gagal memuat rekomendasi buku:', rekoResult.reason)
       }
@@ -322,11 +319,12 @@
 
   .recommendation-col {
     width: 100%;
-    max-width: 260px;
+    max-width: 280px;
     flex: 0 0 auto;
   }
 
   .card-recommendation {
+    width: 300px;
     border-radius: 16px;
     overflow: hidden;
     background-color: #ffffff;

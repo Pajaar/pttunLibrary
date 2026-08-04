@@ -538,7 +538,7 @@ h3,
 
 .book-body h5 {
   margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .book-body h5 a {
@@ -555,8 +555,6 @@ h3,
   color: #595959;
   font-size: .9rem;
   font-weight: 400;
-  margin-bottom: 24px;
-  margin-top: 20px;
 }
 
 .book-body .badge-wrapper {
@@ -569,7 +567,7 @@ h3,
   border-radius: 20px;
   font-size: .75rem;
   font-weight: 500;
-  margin-top: 20px;
+  margin-top: 15px;
   background: var(--navy);
   color: var(--gold-light);
 }
