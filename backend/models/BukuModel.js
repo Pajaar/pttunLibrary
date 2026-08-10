@@ -153,5 +153,5 @@ exports.getBukuRekomendasi = async (id_buku, limit = 6) => {
     .filter(candidate => candidate.score > 0)
     .sort((a, b) => b.score - a.score || (b.tahun_terbit || 0) - (a.tahun_terbit || 0))
     .slice(0, limit)
-    .map(({ score, id_category, ...rest }) => rest)
+    .map(({ score: _score, id_category: _id_category, ...rest }) => rest)
 }
