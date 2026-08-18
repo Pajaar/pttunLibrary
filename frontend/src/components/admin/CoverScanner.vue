@@ -54,7 +54,29 @@ async function open() {
   engineError.value = ''
   previewUrl.value = ''
 
-  if (!modalInstance) modalInstance = new Modal(modalEl.value)
+  if (!modalInstance) {
+    modalInstance = new Modal(modalEl.value)
+    // Modal Bootstrap bisa ditutup lewat X, ESC, atau klik backdrop - semuanya
+    // memanggil hide() Bootstrap secara langsung tanpa lewat close() di bawah,
+    // jadi cleanup (stop kamera, lepas listener drag) tidak boleh cuma
+    // ditempel di tombol X saja. Event 'hidden.bs.modal' terpicu di semua jalur
+    // penutupan (termasuk hide() programatik), jadi ini satu-satunya tempat yang
+    // aman untuk cleanup. Didaftarkan sekali saja di sini karena open() bisa
+    // dipanggil berkali-kali.
+    modalEl.value.addEventListener('hidden.bs.modal', () => {
+      stopCamera()
+      endDrag()
+      // Modal scanner ini sengaja dibuka di atas modal form buku yang masih
+      // terbuka (sibling modal, bukan nested). Bootstrap menghapus class
+      // 'modal-open' dari <body> tiap modal manapun ditutup, walau modal lain
+      // masih tampil - menyebabkan body "lompat" (scrollbar/padding reset) dan
+      // focus-trap modal lain jadi tidak aktif. Tambahkan lagi kalau masih ada
+      // modal lain yang sedang tampil.
+      if (document.querySelector('.modal.show')) {
+        document.body.classList.add('modal-open')
+      }
+    })
+  }
   modalInstance.show()
 
   loadingEngine.value = true
@@ -248,6 +270,16 @@ function confirmAdjust() {
     distance(cornerPoints.topLeftCorner, cornerPoints.bottomLeftCorner),
     distance(cornerPoints.topRightCorner, cornerPoints.bottomRightCorner),
   ))
+
+  // Kalau ke-4 titik sudut digeser jadi (hampir) berhimpit, resultWidth/resultHeight
+  // bisa 0 atau mendekati 0 - cv.Size(0, 0) di dalam extractPaper() akan throw
+  // exception yang seringkali bukan Error biasa (kadang cuma pointer numerik dari
+  // opencv.js), jadi ditangkap lebih awal di sini dengan pesan yang jelas.
+  const MIN_RESULT_DIMENSION_PX = 10
+  if (resultWidth < MIN_RESULT_DIMENSION_PX || resultHeight < MIN_RESULT_DIMENSION_PX) {
+    errorMsg.value = 'Area yang dipilih terlalu kecil. Geser titik sudut agar membentuk area yang lebih besar.'
+    return
+  }
 
   try {
     resultCanvas = scanner.extractPaper(rawSource, resultWidth, resultHeight, cornerPoints)
