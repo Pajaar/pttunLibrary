@@ -6,6 +6,7 @@ import { getBuku, getSection, createBuku, updateBuku, deleteBuku } from '@/servi
 import { getCategory } from '@/services/categoryService.js'
 import { getRak } from '@/services/rakService.js'
 import { uploadCoverAdmin } from '@/services/uploadAdminService.js'
+import CoverScanner from '@/components/admin/CoverScanner.vue'
 
 const books = ref([])
 const categories = ref([])
@@ -199,6 +200,14 @@ async function handleCoverFileChange(event) {
     uploadingCover.value = false
     event.target.value = ''
   }
+}
+
+const coverScannerRef = ref(null)
+function openCoverScanner() {
+  coverScannerRef.value?.open()
+}
+function handleCoverScannerUploaded(url) {
+  form.image_url = url
 }
 
 async function submitForm() {
@@ -492,7 +501,13 @@ onMounted(async () => {
                         <span class="spinner-border spinner-border-sm me-1"></span>Mengunggah cover...
                       </div>
                       <div v-if="uploadError" class="small text-danger">{{ uploadError }}</div>
-                      <!-- Hook point untuk Plan 4: tombol "Scan Cover" (CoverScanner) akan ditambahkan di sini -->
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-success mt-1"
+                        @click="openCoverScanner"
+                      >
+                        <i class="bi bi-camera me-1"></i>Scan Cover
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -511,6 +526,8 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+
+    <CoverScanner ref="coverScannerRef" @uploaded="handleCoverScannerUploaded" />
   </AdminLayout>
 </template>
 
