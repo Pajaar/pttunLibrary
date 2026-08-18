@@ -1,0 +1,27 @@
+:root {
+  --lib-green: #0a8a5f;
+  --lib-green-dark: #067a52;
+  --lib-sidebar-bg: #ffffff;
+  --lib-content-bg: #f4f6f9;
+}
+
+.text-lib-green {
+  color: var(--lib-green) !important;
+}
+
+.bg-lib-green {
+  background-color: var(--lib-green) !important;
+}
+
+.admin-shell {
+  background-color: var(--lib-content-bg);
+}
+
+.admin-shell .card {
+  border: none;
+  border-radius: 0.75rem;
+}
+
+.admin-shell .shadow-soft {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
