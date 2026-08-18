@@ -46,9 +46,9 @@ exports.buatPeminjaman = async (req, res) => {
       data: result.data,
     })
   } catch (error) {
+    console.error('Gagal mengajukan peminjaman:', error)
     res.status(500).json({
       message: 'Gagal mengajukan peminjaman',
-      error: error.message,
     })
   }
 }
@@ -61,9 +61,9 @@ exports.getSemuaPeminjaman = async (req, res) => {
       data: peminjaman,
     })
   } catch (error) {
+    console.error('Gagal mengambil data peminjaman:', error)
     res.status(500).json({
       message: 'Gagal mengambil data peminjaman',
-      error: error.message,
     })
   }
 }
@@ -89,9 +89,9 @@ exports.updateStatusPeminjaman = async (req, res) => {
       data: updated,
     })
   } catch (error) {
+    console.error('Gagal memperbarui status peminjaman:', error)
     res.status(500).json({
       message: 'Gagal memperbarui status peminjaman',
-      error: error.message,
     })
   }
 }

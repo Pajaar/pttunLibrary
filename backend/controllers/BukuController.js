@@ -21,9 +21,9 @@ exports.getSemuaBuku = async (req, res) => {
       })
     }
     catch (error) {
+      console.error('Gagal mengambil data buku terbaru:', error)
       return res.status(500).json({
         message: 'Gagal mengambil data buku terbaru',
-        error: error.message,
       })
     }
   }
@@ -36,10 +36,9 @@ exports.getSemuaBuku = async (req, res) => {
     })
   }
   catch (error) {
-
+    console.error('Gagal mengambil data buku:', error)
     res.status(500).json({
       message: 'Gagal mengambil data buku',
-      error: error.message,
     })
   }
 }
@@ -60,9 +59,9 @@ exports.getBukuById = async (req, res) => {
     })
   }
   catch (error) {
+    console.error('Gagal mengambil data buku by id:', error)
     res.status(500).json({
       message: 'Gagal mengambil data buku',
-      error: error.message,
     })
   }
 }
@@ -85,9 +84,9 @@ exports.searchBuku = async (req, res) => {
       data: buku,
     })
   } catch (error) {
+    console.error('Gagal mencari data buku:', error)
     res.status(500).json({
       message: 'Gagal mencari data buku',
-      error: error.message,
     })
   }
 }
@@ -110,9 +109,9 @@ exports.getBukuByCategory = async (req, res) => {
       data: buku,
     })
   } catch (error) {
+    console.error('Gagal mencari data buku berdasarkan kategori:', error)
     res.status(500).json({
       message: 'Gagal mencari data buku berdasarkan kategori',
-      error: error.message,
     })
   }
 }
@@ -126,9 +125,9 @@ exports.getCategory = async (req, res) => {
       data: categories,
     })
   } catch (error) {
+    console.error('Gagal mengambil data kategori:', error)
     res.status(500).json({
       message: 'Gagal mengambil data kategori',
-      error: error.message,
     })
   }
 }
@@ -143,9 +142,9 @@ exports.getBukuRekomendasi = async (req, res) => {
       data: rekomendasi,
     })
   } catch (error) {
+    console.error('Gagal mengambil data rekomendasi buku:', error)
     res.status(500).json({
       message: 'Gagal mengambil data rekomendasi buku',
-      error: error.message,
     })
   }
 }
