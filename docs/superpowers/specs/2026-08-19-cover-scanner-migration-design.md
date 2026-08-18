@@ -72,19 +72,49 @@ through this project's automated browser-verification tooling (no virtual
 camera available) — that path gets verified by hand, on a real device, same
 as the authenticated-login pass was for Plan 3.
 
-### 3. Verbatim port, one call-site change
+### 3. Verbatim port, two call-site fixes
 
 `CoverScanner.vue` and its three utils move over unchanged except:
 - Import paths adjusted (`@/components/admin/CoverScanner.vue` instead of
   dashboard's bare `@/components/CoverScanner.vue`, to match the
   `components/admin/` convention Plan 3 established for `AppSidebar.vue`/
   `AppTopbar.vue`).
-- The one substantive change: `confirmUpload()`'s call to
-  `uploadCoverImage` (dashboard's public, unauthenticated service) becomes a
-  call to `uploadCoverAdmin` (Plan 4's target — the already-existing,
-  authenticated admin service from Plan 3's `uploadAdminService.js`). Same
-  backend endpoint either way (`POST /api/admin/upload/cover`), just the
-  correctly-credentialed client function.
+- `confirmUpload()`'s call to `uploadCoverImage` (dashboard's public,
+  unauthenticated service) becomes a call to `uploadCoverAdmin` (Plan 4's
+  target — the already-existing, authenticated admin service from Plan 3's
+  `uploadAdminService.js`). Same backend endpoint either way (`POST
+  /api/admin/upload/cover`), just the correctly-credentialed client
+  function.
+- **A real bug fix, found during spec review:** `confirmAdjust()` currently
+  calls `scanner.extractPaper(rawSource, rawWidth, rawHeight, cornerPoints)`
+  — passing the *raw photo's* pixel dimensions as the output canvas size.
+  `jscanify.extractPaper(image, resultWidth, resultHeight, cornerPoints)`
+  warps whatever quadrilateral `cornerPoints` describes into a rectangle of
+  exactly `resultWidth × resultHeight` (confirmed by reading
+  `jscanify/src/jscanify.js:144-161` — `dsize = new cv.Size(resultWidth,
+  resultHeight)`), with no regard for the quadrilateral's own aspect ratio.
+  A landscape camera photo (e.g. 1920×1080) containing a portrait-oriented
+  book cover (~3:4) gets its portrait crop force-stretched into a landscape
+  canvas — visibly squashed. Fix: compute `resultWidth`/`resultHeight` from
+  the actual corner-point geometry (the standard "four-point transform"
+  technique) instead of the raw photo's dimensions:
+
+  ```js
+  function distance(a, b) {
+    return Math.hypot(a.x - b.x, a.y - b.y)
+  }
+
+  const resultWidth = Math.round(Math.max(
+    distance(cornerPoints.topLeftCorner, cornerPoints.topRightCorner),
+    distance(cornerPoints.bottomLeftCorner, cornerPoints.bottomRightCorner),
+  ))
+  const resultHeight = Math.round(Math.max(
+    distance(cornerPoints.topLeftCorner, cornerPoints.bottomLeftCorner),
+    distance(cornerPoints.topRightCorner, cornerPoints.bottomRightCorner),
+  ))
+
+  resultCanvas = scanner.extractPaper(rawSource, resultWidth, resultHeight, cornerPoints)
+  ```
 
 No other logic changes — the corner-detection algorithm, the drag-adjust
 interaction, the compression settings (`maxSizeMB: 0.5`, `maxWidthOrHeight:
@@ -145,3 +175,10 @@ through this project's existing browser-automation tooling. Live camera
 capture needs a real device with a camera, verified by hand — same pattern
 as Plan 3's authenticated-login pass, which also needed a human in the loop
 for parts the automated tooling structurally can't reach.
+
+**Specifically verify the Decision 3 aspect-ratio fix:** scan a photo where
+the book cover is portrait-oriented within a landscape (or otherwise
+mismatched-aspect-ratio) source photo — a case that visibly squashed under
+the original code — and confirm the preview/final crop preserves the
+cover's real proportions instead of stretching to the source photo's frame
+shape.
