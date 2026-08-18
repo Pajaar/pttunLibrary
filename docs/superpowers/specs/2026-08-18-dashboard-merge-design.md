@@ -163,12 +163,20 @@ Merge outcome:
 
 ### 7. Known bugs fixed during migration, not after
 
-- **Wrong column name**: dashboard's `prosesJatuhTempo` references
-  `detail_buku.total_buku`, which does not exist — the real column
-  (confirmed in `CLAUDE.md` and pttunLibrary's own model) is
-  `jumlah_eksemplar`. Moot once `prosesJatuhTempo` is dropped per Decision
-  6, but the same correct column name must be used in the ported
-  `updatePeminjaman`/`deletePeminjaman` stock-restore logic.
+- **Correction (2026-08-18, verified against the live schema):** this
+  section originally had the column-name bug backwards. The real column is
+  `detail_buku.total_buku` — dashboard_pttun's code was right.
+  pttunLibrary's own `PeminjamanModel.updateStatusPeminjaman` referenced
+  the nonexistent `jumlah_eksemplar` (also wrongly documented in
+  `CLAUDE.md`, not yet corrected there) and was actively broken in
+  production: every manual "mark as returned" that needed to restore stock
+  threw `ER_BAD_FIELD_ERROR`. Fixed directly on `main` outside this plan
+  (commit `4ac907e`), verified live via a real borrow/return cycle. That
+  same fix also capped `reconcileOverdueLoans`'s stock increment with
+  `LEAST(stok_tersedia + 1, total_buku)` — it had no upper bound at all,
+  unlike dashboard's (now-dropped) `prosesJatuhTempo`, which did cap
+  correctly. Use `total_buku` as the canonical column name in all Plan 2
+  code — not `jumlah_eksemplar`.
 - **Error leakage**: every dashboard controller (`Buku`, `Peminjaman`,
   `Upload`, `Category`, `Rak`) currently does
   `res.status(500).json({ message, error: error.message })`, leaking raw
