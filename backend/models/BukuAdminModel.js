@@ -5,7 +5,9 @@ const SELECT_BUKU = `
   SELECT b.id_buku, b.judul_buku, b.id_category, c.nama_category,
          d.id_detail, d.pengarang, d.penerbit, d.tahun_terbit, d.halaman,
          d.id_rak, r.nama_rak, d.id_section, sec.nama_section,
-         d.total_buku, d.stok_tersedia, d.status_buku, d.image_url
+         d.total_buku, d.stok_tersedia,
+         CASE WHEN d.stok_tersedia > 0 THEN 'Tersedia' ELSE 'Tidak Tersedia' END AS status_buku,
+         d.image_url
   FROM buku b
   INNER JOIN detail_buku d ON b.id_buku = d.id_buku
   LEFT JOIN category c ON b.id_category = c.id_category
@@ -23,7 +25,7 @@ exports.getDashboardStats = async () => {
     total_judul_buku: buku[0].total || 0,
     total_kategori: category[0].total || 0,
     total_rak: rak[0].total || 0,
-    total_eksemplar: stok[0].total_fisik || 0,
+    total_eksemplar: Number(stok[0].total_fisik) || 0,
   }
 }
 
@@ -154,6 +156,14 @@ exports.updateBuku = async (id_buku, data) => {
   } finally {
     connection.release()
   }
+}
+
+exports.countPeminjamanAktifByBuku = async (id_buku) => {
+  const [rows] = await pool.query(
+    "SELECT COUNT(*) AS total FROM peminjaman WHERE id_detail = ? AND status != 'dikembalikan'",
+    [id_buku],
+  )
+  return rows[0].total
 }
 
 exports.deleteBuku = async (id_buku) => {

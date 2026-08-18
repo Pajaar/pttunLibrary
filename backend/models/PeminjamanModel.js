@@ -154,14 +154,14 @@ function hitungDueDate(tanggal_pinjam, durasi_hari) {
 
 exports.updatePeminjaman = async (id_peminjaman, data) => {
   const { nama_peminjam, no_telpon, durasi_hari } = data
-  const dateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' })
 
   const connection = await db.promise().getConnection()
   try {
     await connection.beginTransaction()
 
     const [existingRows] = await connection.query(
-      'SELECT * FROM peminjaman WHERE id_peminjaman = ? FOR UPDATE',
+      `SELECT *, DATE_FORMAT(tanggal_pinjam, '%Y-%m-%d') AS tanggal_pinjam_str
+       FROM peminjaman WHERE id_peminjaman = ? FOR UPDATE`,
       [id_peminjaman],
     )
     const existing = existingRows[0]
@@ -170,36 +170,14 @@ exports.updatePeminjaman = async (id_peminjaman, data) => {
       return null
     }
 
-    const tanggal_pinjam = dateFormatter.format(new Date(existing.tanggal_pinjam))
-    const due_date = hitungDueDate(tanggal_pinjam, durasi_hari)
-    const today = dateFormatter.format(new Date())
-    const isOverdue = due_date < today
-
-    let newStatus = existing.status
-    if (existing.status === 'dipinjam' && isOverdue) {
-      newStatus = 'terlambat'
-    } else if (existing.status === 'terlambat' && !isOverdue) {
-      newStatus = 'dipinjam'
-    }
+    const due_date = hitungDueDate(existing.tanggal_pinjam_str, durasi_hari)
 
     await connection.query(
       `UPDATE peminjaman
-       SET nama_peminjam = ?, no_telpon = ?, durasi_hari = ?, due_date = ?, status = ?
+       SET nama_peminjam = ?, no_telpon = ?, durasi_hari = ?, due_date = ?
        WHERE id_peminjaman = ?`,
-      [nama_peminjam, no_telpon, durasi_hari, due_date, newStatus, id_peminjaman],
+      [nama_peminjam, no_telpon, durasi_hari, due_date, id_peminjaman],
     )
-
-    if (newStatus === 'terlambat' && existing.status === 'dipinjam') {
-      await connection.query(
-        'UPDATE detail_buku SET stok_tersedia = LEAST(stok_tersedia + 1, total_buku) WHERE id_buku = ?',
-        [existing.id_detail],
-      )
-    } else if (newStatus === 'dipinjam' && existing.status === 'terlambat') {
-      await connection.query(
-        'UPDATE detail_buku SET stok_tersedia = stok_tersedia - 1 WHERE id_buku = ? AND stok_tersedia > 0',
-        [existing.id_detail],
-      )
-    }
 
     await connection.commit()
   } catch (error) {

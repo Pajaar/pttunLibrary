@@ -12,4 +12,17 @@ const writeLimiter = rateLimit({
   },
 });
 
-module.exports = { writeLimiter };
+// Rute admin sudah di belakang requireAuth, jadi traffic-nya staf yang login, bukan
+// publik anonim — batas lebih longgar supaya entri data massal (mis. katalog buku
+// baru) tidak ke-block, tapi tetap ada guard terhadap bug/script yang lepas kendali.
+const adminWriteLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    message: 'Terlalu banyak permintaan, silakan coba lagi beberapa saat lagi',
+  },
+});
+
+module.exports = { writeLimiter, adminWriteLimiter };

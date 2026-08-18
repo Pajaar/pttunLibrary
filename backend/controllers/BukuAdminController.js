@@ -97,7 +97,11 @@ exports.updateBuku = async (req, res) => {
       return res.status(404).json({ message: 'Buku tidak ditemukan' })
     }
 
-    await BukuAdminModel.updateBuku(id, req.body)
+    await BukuAdminModel.updateBuku(id, {
+      ...req.body,
+      total_buku: req.body.total_buku ?? existing.total_buku,
+      stok_tersedia: req.body.stok_tersedia ?? existing.stok_tersedia,
+    })
     const buku = await BukuAdminModel.getBukuById(id)
     res.json({ message: 'Buku berhasil diperbarui', data: buku })
   } catch (error) {
@@ -109,6 +113,16 @@ exports.updateBuku = async (req, res) => {
 exports.deleteBuku = async (req, res) => {
   const { id } = req.params
   try {
+    const existing = await BukuAdminModel.getBukuById(id)
+    if (!existing) {
+      return res.status(404).json({ message: 'Buku tidak ditemukan' })
+    }
+
+    const totalPeminjamanAktif = await BukuAdminModel.countPeminjamanAktifByBuku(id)
+    if (totalPeminjamanAktif > 0) {
+      return res.status(409).json({ message: 'Buku masih dipinjam, tidak bisa dihapus' })
+    }
+
     const deleted = await BukuAdminModel.deleteBuku(id)
     if (!deleted) {
       return res.status(404).json({ message: 'Buku tidak ditemukan' })
