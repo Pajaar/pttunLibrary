@@ -6,31 +6,46 @@ session-only knowledge that isn't written down anywhere else yet.
 
 ## Where things stand (as of 2026-08-19)
 
-Four sequential plans, decided during brainstorming (see spec below). **Plans
-1, 2, and 3 are done.** Plans 1-2 are pushed to `origin/main`. **Plan 3 is
-committed to local `main` but NOT pushed yet** — the user pushes manually
-themselves (standing preference, see below). Plan 4 hasn't been started at
-all.
+**All four plans are done — the dashboard_pttun merge is complete.** Plans
+1-2 are pushed to `origin/main`. **Plans 3 and 4 are committed to local
+`main` but NOT pushed yet** — the user pushes manually themselves (standing
+preference, see below).
 
 | Plan | Status | Doc |
 |---|---|---|
 | 1. Auth foundation | ✅ Done, pushed | `docs/superpowers/plans/2026-08-18-auth-foundation.md` |
 | 2. Admin backend routes | ✅ Done, pushed | `docs/superpowers/plans/2026-08-18-admin-backend-routes.md` |
 | 3. Frontend wiring | ✅ Done, committed locally, not pushed | `docs/superpowers/plans/2026-08-18-frontend-admin-wiring.md` |
-| 4. Cover scanner migration | ⬜ Not started | Not written yet |
+| 4. Cover scanner migration | ✅ Done, committed locally, not pushed | `docs/superpowers/plans/2026-08-19-cover-scanner-migration.md` |
 
-**Immediate next step:** Plan 4 (cover scanner migration) hasn't been
-brainstormed yet — start there in a fresh session. The manual authenticated
-verification pass that was deferred during Plan 3 itself has since been
-done (see "Plan 3 — verification status" below) — everything checked out
-except the two items that genuinely couldn't be tested (no active loan to
-click "Tandai Dikembalikan" on, no Cloudinary credentials configured).
+**Immediate next step:** push everything (see "Suggested next step" below).
+There is no Plan 5 — this was the last one. What's left is standing
+maintenance: the deferred `CLAUDE.md` staleness fix, and manually verifying
+the handful of things across Plans 3-4 that structurally couldn't be
+exercised through this session's tooling (see each plan's verification
+notes below).
 
 **Plan 3 outcome:** all 9 tasks built via `superpowers:subagent-driven-development`
 (fresh implementer subagent per task, independent task review after each,
 one final whole-branch review) — same flow as Plans 1-2, and the user's
 stated preference. Final review found zero Critical/Important issues; 5
-Minor findings were parked (see below), none blocking.
+Minor findings were parked (see below), none blocking. Live authenticated
+verification was manually completed in a follow-up session (see "Plan 3 —
+verification status" below).
+
+**Plan 4 outcome:** all 4 tasks built the same way. Final whole-branch
+review (dispatched clean on the first try this time, no infra retries
+needed) found **1 Important finding** — dismissing the scan modal via ESC or
+a backdrop click bypassed its cleanup path, leaking the camera stream and
+corrupting reopen state — fixed in one fix wave (commit `cc61453`) alongside
+a related guard against a new degenerate-corner failure mode the aspect-ratio
+fix itself could trigger. Scoped re-review confirmed both addressed, zero new
+breakage. 4 Minor findings parked (see "Plan 4 — verification status"
+below), all either inherited from the ported dashboard_pttun source or
+genuinely out of scope for this plan. Live scan verification (open modal,
+scan a photo, confirm crop/aspect-ratio, confirm upload) was **not** done
+this session — the user declined, same as Plan 3's first pass — and needs a
+manual check, same as camera capture always did.
 
 **Source of truth for the overall design:** `docs/superpowers/specs/2026-08-18-dashboard-merge-design.md` — read this before writing Plan 3. It has a **correction note in Decision 7** (added mid-session): the real `detail_buku` column for total copies is `total_buku`, not `jumlah_eksemplar` — use `total_buku` in all new code.
 
@@ -43,7 +58,8 @@ Minor findings were parked (see below), none blocking.
 - Final review of Plan 2 caught a **Critical** bug before merge: `updatePeminjaman` was double-crediting stock for loans that were edited while overdue but never actually returned — fixed in commit `582b400` (also fixed 4 Important issues: multer error leak, `updateBuku` crash on partial payload, `deleteBuku` missing a dependency guard, and admin routes sharing the public form's rate-limit budget).
 - `backend/.env.example` now documents `SESSION_SECRET` and `FRONTEND_URL` (it existed in git but was missing from disk before this session — recreated).
 - An admin account already exists in the real database (created via `seedAdmin.js` this session) — credentials are known only to the user, not stored anywhere in chat/files.
-- **Plan 3 (frontend):** real session-based login (`stores/auth.js` + `router.beforeEach` guard on every `/admin/*` path), a logout button (new — dashboard_pttun's original had none), and full CRUD UI for buku/category/rak/peminjaman at `/admin/dashboard`, `/admin/categories`, `/admin/books`, `/admin/shelves`, `/admin/loans/monitoring`. A new admin service layer (`adminApi.js`, `bookAdminService.js`, `categoryService.js`, `rakService.js`, `loanAdminService.js`, `uploadAdminService.js`) targets `/api/admin/*`, kept separate from the existing public services. A "Tandai Dikembalikan" button (new, not in dashboard_pttun's original) calls the existing `PATCH /:id/status` endpoint. `CoverScanner` was deliberately not ported — `BooksView.vue` has a plain file-upload cover field instead, with a code comment marking Plan 4's hook point.
+- **Plan 3 (frontend):** real session-based login (`stores/auth.js` + `router.beforeEach` guard on every `/admin/*` path), a logout button (new — dashboard_pttun's original had none), and full CRUD UI for buku/category/rak/peminjaman at `/admin/dashboard`, `/admin/categories`, `/admin/books`, `/admin/shelves`, `/admin/loans/monitoring`. A new admin service layer (`adminApi.js`, `bookAdminService.js`, `categoryService.js`, `rakService.js`, `loanAdminService.js`, `uploadAdminService.js`) targets `/api/admin/*`, kept separate from the existing public services. A "Tandai Dikembalikan" button (new, not in dashboard_pttun's original) calls the existing `PATCH /:id/status` endpoint. `CoverScanner` was deliberately not ported at that point — `BooksView.vue` had a plain file-upload cover field instead, with a code comment marking Plan 4's hook point.
+- **Plan 4 (cover scanner):** `CoverScanner.vue` (camera + file capture → OpenCV corner detection → drag-adjust crop → compress → upload) ported into `frontend/src/components/admin/CoverScanner.vue`, wired into `BooksView.vue` alongside (not replacing) the plain upload from Plan 3. Two real fixes landed during the port: uploads now go through the authenticated `uploadCoverAdmin` instead of dashboard_pttun's public `uploadService`, and a genuine squashed-crop bug got fixed — the original passed the raw photo's pixel dimensions to `jscanify.extractPaper()` as the output size instead of dimensions derived from the actual corner-point quadrilateral (confirmed against `jscanify`'s own source), producing visibly distorted crops whenever the book cover's aspect ratio didn't match the source photo's frame shape. A third fix landed in the final-review fix wave: dismissing the scan modal via ESC/backdrop now properly stops the camera and cleans up drag listeners (previously only the X button did).
 
 ## Plan 3 — verification status
 
@@ -95,6 +111,50 @@ environment quirks unrelated to this plan:
    `backend/.env` is also missing `CLOUDINARY_*` credentials, which will
    block cover-upload testing whenever someone gets to it.
 
+## Plan 4 — verification status
+
+Final whole-branch review passed with 1 Important finding (fixed, see
+above) and no Critical findings. **Live scan verification was declined by
+the user this session** (dev server confirmed to compile cleanly with the
+new dependencies and component; the wiring diff was confirmed purely
+additive with no regression to Plan 3's plain-upload path — that's the
+extent of what got exercised). Not yet verified, needs a manual pass:
+
+- The scan flow itself: open modal → pick/capture a photo → corner
+  auto-detection or the default margin-box fallback → drag-adjust →
+  crop preview → upload. Especially worth checking the aspect-ratio fix
+  specifically: scan a photo where the book cover region has a visibly
+  different aspect ratio than the source photo's frame (e.g. a portrait
+  cover within a landscape photo) and confirm the crop preserves the
+  cover's real proportions instead of stretching.
+- Cover upload will very likely fail with a 500 until `backend/.env` gets
+  real `CLOUDINARY_*` credentials — same pre-existing gap noted under Plan
+  3, still unresolved.
+- Live camera capture (`getUserMedia`) — structurally can't be exercised
+  through this project's browser-automation tooling (no virtual camera),
+  same limitation noted throughout this plan's own spec/plan docs. Needs a
+  real device.
+- The ESC/backdrop modal-dismissal fix (commit `cc61453`) — verified by
+  code reading and a scoped re-review, not by actually opening the modal
+  and pressing ESC on a real camera stream. Worth confirming by hand
+  whenever the camera path gets its first real test.
+
+4 Minor findings were parked during the final review, none blocking:
+1. `CoverScanner.vue`: `let detected = null` triggers an ESLint
+   `no-useless-assignment` warning — the repo already had 5 pre-existing
+   lint errors before this plan touched anything; this is a verbatim-port
+   line, left as-is per the plan's explicit "port unchanged outside the two
+   sanctioned fixes" constraint.
+2. `documentDetector.js`: a WASM `Mat` handle leak on every scan (accepted
+   contour candidates never call `.delete()`) — inherited from the
+   dashboard_pttun original, explicitly out of scope for this plan.
+3. `CoverScanner.vue`: the corner-adjust drag handles don't reposition if
+   the browser window is resized mid-adjustment (non-reactive DOM
+   measurement) — minor UX polish, not a correctness bug.
+4. `CoverScanner.vue`: `handleFileSelected` has no `img.onerror` — picking
+   a corrupt or unsupported image file fails silently with no user-facing
+   message.
+
 ## Environment gotchas discovered this session (not fully captured elsewhere)
 
 These will very likely recur in Plan 3/4 sessions:
@@ -125,7 +185,24 @@ These will very likely recur in Plan 3/4 sessions:
 
 ## Suggested next step
 
-1. **User:** push Plan 3's commits (`5a30935..b34ec43`) to `origin/main` whenever ready — not done automatically, per standing preference. Manual verification is done; nothing is blocking this.
-2. **Next session:** brainstorm Plan 4 (cover scanner migration — port `CoverScanner.vue` and its `opencv`/`jscanify`/`browser-image-compression` dependencies into `BooksView.vue`'s cover field, at the hook point already marked with a comment). Follow the same brainstorming → writing-plans → subagent-driven-development flow used for Plans 1-3.
-3. Also still pending, deferred across all three plans so far: `CLAUDE.md`'s stale schema documentation (see "Book count / CLAUDE.md staleness" below) — worth doing standalone or as part of Plan 4 wrap-up.
-4. Whenever real Cloudinary credentials get added to `backend/.env`, and/or a real active loan exists, revisit the two still-unverified checks noted in "Plan 3 — verification status" above.
+**The dashboard_pttun merge itself is done — there is no Plan 5.** What's
+left is wrap-up, not new plan work:
+
+1. **User:** push everything to `origin/main` whenever ready — Plan 3's
+   commits (`5a30935..b34ec43`) plus Plan 4's (`e6c6cf7..cc61453`, and this
+   doc-update commit) are all sitting on local `main`, not done
+   automatically per standing preference.
+2. **User:** whenever convenient, do the manual verification passes still
+   outstanding — Plan 3's two (a real active loan to click "Tandai
+   Dikembalikan" on; Cloudinary credentials for cover upload) and Plan 4's
+   four (the scan flow end-to-end, especially the aspect-ratio fix; camera
+   capture on a real device; the modal-dismissal fix under real camera use)
+   — see each plan's verification-status section above for exact steps.
+3. Still pending, deferred across every plan so far and never picked up:
+   `CLAUDE.md`'s stale schema documentation (see "Book count / CLAUDE.md
+   staleness" below) — nothing else is blocking this, worth doing whenever.
+4. `.claude/launch.json`'s `"pttunlibrary"` config's stray-backend-port
+   quirk (noted under Plan 3) is still unaddressed — harmless as long as
+   `preview_start` keeps being called with the `"backend"` and
+   `"pttunlibrary"` configs separately, but worth a fix if it ever trips
+   someone up.
