@@ -18,6 +18,11 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+
+// Diperlukan di belakang reverse proxy TLS-terminating (Railway) agar
+// express-session mengenali koneksi sebagai HTTPS dan cookie `secure` bisa terpasang.
+app.set('trust proxy', 1);
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,

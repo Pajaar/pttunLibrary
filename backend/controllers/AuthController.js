@@ -22,11 +22,16 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: 'Username atau password salah' })
     }
 
-    req.session.userId = pengguna.id_pengguna
-
-    res.json({
-      message: 'Login berhasil',
-      data: { username: pengguna.username },
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error('Gagal membuat sesi:', err)
+        return res.status(500).json({ message: 'Gagal memproses login' })
+      }
+      req.session.userId = pengguna.id_pengguna
+      res.json({
+        message: 'Login berhasil',
+        data: { username: pengguna.username },
+      })
     })
   } catch (error) {
     console.error('Gagal memproses login:', error)
