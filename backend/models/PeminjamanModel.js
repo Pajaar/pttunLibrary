@@ -144,3 +144,112 @@ exports.updateStatusPeminjaman = async (id_peminjaman, status) => {
     connection.release()
   }
 }
+
+function hitungDueDate(tanggal_pinjam, durasi_hari) {
+  const dateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' })
+  const dueDateObj = new Date(`${tanggal_pinjam}T00:00:00Z`)
+  dueDateObj.setUTCDate(dueDateObj.getUTCDate() + durasi_hari)
+  return dateFormatter.format(dueDateObj)
+}
+
+exports.updatePeminjaman = async (id_peminjaman, data) => {
+  const { nama_peminjam, no_telpon, durasi_hari } = data
+  const dateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' })
+
+  const connection = await db.promise().getConnection()
+  try {
+    await connection.beginTransaction()
+
+    const [existingRows] = await connection.query(
+      'SELECT * FROM peminjaman WHERE id_peminjaman = ? FOR UPDATE',
+      [id_peminjaman],
+    )
+    const existing = existingRows[0]
+    if (!existing) {
+      await connection.rollback()
+      return null
+    }
+
+    const tanggal_pinjam = dateFormatter.format(new Date(existing.tanggal_pinjam))
+    const due_date = hitungDueDate(tanggal_pinjam, durasi_hari)
+    const today = dateFormatter.format(new Date())
+    const isOverdue = due_date < today
+
+    let newStatus = existing.status
+    if (existing.status === 'dipinjam' && isOverdue) {
+      newStatus = 'terlambat'
+    } else if (existing.status === 'terlambat' && !isOverdue) {
+      newStatus = 'dipinjam'
+    }
+
+    await connection.query(
+      `UPDATE peminjaman
+       SET nama_peminjam = ?, no_telpon = ?, durasi_hari = ?, due_date = ?, status = ?
+       WHERE id_peminjaman = ?`,
+      [nama_peminjam, no_telpon, durasi_hari, due_date, newStatus, id_peminjaman],
+    )
+
+    if (newStatus === 'terlambat' && existing.status === 'dipinjam') {
+      await connection.query(
+        'UPDATE detail_buku SET stok_tersedia = LEAST(stok_tersedia + 1, total_buku) WHERE id_buku = ?',
+        [existing.id_detail],
+      )
+    } else if (newStatus === 'dipinjam' && existing.status === 'terlambat') {
+      await connection.query(
+        'UPDATE detail_buku SET stok_tersedia = stok_tersedia - 1 WHERE id_buku = ? AND stok_tersedia > 0',
+        [existing.id_detail],
+      )
+    }
+
+    await connection.commit()
+  } catch (error) {
+    await connection.rollback()
+    throw error
+  } finally {
+    connection.release()
+  }
+
+  const [rows] = await db.promise().query(
+    `SELECT p.*, b.judul_buku
+     FROM peminjaman p
+     JOIN detail_buku d ON d.id_buku = p.id_detail
+     JOIN buku b ON b.id_buku = d.id_buku
+     WHERE p.id_peminjaman = ?`,
+    [id_peminjaman],
+  )
+  return rows[0]
+}
+
+exports.deletePeminjaman = async (id_peminjaman) => {
+  const connection = await db.promise().getConnection()
+  try {
+    await connection.beginTransaction()
+
+    const [existingRows] = await connection.query(
+      'SELECT * FROM peminjaman WHERE id_peminjaman = ? FOR UPDATE',
+      [id_peminjaman],
+    )
+    const existing = existingRows[0]
+    if (!existing) {
+      await connection.rollback()
+      return false
+    }
+
+    await connection.query('DELETE FROM peminjaman WHERE id_peminjaman = ?', [id_peminjaman])
+
+    if (existing.status === 'dipinjam') {
+      await connection.query(
+        'UPDATE detail_buku SET stok_tersedia = stok_tersedia + 1 WHERE id_buku = ? AND stok_tersedia < total_buku',
+        [existing.id_detail],
+      )
+    }
+
+    await connection.commit()
+    return true
+  } catch (error) {
+    await connection.rollback()
+    throw error
+  } finally {
+    connection.release()
+  }
+}

@@ -95,3 +95,49 @@ exports.updateStatusPeminjaman = async (req, res) => {
     })
   }
 }
+
+exports.updatePeminjaman = async (req, res) => {
+  const { id } = req.params
+  const { nama_peminjam, no_telpon, durasi_hari } = req.body
+
+  if (typeof nama_peminjam !== 'string' || !nama_peminjam.trim()) {
+    return res.status(400).json({ message: 'Nama peminjam wajib diisi' })
+  }
+  if (typeof no_telpon !== 'string' || !no_telpon.trim()) {
+    return res.status(400).json({ message: 'Nomor telepon wajib diisi' })
+  }
+
+  const parsedDurasi = Number.parseInt(durasi_hari, 10)
+  if (!Number.isInteger(parsedDurasi) || parsedDurasi < 1 || parsedDurasi > 7) {
+    return res.status(400).json({ message: 'Durasi pinjam harus berupa angka antara 1 dan 7 hari' })
+  }
+
+  try {
+    const updated = await PeminjamanModel.updatePeminjaman(id, {
+      nama_peminjam: nama_peminjam.trim(),
+      no_telpon: no_telpon.trim(),
+      durasi_hari: parsedDurasi,
+    })
+    if (!updated) {
+      return res.status(404).json({ message: 'Data peminjaman tidak ditemukan' })
+    }
+    res.json({ message: 'Data peminjaman berhasil diperbarui', data: updated })
+  } catch (error) {
+    console.error('Gagal memperbarui data peminjaman:', error)
+    res.status(500).json({ message: 'Gagal memperbarui data peminjaman' })
+  }
+}
+
+exports.deletePeminjaman = async (req, res) => {
+  const { id } = req.params
+  try {
+    const deleted = await PeminjamanModel.deletePeminjaman(id)
+    if (!deleted) {
+      return res.status(404).json({ message: 'Data peminjaman tidak ditemukan' })
+    }
+    res.json({ message: 'Data peminjaman berhasil dihapus' })
+  } catch (error) {
+    console.error('Gagal menghapus data peminjaman:', error)
+    res.status(500).json({ message: 'Gagal menghapus data peminjaman' })
+  }
+}
