@@ -7,16 +7,30 @@ session-only knowledge that isn't written down anywhere else yet.
 ## Where things stand (as of 2026-08-18)
 
 Four sequential plans, decided during brainstorming (see spec below). **Plans 1
-and 2 are done and pushed to `origin/main`.** Plans 3 and 4 haven't been
-started — no dashboard_pttun frontend code has been copied into pttunLibrary
-yet.
+and 2 are done and pushed to `origin/main`.** Plan 3's design spec is written,
+committed, and user-approved — **the implementation plan itself still needs to
+be written** (next step, in a fresh session, see below). No dashboard_pttun
+frontend code has been copied into pttunLibrary yet. Plan 4 hasn't been
+started at all.
 
 | Plan | Status | Doc |
 |---|---|---|
 | 1. Auth foundation | ✅ Done, pushed | `docs/superpowers/plans/2026-08-18-auth-foundation.md` |
 | 2. Admin backend routes | ✅ Done, pushed | `docs/superpowers/plans/2026-08-18-admin-backend-routes.md` |
-| 3. Frontend wiring | ⬜ Not started | Not written yet |
+| 3. Frontend wiring | 🟡 Spec approved, plan not written yet | `docs/superpowers/specs/2026-08-18-frontend-admin-wiring-design.md` |
 | 4. Cover scanner migration | ⬜ Not started | Not written yet |
+
+**Immediate next step:** invoke `superpowers:writing-plans` against the Plan 3
+spec above (already brainstormed and approved — do not re-brainstorm) to
+produce `docs/superpowers/plans/2026-08-18-frontend-admin-wiring.md`, then
+execute it with `superpowers:subagent-driven-development` (the user's stated
+preference for Plans 1-2). Key survey findings baked into that spec, worth
+re-reading before writing code: dashboard_pttun's admin pages are modal-based
+CRUD (list + one Bootstrap Modal per resource, not separate create/edit
+routes), its `LoginView.vue` was never functional (build real login logic
+fresh), and the sidebar nav is a hardcoded JS array, not router-meta-driven.
+This plan will likely be the largest yet (5+ full Vue components) — consider
+whether it needs decomposing further once the file-by-file scope is clear.
 
 **Source of truth for the overall design:** `docs/superpowers/specs/2026-08-18-dashboard-merge-design.md` — read this before writing Plan 3. It has a **correction note in Decision 7** (added mid-session): the real `detail_buku` column for total copies is `total_buku`, not `jumlah_eksemplar` — use `total_buku` in all new code.
 
