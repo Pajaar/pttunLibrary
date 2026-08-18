@@ -64,7 +64,7 @@ exports.reconcileOverdueLoans = async () => {
     `UPDATE peminjaman p
      JOIN detail_buku d ON d.id_buku = p.id_detail
      SET p.status = 'dikembalikan',
-         d.stok_tersedia = d.stok_tersedia + 1
+         d.stok_tersedia = LEAST(d.stok_tersedia + 1, d.total_buku)
      WHERE p.status != 'dikembalikan'
        AND p.due_date < ?`,
     [today],
@@ -116,7 +116,7 @@ exports.updateStatusPeminjaman = async (id_peminjaman, status) => {
 
     if (status === 'dikembalikan' && existing.status !== 'dikembalikan') {
       await connection.query(
-        'UPDATE detail_buku SET stok_tersedia = stok_tersedia + 1 WHERE id_buku = ? AND stok_tersedia < jumlah_eksemplar',
+        'UPDATE detail_buku SET stok_tersedia = stok_tersedia + 1 WHERE id_buku = ? AND stok_tersedia < total_buku',
         [existing.id_detail],
       )
     } else if (status !== 'dikembalikan' && existing.status === 'dikembalikan') {
