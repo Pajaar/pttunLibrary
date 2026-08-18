@@ -54,6 +54,23 @@ exports.buatPeminjaman = async ({ id_detail, nama_peminjam, no_telpon, durasi_ha
   }
 }
 
+// Auto-return: peminjaman yang sudah lewat due_date otomatis ditandai
+// dikembalikan dan stoknya dikembalikan, tanpa perlu aksi manual staf.
+exports.reconcileOverdueLoans = async () => {
+  const dateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' })
+  const today = dateFormatter.format(new Date())
+
+  await db.promise().query(
+    `UPDATE peminjaman p
+     JOIN detail_buku d ON d.id_buku = p.id_detail
+     SET p.status = 'dikembalikan',
+         d.stok_tersedia = d.stok_tersedia + 1
+     WHERE p.status != 'dikembalikan'
+       AND p.due_date < ?`,
+    [today],
+  )
+}
+
 exports.getSemuaPeminjaman = async () => {
   const [rows] = await db.promise().query(
     `SELECT p.id_peminjaman, p.id_detail, p.nama_peminjam, p.no_telpon,
@@ -99,7 +116,7 @@ exports.updateStatusPeminjaman = async (id_peminjaman, status) => {
 
     if (status === 'dikembalikan' && existing.status !== 'dikembalikan') {
       await connection.query(
-        'UPDATE detail_buku SET stok_tersedia = stok_tersedia + 1 WHERE id_buku = ?',
+        'UPDATE detail_buku SET stok_tersedia = stok_tersedia + 1 WHERE id_buku = ? AND stok_tersedia < jumlah_eksemplar',
         [existing.id_detail],
       )
     } else if (status !== 'dikembalikan' && existing.status === 'dikembalikan') {
