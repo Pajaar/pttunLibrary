@@ -268,6 +268,7 @@ h3,
   font-weight: 500;
   font-size: .95rem;
   margin: 0 4px;
+
 }
 
 .navbar-main .nav-link:hover {
@@ -278,48 +279,10 @@ h3,
   color: var(--gold-light) !important;
 }
 
-.a11y-toggle-btn {
-  background-color: #ffffff;
-  border: none;
-  border-radius: 30px;
-  padding: 5px 15px 5px 5px;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
-}
-
-.toggle-knob {
-  width: 42px;
-  height: 42px;
-  background-color: #0c2454;
-  border-radius: 50%;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease;
-}
-
-.toggle-content {
-  color: #735505;
-}
-
-.toggle-content i {
-  font-size: 1.6rem;
-  line-height: 1;
-}
-
-.toggle-text {
-  font-size: 0.60rem;
-  font-weight: 600;
-  line-height: 1.1;
-  margin-top: 2px;
-}
-
 /* ===== Hero ===== */
 .hero {
   background: linear-gradient(rgba(10, 29, 55, 0.85), rgba(10, 29, 55, 0.85)),
-    url('../images/gedung.jpg') no-repeat center 35%;
+    url('../images/gedung.jpeg') no-repeat center 35%;
   background-size: cover;
   min-height: 600px;
   display: flex;
@@ -483,11 +446,12 @@ h3,
 /* ===== Book cards ===== */
 
 .btn-outline-gold {
-  border: 1px solid var(--gold);
+  border: 1.5px solid var(--gold);
   color: var(--gold);
   font-weight: 600;
   padding: 8px 22px;
-  border-radius: 6px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
 .btn-outline-gold:hover {
@@ -496,96 +460,143 @@ h3,
   text-decoration: none;
 }
 
+/* Card Container */
 .book-card {
-  background: #fff;
-  border-radius: 14px;
+  background: #ffffff;
+  border-radius: 16px;
   overflow: hidden;
   border: 1px solid #e8e8e8;
-  height: 280px;
-  padding: 20px;
+  padding: 16px;
   display: flex;
-  align-items: flex-start;
-  transition: transform .25s ease, box-shadow .25s ease;
+  flex-direction: row; /* Default layout berdampingan */
+  gap: 16px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 .book-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, .06);
+  box-shadow: 0 12px 28px rgba(12, 36, 84, 0.08);
 }
 
-.book-cover {
-  width: 160px;
-  min-width: 160px;
-  height: 100%;
-  position: relative;
-  border-radius: 6px;
+/* Book Cover */
+.book-cover-wrapper {
+  width: 120px;
+  min-width: 120px;
+  height: 170px;
+  flex-shrink: 0;
+  border-radius: 10px;
   overflow: hidden;
+  background-color: #f8fafc;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .book-cover-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
+  transition: transform 0.3s ease;
 }
 
+.book-card:hover .book-cover-img {
+  transform: scale(1.05);
+}
+
+/* Book Body */
 .book-body {
-  padding: 4px 0 0 24px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-}
-
-.book-body h5 {
-  margin-top: 0;
-  margin-bottom: 10px;
-}
-
-.book-body h5 a {
-  font-family: 'Playfair Display', 'Times New Roman', serif;
-  font-weight: 600;
-  color: #000000;
-  font-size: 1.3rem;
-  line-height: 1.25;
-  text-decoration: none !important;
-  display: block;
-}
-
-.book-body .author {
-  color: #595959;
-  font-size: .9rem;
-  font-weight: 400;
-}
-
-.book-body .badge-wrapper {
-  margin-bottom: 10px;
+  justify-content: space-between;
+  min-width: 0; /* Mencegah flexbox jebol karena teks panjang */
 }
 
 .badge-tag {
   display: inline-block;
-  padding: 6px 18px;
+  padding: 4px 12px;
   border-radius: 20px;
-  font-size: .75rem;
-  font-weight: 500;
-  margin-top: 15px;
+  font-size: 0.72rem;
+  font-weight: 600;
   background: var(--navy);
   color: var(--gold-light);
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.book-title a {
+  font-family: 'Playfair Display', 'Times New Roman', serif;
+  font-weight: 700;
+  color: var(--navy-deep);
+  font-size: 1.05rem;
+  line-height: 1.35;
+  text-decoration: none !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.book-title a:hover {
+  color: var(--gold);
+}
+
+.book-body .author {
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.border-top-custom {
+  border-top: 1px dashed #e2e8f0;
 }
 
 .book-body .year {
-  font-size: .78rem;
-  color: #595959;
+  font-size: 0.78rem;
+  color: #64748b;
   font-weight: 500;
 }
 
 .book-body .year i {
-  color: #595959;
-  font-size: .88rem;
+  color: var(--gold);
+  font-size: 0.85rem;
 }
 
-.error-message {
-  color: #a33a1f;
-  font-weight: 600;
+/* ==========================================
+   RESPONSIVE MOBILE BREAKPOINT (<= 576px)
+   ========================================== */
+@media (max-width: 576px) {
+  .book-card {
+    flex-direction: column; /* Ubah ke susunan vertikal pada mobile */
+    align-items: center;
+    text-align: center;
+    padding: 20px 16px;
+  }
+
+  .book-cover-wrapper {
+    width: 140px;
+    height: 195px;
+    min-width: unset;
+    margin-bottom: 8px;
+  }
+
+  .book-body {
+    width: 100%;
+    align-items: center;
+  }
+
+  .book-title a {
+    font-size: 1.1rem;
+  }
+
+  .book-body .year {
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 
@@ -594,7 +605,7 @@ h3,
   height: 682px;
   width: 708px;
   object-fit: cover;
-  object-position: 15% 80%;
+  object-position: 40% 80%;
   color: white;
   text-align: center;
   border-radius: 28px;
@@ -806,6 +817,95 @@ footer .table-jam td {
   color: rgba(255, 255, 255, 0.7);
 }
 
+@media (max-width: 991px) {
+  .topbar-fluid {
+    padding: 10px 0;
+    border-bottom-width: 4px;
+  }
+
+  .seal-container {
+    width: 90px;
+  }
+
+  .main-seal-img {
+    width: 70px;
+  }
+
+  .topbar-title {
+    font-size: 0.85rem;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+  }
+
+  .contact-text {
+    font-size: 0.72rem;
+  }
+
+  .gold-curve-svg {
+    width: 60px;
+    height: 50px;
+  }
+}
+
+/* HP / Layar Kecil (<= 576px) */
+@media (max-width: 576px) {
+  .topbar-fluid {
+    padding: 8px 0;
+    border-bottom-width: 3px;
+  }
+
+  .topbar-fluid .container {
+    gap: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  /* Logo Kiri & Kanan Mengecil Namun Tetap Presisi */
+  .seal-container {
+    width: 50px;
+  }
+
+  .main-seal-img {
+    width: 42px;
+  }
+
+  /* Teks Judul Mengecil Proporsional */
+  .topbar-title {
+    font-size: 0.55rem;
+    letter-spacing: 0px;
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+
+  /* Menyederhanakan / Mengecilkan Kontak */
+  .contact-info {
+    gap: 2px !important;
+  }
+
+  .contact-item {
+    gap: 2px !important;
+  }
+
+  .contact-item i {
+    font-size: 0.55rem;
+  }
+
+  .contact-text {
+    font-size: 0.55rem;
+    line-height: 1.1;
+  }
+
+  .contact-sub-row {
+    gap: 6px !important;
+    margin-top: 2px !important;
+  }
+
+  /* Dekorasi SVG disembunyikan di HP agar tidak menutupi logo kanan */
+  .gold-curve-svg {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   .col-md-8 {
     gap: 15px !important;
@@ -827,5 +927,183 @@ footer .table-jam td {
 
   .topbar .contact-row {
     font-size: .75rem;
+  }
+}
+
+@media (max-width: 991px) {
+  /* Header Topbar */
+  .topbar-fluid {
+    padding: 10px 0;
+  }
+  .seal-container {
+    width: 90px;
+  }
+  .main-seal-img {
+    width: 65px;
+  }
+  .topbar-title {
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+  }
+
+  /* Navbar override margin */
+  .navbar-collapse {
+    margin-right: 0 !important;
+    padding-top: 15px;
+  }
+
+  /* Hero */
+  .hero {
+    min-height: 400px;
+    padding: 40px 0;
+    text-align: center;
+  }
+  .hero .row-hero {
+    justify-content: center;
+  }
+  .hero h1 {
+    font-size: 1.8rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-rule {
+    margin: 15px auto;
+  }
+  .hero p.lead {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero .btn-gold {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* About Section */
+  .image img {
+    max-height: 350px;
+    margin-bottom: 25px;
+  }
+  .content-library h1,
+  .content-library p,
+  .about-library {
+    margin-left: 0;
+  }
+  .content-library h1 {
+    font-size: 1.6rem;
+  }
+}
+
+/* --- Mobile Screens (<= 576px) --- */
+@media (max-width: 576px) {
+  /* Topbar Header */
+  .topbar-fluid {
+    padding: 8px 0;
+    border-bottom-width: 3px;
+    color: #333333;
+  }
+  .topbar-fluid .container {
+    gap: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .seal-container {
+    width: 48px;
+  }
+  .main-seal-img {
+    width: 40px;
+  }
+  .topbar-title {
+    font-size: 0.52rem;
+    letter-spacing: 0;
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+  .contact-info {
+    gap: 2px !important;
+  }
+  .contact-item {
+    gap: 2px !important;
+  }
+  .contact-item i {
+    font-size: 0.55rem;
+  }
+  .contact-text {
+    font-size: 0.52rem;
+  }
+  .contact-sub-row {
+    gap: 6px !important;
+    margin-top: 2px !important;
+  }
+  .gold-curve-svg {
+    display: none;
+  }
+
+  /* Hero */
+  .hero h1 {
+    font-size: 1.35rem;
+  }
+  .hero h2 {
+    font-size: 0.85rem;
+  }
+  .hero p.lead {
+    font-size: 0.9rem;
+  }
+  .btn-gold {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+  }
+
+  /* Book Cards Mobile Stack */
+  .book-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .book-cover {
+    width: 110px;
+    height: 150px;
+    min-width: unset;
+  }
+  .book-body {
+    align-items: center;
+  }
+  .book-body h5 a {
+    font-size: 1rem;
+  }
+
+  .content-library .mt-4.ps-4 {
+    padding-left: 0 !important;
+  }
+
+  /* Footer */
+  .footer-bottom .col-md-8 {
+    gap: 10px !important;
+  }
+  .copyright-text, .info-dev-text {
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  footer {
+    padding: 40px 0 20px !important;
+  }
+  
+  .footer-bottom {
+    margin-top: 25px !important;
+    padding-top: 20px !important;
+  }
+
+  .footer-bottom .copyright-text {
+    text-align: center !important;
+  }
+
+  .footer-bottom .info-dev-text {
+    text-align: center !important;
+  }
+
+  footer .table-jam td {
+    padding-top: 2px;
+    padding-bottom: 2px;
   }
 }

@@ -9,13 +9,14 @@
         <h1>DIREKTORAT JENDERAL<br>
           BADAN PERADILAN MILITER<br>
           DAN PERADILAN TATA USAHA NEGARA PENGADILAN TINGGI TATA USAHA NEGARA</h1>
-          <div class="hero-rule"></div>
-        <p class="lead">Melayani masyarakat melalui layanan perpustakaan digital yang cepat, <br>mudah, dan transparan.</p>
+        <div class="hero-rule"></div>
+        <p class="lead">Melayani masyarakat melalui layanan perpustakaan digital yang cepat,
+          <br>mudah, dan transparan.</p>
         <button class="btn btn-gold btn-hero">Cari Buku<i class="bi bi-chevron-right"></i></button>
       </div>
     </section>
 
-    <section class="section">
+    <section id="layanan" class="section">
       <div class="container">
         <div class="text-center mb-5">
           <div class="eyebrow">Nikmati</div>
@@ -41,28 +42,50 @@
             <div class="eyebrow">Koleksi</div>
             <h2 class="section-title mb-0">Buku Terbaru</h2>
           </div>
-          <a href="/katalog" class="btn btn-outline-gold">Lihat Semua Buku <i
-              class="bi bi-chevron-right ms-1"></i></a>
+          <a href="/katalog" class="btn btn-outline-gold">
+            Lihat Semua Buku <i class="bi bi-chevron-right ms-1"></i>
+          </a>
         </div>
-        <p v-if="sedangMemuatBuku">Memuat buku terbaru...</p>
-        <p v-else-if="pesanErrorBuku" class="error-message">{{ pesanErrorBuku }}</p>
-        <p v-else-if="books.length === 0">Belum ada buku terbaru.</p>
-        <div v-else class="row g-4">
-          <div class="col-12 col-xl-4" v-for="b in books" :key="b.id_buku">
-            <div class="book-card d-flex">
-              <div class="book-cover">
-                <img :src="b.image_url || defaultCover" alt="Cover buku" class="book-cover-img">
+
+        <div v-if="sedangMemuatBuku" class="text-center py-4">
+          <div class="spinner-border text-gold" role="status"></div>
+          <p class="mt-2 text-muted">Memuat buku terbaru...</p>
+        </div>
+
+        <div v-else-if="pesanErrorBuku" class="alert alert-danger text-center">
+          {{ pesanErrorBuku }}
+        </div>
+
+        <div v-else-if="books.length === 0" class="text-center text-muted py-4">
+          Belum ada buku terbaru.
+        </div>
+
+        <!-- GRID BUKU RESPONSISF -->
+        <div v-else class="row g-3 g-md-4">
+          <div class="col-12 col-md-6 col-lg-4" v-for="b in books" :key="b.id_buku">
+            <div class="book-card h-100">
+              <div class="book-cover-wrapper">
+                <img :src="b.image_url || defaultCover" :alt="b.judul_buku" class="book-cover-img">
               </div>
+
               <div class="book-body">
-                <h5><a href="#">{{ b.judul_buku }}</a></h5>
-                <div class="author">{{ b.pengarang || 'Penulis tidak diketahui' }}</div>
-                <div class="badge-wrapper">
-                  <span class="badge-tag">
+                <div class="book-meta-top">
+                  <span class="badge-tag mb-2">
                     {{ b.nama_category || 'Tanpa Kategori' }}
                   </span>
+                  <h5 class="book-title mb-1">
+                    <!-- Router Link diterapkan pada judul -->
+                    <router-link :to="{ name: 'book-detail', params: { id: b.id_buku } }"
+                      :title="b.judul_buku" class="text-decoration-none text-reset">
+                      {{ b.judul_buku }}
+                    </router-link>
+                  </h5>
+                  <div class="author text-truncate">{{ b.pengarang || 'Penulis tidak diketahui' }}
+                  </div>
                 </div>
-                <div class="year d-flex align-items-center gap-2">
-                  <i class="bi bi-calendar-fill"></i>
+
+                <div class="year d-flex align-items-center gap-2 mt-auto pt-3 border-top-custom">
+                  <i class="bi bi-calendar-event"></i>
                   <span>{{ b.tanggal_ditambahkan }}</span>
                 </div>
               </div>
@@ -72,20 +95,20 @@
       </div>
     </section>
 
-    <section class="section">
+    <section id="about" class="section">
       <div class="container">
         <div class="text-center mb-5">
           <div class="eyebrow">Informasi</div>
           <div class="section-rule-broken"></div>
           <h2 class="section-title">Tentang Kami</h2>
         </div>
-        <div class="row g-4">
-          <div class="col-6 ">
+        <div class="row g-4 align-items-center">
+          <div class="col-12 col-lg-6">
             <div class="image">
-              <img src="@/assets/images/gedung.jpg" alt="Library Image" class="img-fluid">
+              <img src="@/assets/images/gedung.jpeg" alt="Library Image" class="img-fluid">
             </div>
           </div>
-          <div class="col-6 content-library">
+          <div class="col-12 col-lg-6 content-library">
             <div class="d-flex align-items-center gap-3 about-library">
               <i class="bi bi-book" style="color: var(--gold)"></i>
               <h5 class="mb-0 eyebrow">Tentang Perpustakaan</h5>
@@ -150,7 +173,9 @@
     ref,
     onMounted
   } from 'vue'
-  import { getBukuTerbaru } from '../services/bookService'
+  import {
+    getBukuTerbaru
+  } from '../services/bookService'
   import defaultCover from '@/assets/images/Logo_Ma.png'
 
   const focusSearch = () => {
