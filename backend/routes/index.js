@@ -8,8 +8,9 @@ const PeminjamanModel = require('../models/PeminjamanModel');
 
 const router = express.Router();
 
-// Auto-return peminjaman yang sudah melewati due_date sebelum request diproses,
-// supaya stok/status yang dilihat/digunakan selalu up-to-date tanpa aksi manual.
+// Auto-flag peminjaman yang sudah melewati due_date sebagai 'terlambat' sebelum
+// request diproses, supaya status yang dilihat/digunakan selalu up-to-date --
+// stok tidak disentuh, buku dianggap masih keluar sampai staf konfirmasi manual.
 router.use(async (req, res, next) => {
   try {
     await PeminjamanModel.reconcileOverdueLoans();

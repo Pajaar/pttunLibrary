@@ -54,19 +54,18 @@ exports.buatPeminjaman = async ({ id_detail, nama_peminjam, no_telpon, durasi_ha
   }
 }
 
-// Auto-return: peminjaman yang sudah lewat due_date otomatis ditandai
-// dikembalikan dan stoknya dikembalikan, tanpa perlu aksi manual staf.
+// Auto-flag: peminjaman yang sudah lewat due_date otomatis ditandai
+// 'terlambat' (bukan 'dikembalikan') tanpa perlu aksi manual staf. Stok
+// tidak disentuh -- buku masih dianggap keluar sampai staf mengonfirmasi
+// pengembalian fisik lewat PATCH /:id/status.
 exports.reconcileOverdueLoans = async () => {
   const dateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' })
   const today = dateFormatter.format(new Date())
 
   await db.promise().query(
-    `UPDATE peminjaman p
-     JOIN detail_buku d ON d.id_buku = p.id_detail
-     SET p.status = 'dikembalikan',
-         d.stok_tersedia = LEAST(d.stok_tersedia + 1, d.total_buku)
-     WHERE p.status != 'dikembalikan'
-       AND p.due_date < ?`,
+    `UPDATE peminjaman
+     SET status = 'terlambat'
+     WHERE status = 'dipinjam' AND due_date < ?`,
     [today],
   )
 }
@@ -85,13 +84,7 @@ exports.getSemuaPeminjaman = async () => {
      ORDER BY p.tanggal_pinjam DESC, p.id_peminjaman DESC`,
   )
 
-  const dateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' })
-  const today = dateFormatter.format(new Date())
-
-  return rows.map((row) => {
-    const statusEfektif = row.status === 'dipinjam' && row.due_date < today ? 'terlambat' : row.status
-    return { ...row, status: statusEfektif }
-  })
+  return rows
 }
 
 exports.updateStatusPeminjaman = async (id_peminjaman, status) => {
