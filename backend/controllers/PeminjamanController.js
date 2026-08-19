@@ -145,3 +145,31 @@ exports.deletePeminjaman = async (req, res) => {
     res.status(500).json({ message: 'Gagal menghapus data peminjaman' })
   }
 }
+
+exports.cekPeminjaman = async (req, res) => {
+  const { nama_peminjam, no_telpon } = req.query
+
+  if (typeof nama_peminjam !== 'string' || nama_peminjam.trim() === '') {
+    return res.status(400).json({ message: 'Nama peminjam wajib diisi' })
+  }
+
+  if (typeof no_telpon !== 'string' || no_telpon.trim() === '') {
+    return res.status(400).json({ message: 'Nomor telepon wajib diisi' })
+  }
+
+  try {
+    const peminjaman = await PeminjamanModel.cekPeminjaman({
+      nama_peminjam: nama_peminjam.trim(),
+      no_telpon: no_telpon.trim(),
+    })
+    res.json({
+      message: 'Data peminjaman berhasil diambil',
+      data: peminjaman,
+    })
+  } catch (error) {
+    console.error('Gagal mengambil data peminjaman:', error)
+    res.status(500).json({
+      message: 'Gagal mengambil data peminjaman',
+    })
+  }
+}

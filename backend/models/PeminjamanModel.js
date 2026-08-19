@@ -224,3 +224,22 @@ exports.deletePeminjaman = async (id_peminjaman) => {
     connection.release()
   }
 }
+
+exports.cekPeminjaman = async ({ nama_peminjam, no_telpon }) => {
+  const [rows] = await db.promise().query(
+    `SELECT p.id_peminjaman, p.id_detail, p.nama_peminjam, p.no_telpon,
+            DATE_FORMAT(p.tanggal_pinjam, '%Y-%m-%d') AS tanggal_pinjam,
+            p.durasi_hari,
+            DATE_FORMAT(p.due_date, '%Y-%m-%d') AS due_date,
+            p.status,
+            b.judul_buku
+     FROM peminjaman p
+     JOIN detail_buku d ON d.id_buku = p.id_detail
+     JOIN buku b ON b.id_buku = d.id_buku
+     WHERE LOWER(TRIM(p.nama_peminjam)) = LOWER(?)
+       AND TRIM(p.no_telpon) = ?
+     ORDER BY p.tanggal_pinjam DESC, p.id_peminjaman DESC`,
+    [nama_peminjam, no_telpon],
+  )
+  return rows
+}
