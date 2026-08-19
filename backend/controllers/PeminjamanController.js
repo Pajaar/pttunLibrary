@@ -3,7 +3,7 @@ const PeminjamanModel = require('../models/PeminjamanModel')
 const STATUS_VALUES = ['dipinjam', 'dikembalikan', 'terlambat']
 
 exports.buatPeminjaman = async (req, res) => {
-  const { id_detail, nama_peminjam, no_telpon, durasi_hari } = req.body
+  const { id_detail, nama_peminjam, no_telpon, durasi_hari, konfirmasi_tanggung_jawab } = req.body
 
   const parsedIdDetail = Number.parseInt(id_detail, 10)
   if (!Number.isInteger(parsedIdDetail)) {
@@ -24,6 +24,10 @@ exports.buatPeminjaman = async (req, res) => {
     if (!Number.isInteger(parsedDurasi) || parsedDurasi < 1 || parsedDurasi > 7) {
       return res.status(400).json({ message: 'durasi_hari harus berupa angka antara 1 dan 7' })
     }
+  }
+
+  if (konfirmasi_tanggung_jawab !== true) {
+    return res.status(400).json({ message: 'Pernyataan tanggung jawab wajib disetujui' })
   }
 
   try {
