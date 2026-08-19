@@ -224,12 +224,16 @@
       Temukan koleksi buku hukum, peraturan, dan referensi yang tersedia di <br> Perpustakaan PTTUN
       Jakarta
     </span>
-    <div class="container mt-4 mb-4">
+    <div class="container my-4">
       <div class="search-container">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" class="form-control search-input"
-          placeholder="Cari berdasarkan judul buku, pengarang, atau penerbit..."
-          v-model="searchQuery">
+        <div class="search-input-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input 
+            type="text" 
+            class="form-control search-input"
+            placeholder="Cari berdasarkan judul buku, pengarang, atau penerbit..."
+            v-model="searchQuery">
+        </div>
         <button class="search-button" type="button"> Cari Buku </button>
       </div>
     </div>
@@ -364,377 +368,395 @@
 </template>
 
 <style scoped>
-  .catalog-page {
-    padding: 2rem 0;
-  }
+.catalog-page {
+  padding: 2rem 0;
+}
 
-  h1 {
-    color: #18212f;
-    font-weight: 800;
-    margin-bottom: 1rem;
-  }
+h1 {
+  color: #18212f;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
 
-  .clickable-card {
-    cursor: pointer;
-  }
+.cat-title {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  white-space: nowrap;
+}
 
-  /* Search Bar */
+.cat-subtitle {
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* SEARCH CONTAINER - RESTRUCTURED FOR PERFECT RESPONSIVENESS */
+.search-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: #f1f3f7;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 6px 8px 6px 6px;
+  transition: all 0.3s ease;
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  z-index: 2;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  height: 48px;
+  border-radius: 30px;
+  padding-left: 48px;
+  padding-right: 16px;
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
+  font-size: 15px;
+}
+
+.search-input:focus {
+  background-color: transparent;
+  outline: none;
+  box-shadow: none;
+}
+
+.search-input::placeholder {
+  color: rgba(33, 37, 41, 0.55);
+}
+
+.search-button {
+  height: 48px;
+  padding: 0 28px;
+  border: none;
+  border-radius: 25px;
+  background-color: #0B1E3F;
+  color: #ffffff;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.search-button:hover {
+  background-color: #735505;
+}
+
+/* Filter Sidebar */
+.filter-box {
+  background-color: #fff;
+  border: 1px solid #D4AD65;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+}
+
+.filter-box h6 {
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.form-check {
+  margin-bottom: 8px;
+}
+
+.form-check-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.form-check-input {
+  border-color: #D4AD65;
+}
+
+.form-check-input:checked {
+  background-color: #735505;
+  border-color: #735505;
+}
+
+.kategori-checkbox-list {
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.btn-reset-filter {
+  border: none;
+  background: none;
+  color: #735505;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0;
+  cursor: pointer;
+}
+
+.btn-reset-filter:hover {
+  text-decoration: underline;
+}
+
+/* Book Header */
+.book-header {
+  width: 100%;
+  gap: 16px;
+}
+
+.book-count {
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.book-count span {
+  display: inline;
+  color: #735505;
+}
+
+.sort-select {
+  width: 160px;
+  border: 1px solid #735505;
+  border-radius: 10px;
+  font-size: 14px;
+  padding: 8px 12px;
+  flex-shrink: 0;
+}
+
+/* Book Card */
+.book-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.book-img-wrapper {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-color: #f8fafc;
+}
+
+.book-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.category-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background-color: rgba(30, 41, 59, 0.9);
+  color: #ffffff;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  z-index: 2;
+  backdrop-filter: blur(4px);
+}
+
+.book-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.book-title {
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.4;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.status {
+  color: #10b981;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.book-author {
+  font-size: 13px;
+  color: #475569;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.book-year {
+  display: block;
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 14px;
+}
+
+.book-btn {
+  width: 100%;
+  margin-top: auto;
+  padding: 9px;
+  border-radius: 20px;
+  border: 1.5px solid #1e293b;
+  background-color: transparent;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.book-btn:hover {
+  background-color: #1e293b;
+  color: #ffffff;
+}
+
+.error-message {
+  color: #a33a1f;
+  font-weight: 600;
+}
+
+/* Pagination */
+.pagination-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.page-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #D4AD65;
+  background-color: #fff;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.page-number:hover {
+  background-color: #f8f0dc;
+}
+
+.page-number.active {
+  background-color: #735505;
+  border-color: #735505;
+  color: #fff;
+}
+
+.page-ellipsis {
+  width: 36px;
+  text-align: center;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.page-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: none;
+  color: #735505;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.page-arrow:hover {
+  color: #1e293b;
+}
+
+/* MEDIA QUERIES UNTUK TAMPILAN SELULER / MOBILE */
+@media (max-width: 768px) {
   .search-container {
-    position: relative;
-    display: flex;
-    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 20px;
+    gap: 10px;
+  }
+
+  .search-input-wrapper {
     width: 100%;
-    height: 60px;
-    border-radius: 30px;
-    background-color: #ebedf278;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-    padding: 5px 25px 5px 5px;
   }
 
   .search-input {
-    flex: 1;
-    height: 100%;
-    border-radius: 30px;
-    padding-left: 50px;
-    border: none;
-    background-color: transparent;
-    box-shadow: none;
-  }
-
-  .search-input:focus {
-    background-color: transparent;
-    outline: none;
-    box-shadow: none;
+    height: 44px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
   }
 
   .search-icon {
-    position: absolute;
-    left: 20px;
-    color: #000000;
-    z-index: 2;
-  }
-
-  .search-input::placeholder {
-    color: rgba(33, 37, 41, 0.6);
+    left: 14px;
   }
 
   .search-button {
-    height: 42px;
-    padding: 0 23px;
-    border: none;
-    border-radius: 30px;
-    background-color: #0B1E3F;
-    color: white;
-    font-weight: 600;
-    white-space: nowrap;
-    transition: 0.2s ease;
-    margin-left: 8px;
-  }
-
-  .search-button:hover {
-    background-color: #5f4604;
-  }
-
-  /* Filter Sidebar */
-  .filter-box {
-    background-color: #fff;
-    border: 1px solid #D4AD65;
-    border-radius: 12px;
-    padding: 18px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-  }
-
-  .filter-box h6 {
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-
-  .form-check {
-    margin-bottom: 8px;
-  }
-
-  .form-check-label {
-    font-size: 14px;
-    font-weight: 500;
-  }
-
-  .form-check-input {
-    border-color: #D4AD65;
-  }
-
-  .form-check-input:checked {
-    background-color: #735505;
-    border-color: #735505;
-  }
-
-  .kategori-checkbox-list {
-    max-height: 240px;
-    overflow-y: auto;
-    padding-right: 4px;
-  }
-
-  .btn-reset-filter {
-    border: none;
-    background: none;
-    color: #735505;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 0;
-    cursor: pointer;
-  }
-
-  .btn-reset-filter:hover {
-    text-decoration: underline;
-  }
-
-  /* Book Header */
-  .book-header {
     width: 100%;
-    gap: 16px;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .book-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center !important;
   }
 
   .book-count {
-    white-space: nowrap;
-    font-weight: 700;
-  }
-
-  .book-count span {
-    display: inline;
-    color: #735505;
-    margin-top: 0;
+    font-size: 0.95rem;
   }
 
   .sort-select {
-    width: 150px;
-    border: 1px solid #735505;
-    border-radius: 10px;
-    font-size: 14px;
-    padding: 10px;
-    flex-shrink: 0;
+    width: auto;
+    font-size: 13px;
+    padding: 6px 10px;
   }
 
-  /* Book Card */
-  .book-card {
-    display: flex;
-    flex-direction: column;
-    background-color: #fff;
-    border-radius: 20px;
-    overflow: hidden;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    height: 100%;
-  }
-
-  /* Area Gambar */
   .book-img-wrapper {
-    position: relative;
-    width: 100%;
-    height: 380px;
-    background-color: #f8fafc;
+    height: 280px;
   }
-
-  .book-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  /* Badge Kategori Melayang */
-  .category-badge {
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    background-color: #1e293b;
-    color: #ffffff;
-    padding: 6px 14px;
-    border-radius: 30px;
-    font-size: 11px;
-    font-weight: 500;
-    z-index: 5;
-  }
-
-  /* Area Teks di Bawah Gambar */
-  .book-body {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-  }
-
-  /* Tipografi Judul */
-  .book-title {
-    font-family: 'Playfair Display', 'Georgia', serif;
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: #0f172a;
-    line-height: 1.4;
-    margin-bottom: 8px;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
-  }
-
-  /* Label Status 'Tersedia' */
-  .status {
-    color: #10b981;
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-    text-transform: capitalize;
-  }
-
-  /* Nama Penulis */
-  .book-author {
-    font-family: 'Inter', sans-serif;
-    font-size: 13.5px;
-    color: #334155;
-    margin-bottom: 4px;
-    font-weight: 400;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-word;
-  }
-
-  /* Tahun Terbit */
-  .book-year {
-    display: block;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    color: #64748b;
-    margin-bottom: 16px;
-  }
-
-  /* Tombol 'Lihat Buku' */
-  .book-btn {
-    width: 100%;
-    margin-top: auto;
-    padding: 11px;
-    border-radius: 30px;
-    border: 1.5px solid #1e293b;
-    background-color: transparent;
-    color: #1e293b;
-    font-weight: 500;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-  }
-
-  .book-btn:hover {
-    background-color: #1e293b;
-    color: #ffffff;
-  }
-
-  .error-message {
-    color: #a33a1f;
-    font-weight: 600;
-  }
-
-  /* Pagination */
-  .pagination-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 32px;
-    flex-wrap: wrap;
-  }
-
-  .page-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: 1px solid #D4AD65;
-    background-color: #fff;
-    color: #1e293b;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-  }
-
-  .page-number:hover {
-    background-color: #f8f0dc;
-  }
-
-  .page-number.active {
-    background-color: #735505;
-    border-color: #735505;
-    color: #fff;
-  }
-
-  .page-ellipsis {
-    width: 36px;
-    text-align: center;
-    color: #64748b;
-    font-weight: 600;
-  }
-
-  .page-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border: none;
-    background: none;
-    color: #735505;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  .page-arrow:hover {
-    color: #1e293b;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .book-header {
-      flex-direction: column;
-      align-items: flex-start !important;
-    }
-
-    .book-count {
-      white-space: normal;
-    }
-
-    .sort-select {
-      width: 100%;
-    }
-
-    .search-container {
-      height: auto;
-      flex-direction: column;
-      align-items: stretch;
-      padding: 8px;
-      border-radius: 20px;
-    }
-
-    .search-input {
-      height: 48px;
-      padding-left: 45px;
-    }
-
-    .search-button {
-      width: 100%;
-      margin-left: 0;
-      margin-top: 8px;
-    }
-
-    .search-icon {
-      top: 32px;
-      left: 22px;
-    }
-  }
-
+}
 </style>
