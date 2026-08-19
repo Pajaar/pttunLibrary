@@ -36,6 +36,11 @@ const router = createRouter({
           name: 'peminjaman-form',
           component: () => import('../views/PeminjamanFormView.vue'),
         },
+        {
+          path: 'cek-peminjaman',
+          name: 'cek-peminjaman',
+          component: () => import('../views/CekPeminjamanView.vue'),
+        },
       ],
     },
     {

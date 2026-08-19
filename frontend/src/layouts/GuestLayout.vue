@@ -245,6 +245,10 @@
       to: '/katalog'
     },
     {
+      label: 'Cek Peminjaman',
+      to: '/cek-peminjaman'
+    },
+    {
       label: 'Layanan',
       to: '/',
       targetId: 'layanan'
