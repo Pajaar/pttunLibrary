@@ -5,7 +5,6 @@ import AdminLayout from '@/layouts/AdminLayout.vue'
 import { getBuku, getSection, createBuku, updateBuku, deleteBuku } from '@/services/bookAdminService.js'
 import { getCategory } from '@/services/categoryService.js'
 import { getRak } from '@/services/rakService.js'
-import { uploadCoverAdmin } from '@/services/uploadAdminService.js'
 import CoverScanner from '@/components/admin/CoverScanner.vue'
 
 const books = ref([])
@@ -17,9 +16,6 @@ const loading = ref(false)
 const saving = ref(false)
 const errorMsg = ref('')
 const successMsg = ref('')
-
-const uploadingCover = ref(false)
-const uploadError = ref('')
 
 const searchKeyword = ref('')
 const selectedRak = ref('') // '' = Semua Rak
@@ -157,7 +153,6 @@ function resetPageOnSearch() {
 function openCreateModal() {
   editingId.value = null
   formError.value = ''
-  uploadError.value = ''
   Object.assign(form, emptyForm())
   if (selectedRak.value) {
     form.id_rak = selectedRak.value
@@ -168,7 +163,6 @@ function openCreateModal() {
 function openEditModal(book) {
   editingId.value = book.id_buku
   formError.value = ''
-  uploadError.value = ''
   Object.assign(form, {
     judul_buku: book.judul_buku ?? '',
     id_category: book.id_category ?? '',
@@ -183,23 +177,6 @@ function openEditModal(book) {
     image_url: book.image_url ?? '',
   })
   modalInstance?.show()
-}
-
-async function handleCoverFileChange(event) {
-  const file = event.target.files[0]
-  if (!file) return
-
-  uploadingCover.value = true
-  uploadError.value = ''
-  try {
-    const result = await uploadCoverAdmin(file)
-    form.image_url = result.url
-  } catch (error) {
-    uploadError.value = error.message
-  } finally {
-    uploadingCover.value = false
-    event.target.value = ''
-  }
 }
 
 const coverScannerRef = ref(null)
@@ -490,23 +467,14 @@ onMounted(async () => {
                     <img v-if="form.image_url" :src="form.image_url" alt="Preview cover"
                       class="cover-thumb" />
                     <div class="flex-grow-1">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        class="form-control form-control-sm mb-1"
-                        :disabled="uploadingCover"
-                        @change="handleCoverFileChange"
-                      />
-                      <div v-if="uploadingCover" class="small text-muted">
-                        <span class="spinner-border spinner-border-sm me-1"></span>Mengunggah cover...
-                      </div>
-                      <div v-if="uploadError" class="small text-danger">{{ uploadError }}</div>
+                      <input v-model="form.image_url" type="text" class="form-control mb-2"
+                        placeholder="https://..." />
                       <button
                         type="button"
-                        class="btn btn-sm btn-outline-success mt-1"
+                        class="btn btn-sm btn-outline-success"
                         @click="openCoverScanner"
                       >
-                        <i class="bi bi-camera me-1"></i>Scan Cover
+                        <i class="bi bi-camera me-1"></i>Scan / Upload Cover
                       </button>
                     </div>
                   </div>
