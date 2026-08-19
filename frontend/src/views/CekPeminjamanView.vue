@@ -12,7 +12,7 @@
     </div>
 
     <div class="cek-card p-3 p-md-4 p-lg-5 mx-auto">
-      <form @submit.prevent="cariPeminjaman">
+      <form @submit.prevent="cariPeminjaman" novalidate>
         <div class="mb-3">
           <label class="form-label" for="nama_peminjam">Nama Lengkap</label>
           <div class="input-icon-wrapper">
