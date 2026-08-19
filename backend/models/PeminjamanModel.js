@@ -54,10 +54,12 @@ exports.buatPeminjaman = async ({ id_detail, nama_peminjam, no_telpon, durasi_ha
   }
 }
 
-// Auto-flag: peminjaman yang sudah lewat due_date otomatis ditandai
-// 'terlambat' (bukan 'dikembalikan') tanpa perlu aksi manual staf. Stok
-// tidak disentuh -- buku masih dianggap keluar sampai staf mengonfirmasi
-// pengembalian fisik lewat PATCH /:id/status.
+// Auto-flag dua arah: peminjaman yang sudah lewat due_date otomatis ditandai
+// 'terlambat' (bukan 'dikembalikan') tanpa perlu aksi manual staf, dan
+// peminjaman 'terlambat' yang due_date-nya sudah diperpanjang staf (lewat
+// updatePeminjaman) ke tanggal yang belum lewat otomatis kembali ke
+// 'dipinjam'. Stok tidak disentuh di kedua arah -- buku masih dianggap
+// keluar sampai staf mengonfirmasi pengembalian fisik lewat PATCH /:id/status.
 exports.reconcileOverdueLoans = async () => {
   const dateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' })
   const today = dateFormatter.format(new Date())
@@ -66,6 +68,13 @@ exports.reconcileOverdueLoans = async () => {
     `UPDATE peminjaman
      SET status = 'terlambat'
      WHERE status = 'dipinjam' AND due_date < ?`,
+    [today],
+  )
+
+  await db.promise().query(
+    `UPDATE peminjaman
+     SET status = 'dipinjam'
+     WHERE status = 'terlambat' AND due_date >= ?`,
     [today],
   )
 }
@@ -208,7 +217,7 @@ exports.deletePeminjaman = async (id_peminjaman) => {
 
     await connection.query('DELETE FROM peminjaman WHERE id_peminjaman = ?', [id_peminjaman])
 
-    if (existing.status === 'dipinjam') {
+    if (existing.status === 'dipinjam' || existing.status === 'terlambat') {
       await connection.query(
         'UPDATE detail_buku SET stok_tersedia = stok_tersedia + 1 WHERE id_buku = ? AND stok_tersedia < total_buku',
         [existing.id_detail],

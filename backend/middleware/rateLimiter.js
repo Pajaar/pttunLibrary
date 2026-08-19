@@ -25,4 +25,19 @@ const adminWriteLimiter = rateLimit({
   },
 });
 
-module.exports = { writeLimiter, adminWriteLimiter };
+// Endpoint cek peminjaman cuma baca (SELECT), tidak menulis ke DB, dan lebih
+// wajar dipanggil berulang kali oleh peminjam yang sama (mis. cek status
+// beberapa kali). Dipisah dari writeLimiter supaya trafik cek status di
+// jaringan bersama (mis. wifi publik perpustakaan) tidak menghabiskan
+// jatah yang sama dengan endpoint peminjam baru.
+const readLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    message: 'Terlalu banyak permintaan, silakan coba lagi beberapa saat lagi',
+  },
+});
+
+module.exports = { writeLimiter, adminWriteLimiter, readLimiter };
