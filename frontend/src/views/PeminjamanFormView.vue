@@ -91,13 +91,18 @@
               <h4 class="font-display text-navy mb-2">Peminjaman Berhasil Diajukan</h4>
               <p class="text-muted mb-1">{{ berhasil.judul_buku }}</p>
               <p class="text-muted small mb-4">Batas pengembalian: <strong>{{ formatDueDate(berhasil.due_date) }}</strong></p>
-              <button class="btn btn-navy-action w-100 w-sm-auto px-4 py-2 rounded-pill" @click="kembaliKeDetail">
-                Kembali ke Detail Buku
-              </button>
+              <div class="d-flex flex-column flex-sm-row justify-content-center gap-2 gap-sm-3">
+                <button class="btn btn-navy-action w-100 w-sm-auto px-4 py-2 rounded-pill" @click="kembaliKeDetail">
+                  Kembali ke Detail Buku
+                </button>
+                <router-link :to="{ name: 'cek-peminjaman' }" class="btn btn-outline-navy w-100 w-sm-auto px-4 py-2 rounded-pill">
+                  Cek Status Peminjaman
+                </router-link>
+              </div>
             </div>
 
             <!-- Form -->
-            <form v-else id="peminjaman-form" @submit.prevent="submitForm">
+            <form v-else id="peminjaman-form" @submit.prevent="submitForm" novalidate>
               <div class="mb-3">
                 <label class="form-label" for="nama_peminjam">Nama Lengkap</label>
                 <div class="input-icon-wrapper">
@@ -137,6 +142,14 @@
                   menghubungi Anda melalui nomor kontak yang terdaftar untuk proses peminjaman.</span>
               </div>
 
+              <div class="form-check mb-4">
+                <input id="pernyataan_tanggung_jawab" v-model="pernyataanDisetujui" type="checkbox"
+                  class="form-check-input">
+                <label class="form-check-label small" for="pernyataan_tanggung_jawab">
+                  Saya menyatakan data ini benar dan bertanggung jawab mengembalikan buku tepat waktu.
+                </label>
+              </div>
+
               <div v-if="pesanError" class="alert alert-danger py-2 small fw-medium">{{ pesanError }}</div>
             </form>
 
@@ -173,6 +186,7 @@ const loading = ref(true)
 const namaPeminjam = ref('')
 const noTelpon = ref('')
 const durasiHari = ref('')
+const pernyataanDisetujui = ref(false)
 
 const submitting = ref(false)
 const pesanError = ref('')
@@ -216,13 +230,19 @@ const submitForm = async () => {
     return
   }
 
+  if (!pernyataanDisetujui.value) {
+    pesanError.value = 'Anda harus menyetujui pernyataan tanggung jawab sebelum mengajukan peminjaman'
+    return
+  }
+
   submitting.value = true
   try {
     const response = await ajukanPeminjaman({
       id_detail: Number(route.params.id),
       nama_peminjam: namaPeminjam.value.trim(),
       no_telpon: noTelpon.value.trim(),
-      durasi_hari: Number(durasiHari.value)
+      durasi_hari: Number(durasiHari.value),
+      konfirmasi_tanggung_jawab: pernyataanDisetujui.value
     })
     berhasil.value = response.data
   } catch (err) {
