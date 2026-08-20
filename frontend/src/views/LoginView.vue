@@ -61,6 +61,11 @@ async function handleSubmit() {
             <span v-if="loading" class="spinner-border spinner-border-sm me-1"></span>
             Masuk
           </button>
+          <div class="text-center mt-3">
+            <router-link to="/" class="back-home-link">
+              <i class="bi bi-arrow-left me-1"></i>Kembali ke Beranda
+            </router-link>
+          </div>
         </form>
       </div>
     </div>
@@ -75,5 +80,16 @@ async function handleSubmit() {
 .btn-lib-green:hover {
   background-color: var(--lib-green-dark);
   color: #fff;
+}
+
+.back-home-link {
+  color: #6c757d;
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.back-home-link:hover {
+  color: var(--lib-green);
+  text-decoration: underline;
 }
 </style>
