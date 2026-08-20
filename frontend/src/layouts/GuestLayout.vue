@@ -80,9 +80,11 @@
               </a>
             </li>
           </ul>
-          <router-link :to="loginTarget" class="btn-login-pill d-lg-none mt-3 align-self-center">
-            {{ loginLabel }}
-          </router-link>
+          <div class="d-lg-none text-center mt-3">
+            <router-link :to="loginTarget" class="btn-login-pill d-inline-flex">
+              {{ loginLabel }}
+            </router-link>
+          </div>
         </div>
       </div>
     </nav>
@@ -312,7 +314,7 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    flex-grow: 0;
+    width: max-content;
   }
 }
 
