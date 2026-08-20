@@ -62,8 +62,17 @@
         <a class="navbar-brand brand" href="#">PTTUN Library</a>
 
         <div class="d-flex align-items-center gap-2">
-          <router-link :to="loginTarget" class="btn-login-pill d-none d-lg-inline-flex">
-            {{ loginLabel }}
+          <div class="dropdown d-none d-lg-block" v-if="authStore.isAuthenticated">
+            <button class="btn-login-pill dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><router-link class="dropdown-item" to="/admin/dashboard">Dashboard</router-link></li>
+              <li><button class="dropdown-item" type="button" @click="handleLogout">Logout</button></li>
+            </ul>
+          </div>
+          <router-link v-else to="/login" class="btn-login-pill d-none d-lg-inline-flex">
+            Login
           </router-link>
           <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse"
             data-bs-target="#mainNav">
@@ -80,10 +89,12 @@
               </a>
             </li>
           </ul>
-          <div class="d-lg-none text-center mt-3">
-            <router-link :to="loginTarget" class="btn-login-pill d-inline-flex">
-              {{ loginLabel }}
-            </router-link>
+          <div class="d-lg-none text-center mt-3" v-if="!authStore.isAuthenticated">
+            <router-link to="/login" class="btn-login-pill d-inline-flex">Login</router-link>
+          </div>
+          <div class="d-lg-none text-center mt-3 d-flex flex-column align-items-center gap-2" v-else>
+            <router-link to="/admin/dashboard" class="btn-login-pill d-inline-flex">Dashboard Admin</router-link>
+            <button type="button" class="btn-login-pill d-inline-flex" @click="handleLogout">Logout</button>
           </div>
         </div>
       </div>
@@ -231,7 +242,6 @@
 <script setup>
   import {
     ref,
-    computed,
     nextTick
   } from 'vue'
   import {
@@ -244,8 +254,9 @@
   const route = useRoute()
   const authStore = useAuthStore()
 
-  const loginLabel = computed(() => (authStore.isAuthenticated ? 'Dashboard Admin' : 'Login'))
-  const loginTarget = computed(() => (authStore.isAuthenticated ? '/admin/dashboard' : '/login'))
+  async function handleLogout() {
+    await authStore.logout()
+  }
 
   const contact = ref({
     address: 'Jalan Cikini Raya No. 117, Kec. Menteng, Kota Jakarta Pusat, DKI Jakarta 10330',
