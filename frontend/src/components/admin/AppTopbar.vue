@@ -34,6 +34,9 @@ async function handleLogout() {
 
     <div class="d-flex align-items-center gap-3">
       <span class="text-white-50 small d-none d-md-inline">{{ authStore.username }}</span>
+      <router-link to="/" class="btn btn-sm btn-outline-light" title="Kembali ke Beranda">
+        <i class="bi bi-house-door"></i>
+      </router-link>
       <button type="button" class="btn btn-sm btn-outline-light" title="Keluar" @click="handleLogout">
         <i class="bi bi-box-arrow-right"></i>
       </button>
