@@ -60,10 +60,17 @@
     <nav class="navbar navbar-expand-lg navbar-main w-100">
       <div class="container">
         <a class="navbar-brand brand" href="#">PTTUN Library</a>
-        <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse"
-          data-bs-target="#mainNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+
+        <div class="d-flex align-items-center gap-2">
+          <router-link :to="loginTarget" class="btn-login-pill d-none d-lg-inline-flex">
+            {{ loginLabel }}
+          </router-link>
+          <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse"
+            data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+
         <div class="collapse navbar-collapse" id="mainNav">
           <ul class="navbar-nav justify-content-center w-100 gap-3 gap-lg-0">
             <li class="nav-item" v-for="(item, i) in navItems" :key="i">
@@ -73,6 +80,9 @@
               </a>
             </li>
           </ul>
+          <router-link :to="loginTarget" class="btn-login-pill d-lg-none mt-3 align-self-center">
+            {{ loginLabel }}
+          </router-link>
         </div>
       </div>
     </nav>
@@ -219,15 +229,21 @@
 <script setup>
   import {
     ref,
+    computed,
     nextTick
   } from 'vue'
   import {
     useRouter,
     useRoute
   } from 'vue-router'
+  import { useAuthStore } from '@/stores/auth.js'
 
   const router = useRouter()
   const route = useRoute()
+  const authStore = useAuthStore()
+
+  const loginLabel = computed(() => (authStore.isAuthenticated ? 'Dashboard Admin' : 'Login'))
+  const loginTarget = computed(() => (authStore.isAuthenticated ? '/admin/dashboard' : '/login'))
 
   const contact = ref({
     address: 'Jalan Cikini Raya No. 117, Kec. Menteng, Kota Jakarta Pusat, DKI Jakarta 10330',
@@ -284,3 +300,36 @@
   }
 
 </script>
+
+<style scoped>
+.navbar-main .container {
+  position: relative;
+}
+
+@media (min-width: 992px) {
+  .navbar-main .navbar-collapse {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    flex-grow: 0;
+  }
+}
+
+.btn-login-pill {
+  background-color: var(--gold);
+  color: var(--navy);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.4rem 1.1rem;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.btn-login-pill:hover {
+  background-color: var(--gold-light);
+  color: var(--navy);
+}
+</style>
