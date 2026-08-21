@@ -217,7 +217,7 @@
   <div class="catalog-page container-fluid">
     <div class="cat-head container d-flex justify-content-center align-items-center">
       <hr class="flex-grow-1 my-auto opacity-100 h-2" style="border-color: #D4AD65; opacity: 1;">
-      <span class="px-3 fs-1 text-dark fw-bold">Katalog Buku</span>
+      <span class="px-3 fs-1 text-dark fw-bold title-katalog">Katalog Buku</span>
       <hr class="flex-grow-1 my-auto opacity-100" style="border-color: #D4AD65; opacity: 1;">
     </div>
     <span class="text-center fs-5 d-flex justify-content-center">
@@ -368,6 +368,8 @@
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant:wght@700&family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
+
 .catalog-page {
   padding: 2rem 0;
 }
@@ -376,6 +378,10 @@ h1 {
   color: #18212f;
   font-weight: 800;
   margin-bottom: 1rem;
+}
+
+.title-katalog {
+  font-family: 'Cormorant', serif;
 }
 
 .cat-title {
