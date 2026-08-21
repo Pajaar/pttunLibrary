@@ -12,7 +12,7 @@
         <div class="hero-rule"></div>
         <p class="lead">Melayani masyarakat melalui layanan perpustakaan digital yang cepat,
           <br>mudah, dan transparan.</p>
-        <button class="btn btn-gold btn-hero">Cari Buku<i class="bi bi-chevron-right"></i></button>
+        <router-link to="/katalog" class="btn btn-gold btn-hero">Cari Buku<i class="bi bi-chevron-right"></i></router-link>
       </div>
     </section>
 
@@ -61,7 +61,7 @@
         </div>
 
         <!-- GRID BUKU RESPONSISF -->
-        <div v-else class="row g-3 g-md-4">
+        <div v-else class="row g-3 g-md-4 book-terbaru-row">
           <div class="col-12 col-md-6 col-lg-4" v-for="b in books" :key="b.id_buku">
             <div class="book-card h-100">
               <div class="book-cover-wrapper">
@@ -177,10 +177,6 @@
     getBukuTerbaru
   } from '../services/bookService'
   import defaultCover from '@/assets/images/Logo_Ma.png'
-
-  const focusSearch = () => {
-    alert('Fitur pencarian buku akan segera hadir.')
-  }
 
   const services = ref([{
       icon: 'bi bi-book',

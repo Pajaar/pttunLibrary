@@ -32,7 +32,7 @@
   const selectedStatus = ref((route.query.status) || '')
   const selectedRak = ref((route.query.rak) || '')
   const selectedYear = ref((route.query.year) || '')
-  const sortBy = ref((route.query.sort) || 'relevan')
+  const sortBy = ref((route.query.sort) || 'terbaru')
   const currentPage = ref(Number(route.query.page) || 1)
 
   const kategoriOptions = ref([])
@@ -113,6 +113,10 @@
       return list.sort((a, b) => (a.judul_buku || '').localeCompare(b.judul_buku || ''))
     }
 
+    if (sortBy.value === 'judul-desc') {
+      return list.sort((a, b) => (b.judul_buku || '').localeCompare(a.judul_buku || ''))
+    }
+
     return list
   })
 
@@ -158,7 +162,7 @@
     if (selectedStatus.value) query.status = selectedStatus.value
     if (selectedRak.value) query.rak = selectedRak.value
     if (selectedYear.value) query.year = selectedYear.value
-    if (sortBy.value !== 'relevan') query.sort = sortBy.value
+    if (sortBy.value !== 'terbaru') query.sort = sortBy.value
     if (currentPage.value > 1) query.page = currentPage.value
 
     router.replace({
@@ -357,9 +361,10 @@
             </h4>
 
             <select class="form-select sort-select" v-model="sortBy">
-              <option value="relevan">Paling Relevan</option>
               <option value="terbaru">Terbaru</option>
+              <option value="relevan">Paling Relevan</option>
               <option value="judul">Judul A-Z</option>
+              <option value="judul-desc">Judul Z-A</option>
             </select>
           </div>
           <hr>
@@ -375,8 +380,8 @@
             Tidak ada buku yang cocok dengan filter Anda.
           </p>
 
-          <div v-else class="row g-4 mt-2">
-            <div class="col-md-4" v-for="buku in pagedBuku" :key="buku.id_buku">
+          <div v-else class="row g-3 g-md-4 mt-2">
+            <div class="col-6 col-md-4" v-for="buku in pagedBuku" :key="buku.id_buku">
               <!-- Bungkus seluruh card dengan router-link -->
               <router-link :to="{ name: 'book-detail', params: { id: buku.id_buku } }"
                 class="book-card text-decoration-none text-reset d-block">
@@ -388,7 +393,12 @@
                 <div class="book-body">
                   <div class="d-flex justify-content-between align-items-start gap-2">
                     <h6 class="book-title">{{ buku.judul_buku }}</h6>
-                    <span class="status">• {{ buku.status_buku }}</span>
+                    <span class="status-badge-right"
+                      :class="buku.status_buku === 'Tersedia' ? 'text-success' : 'text-danger'">
+                      <span class="dot-status-sm"
+                        :class="buku.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span>
+                      <span class="d-none d-sm-inline">{{ buku.status_buku }}</span>
+                    </span>
                   </div>
                   <p class="book-author">{{ buku.pengarang || 'Penulis belum tersedia' }}</p>
                   <small class="book-year">{{ buku.tahun_terbit || 'Tahun tidak tersedia' }}</small>
@@ -626,6 +636,10 @@ h1 {
 .book-card {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+  text-align: left;
+  padding: 0;
+  gap: 0;
   background-color: #fff;
   border-radius: 16px;
   overflow: hidden;
@@ -643,7 +657,7 @@ h1 {
 .book-img-wrapper {
   position: relative;
   width: 100%;
-  height: 320px;
+  height: 240px;
   background-color: #f8fafc;
 }
 
@@ -656,47 +670,65 @@ h1 {
 
 .category-badge {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 8px;
+  left: 8px;
   background-color: rgba(30, 41, 59, 0.9);
   color: #ffffff;
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: 20px;
-  font-size: 11px;
+  font-size: 0.75rem;
   font-weight: 500;
   z-index: 2;
   backdrop-filter: blur(4px);
+  max-width: 75%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .book-body {
-  padding: 16px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+  text-align: left;
   flex-grow: 1;
 }
 
 .book-title {
   font-family: 'Playfair Display', 'Georgia', serif;
-  font-size: 1.05rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #0f172a;
-  line-height: 1.4;
-  margin-bottom: 6px;
+  line-height: 1.3;
+  min-height: 2.6em;
+  margin-bottom: 4px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.status {
-  color: #10b981;
-  font-size: 11px;
+.status-badge-right {
+  font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding-top: 2px;
+}
+
+.dot-status-sm {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
 }
 
 .book-author {
-  font-size: 13px;
+  font-size: 0.78rem;
   color: #475569;
   margin-bottom: 4px;
   display: -webkit-box;
@@ -707,21 +739,21 @@ h1 {
 
 .book-year {
   display: block;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #94a3b8;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 
 .book-btn {
   width: 100%;
   margin-top: auto;
-  padding: 9px;
+  padding: 7px;
   border-radius: 20px;
   border: 1.5px solid #1e293b;
   background-color: transparent;
   color: #1e293b;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -846,9 +878,45 @@ h1 {
     font-size: 13px;
     padding: 6px 10px;
   }
+}
 
+/* Kartu buku: samakan breakpoint dengan card Rekomendasi Buku (BookDetail.vue) */
+@media (min-width: 768px) {
   .book-img-wrapper {
-    height: 280px;
+    height: 300px;
+  }
+
+  .category-badge {
+    top: 12px;
+    left: 12px;
+  }
+
+  .book-body {
+    padding: 16px;
+  }
+
+  .book-title {
+    font-size: 0.92rem;
+  }
+
+  .book-author {
+    font-size: 0.82rem;
+    -webkit-line-clamp: 2;
+  }
+
+  .book-year {
+    margin-bottom: 12px;
+  }
+
+  .book-btn {
+    padding: 9px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .book-img-wrapper {
+    height: 340px;
   }
 }
 </style>
