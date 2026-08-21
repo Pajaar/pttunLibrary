@@ -220,7 +220,7 @@
       <span class="px-3 fs-1 text-dark fw-bold title-katalog">Katalog Buku</span>
       <hr class="flex-grow-1 my-auto opacity-100" style="border-color: #D4AD65; opacity: 1;">
     </div>
-    <span class="text-center fs-5 d-flex justify-content-center">
+    <span class="text-center d-flex justify-content-center span-katalog">
       Temukan koleksi buku hukum, peraturan, dan referensi yang tersedia di <br> Perpustakaan PTTUN
       Jakarta
     </span>
@@ -228,8 +228,8 @@
       <div class="search-container">
         <div class="search-input-wrapper">
           <i class="fas fa-search search-icon"></i>
-          <input 
-            type="text" 
+          <input
+            type="text"
             class="form-control search-input"
             placeholder="Cari berdasarkan judul buku, pengarang, atau penerbit..."
             v-model="searchQuery">
@@ -382,6 +382,17 @@ h1 {
 
 .title-katalog {
   font-family: 'Cormorant', serif;
+}
+
+.span-katalog {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.8rem;
+}
+
+@media (min-width: 576px) {
+  .span-katalog {
+    font-size: 0.95rem;
+  }
 }
 
 .cat-title {
