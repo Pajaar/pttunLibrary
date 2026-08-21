@@ -221,7 +221,7 @@
       <hr class="flex-grow-1 my-auto opacity-100" style="border-color: #D4AD65; opacity: 1;">
     </div>
     <span class="text-center d-flex justify-content-center span-katalog">
-      Temukan koleksi buku hukum, peraturan, dan referensi yang tersedia di <br> Perpustakaan PTTUN
+      Temukan koleksi buku hukum, peraturan, dan referensi yang tersedia di Perpustakaan PTTUN
       Jakarta
     </span>
     <div class="container my-4">
@@ -391,7 +391,7 @@ h1 {
 
 @media (min-width: 576px) {
   .span-katalog {
-    font-size: 0.95rem;
+    font-size: 1.25rem;
   }
 }
 
