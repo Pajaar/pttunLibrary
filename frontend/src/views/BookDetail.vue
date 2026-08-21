@@ -76,16 +76,17 @@
           <hr class="my-3 my-md-4 text-muted opacity-25">
 
           <!-- Status & Pinjam Button -->
-          <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+          <div class="d-flex flex-column gap-2">
             <div class="status-indicator d-flex align-items-center gap-2 fw-semibold"
               :class="buku.status_buku === 'Tersedia' ? 'text-success' : 'text-danger'">
               <span class="dot-status"
                 :class="buku.status_buku === 'Tersedia' ? 'bg-success' : 'bg-danger'"></span>
               {{ buku.status_buku || 'Tersedia' }}
             </div>
-            <button class="btn btn-navy-action w-100 w-sm-auto px-4 py-2 rounded-pill shadow-sm"
+            <button class="btn btn-navy-action w-100 px-4 py-2 rounded-pill shadow-sm"
+              :disabled="buku.status_buku !== 'Tersedia'"
               @click="router.push({ name: 'peminjaman-form', params: { id: buku.id_buku } })">
-              Pinjam Buku
+              {{ buku.status_buku === 'Tersedia' ? 'Pinjam Buku' : 'Buku Tidak Tersedia' }}
             </button>
           </div>
         </div>
@@ -278,6 +279,11 @@ watch(
   border-radius: 50%;
   display: inline-block;
   flex-shrink: 0;
+}
+
+.status-indicator {
+  font-size: 0.85rem;
+  white-space: nowrap;
 }
 
 .btn-navy-action {
