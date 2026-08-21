@@ -500,6 +500,15 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+  /* .modal-content Bootstrap butuh modal-header/body/footer sebagai flex child
+     langsung supaya modal-dialog-scrollable bisa membatasi tinggi modal-body dan
+     bikin dia yang scroll (bukan halaman di belakangnya). <form> yang membungkus
+     ketiganya jadi penghalang chain flex itu - display:contents membuang box
+     form tanpa mengubah perilaku submit-nya. */
+  .modal-content > form {
+    display: contents;
+  }
+
   .cover-thumb-table {
     width: 40px;
     height: 55px;
