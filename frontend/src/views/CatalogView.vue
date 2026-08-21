@@ -220,8 +220,8 @@
       <span class="px-3 fs-1 text-dark fw-bold title-katalog">Katalog Buku</span>
       <hr class="flex-grow-1 my-auto opacity-100" style="border-color: #D4AD65; opacity: 1;">
     </div>
-    <span class="text-center d-flex justify-content-center span-katalog">
-      Temukan koleksi buku hukum, peraturan, dan referensi yang tersedia di Perpustakaan PTTUN
+    <span class="text-center d-block span-katalog">
+      Temukan koleksi buku hukum, peraturan, dan referensi yang tersedia di <br class="d-none d-sm-block"> Perpustakaan PTTUN
       Jakarta
     </span>
     <div class="container my-4">
