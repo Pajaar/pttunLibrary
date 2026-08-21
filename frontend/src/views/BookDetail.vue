@@ -410,9 +410,6 @@ watch(
   .info-value {
     font-size: 1.1rem;
   }
-  .detail-cover-wrapper {
-    max-width: 100%;
-  }
   .detail-cover-img {
     height: 400px;
   }
