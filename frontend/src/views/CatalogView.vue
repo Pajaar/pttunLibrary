@@ -234,13 +234,71 @@
             placeholder="Cari berdasarkan judul buku, pengarang, atau penerbit..."
             v-model="searchQuery">
         </div>
-        <button class="search-button" type="button"> Cari Buku </button>
+        <div class="search-actions">
+          <button class="search-button" type="button"> Cari Buku </button>
+          <div class="dropdown d-lg-none">
+            <button class="search-button dropdown-toggle" type="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Filter
+            </button>
+            <div class="dropdown-menu dropdown-menu-end filter-dropdown-menu p-3">
+              <div class="filter-box mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="mb-0">Kategori</h6>
+                  <button v-if="selectedCategories.length" type="button" class="btn-reset-filter"
+                    @click="resetKategori">
+                    Reset
+                  </button>
+                </div>
+                <div class="kategori-checkbox-list">
+                  <div class="form-check" v-for="kategori in kategoriOptions" :key="kategori">
+                    <input class="form-check-input" type="checkbox" :id="`kategori-mobile-${kategori}`"
+                      :value="kategori" v-model="selectedCategories">
+                    <label class="form-check-label" :for="`kategori-mobile-${kategori}`">
+                      {{ kategori }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-box mb-3">
+                <h6>Ketersediaan</h6>
+                <select class="form-select" v-model="selectedStatus">
+                  <option value="">Semua Status</option>
+                  <option v-for="status in statusOptions" :key="status" :value="status">
+                    {{ status }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="filter-box mb-3">
+                <h6>Rak</h6>
+                <select class="form-select" v-model="selectedRak">
+                  <option value="">Semua Rak</option>
+                  <option v-for="rak in rakOptions" :key="rak" :value="rak">
+                    {{ rak }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="filter-box mb-0">
+                <h6>Tahun Terbit</h6>
+                <select class="form-select" v-model="selectedYear">
+                  <option value="">Semua Tahun</option>
+                  <option v-for="tahun in tahunOptions" :key="tahun" :value="tahun">
+                    {{ tahun }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="container my-5">
       <div class="row g-4">
         <!-- Sidebar Filter -->
-        <div class="col-lg-3">
+        <div class="col-lg-3 d-none d-lg-block">
           <div class="filter-box">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h6 class="mb-0">Kategori</h6>
@@ -471,6 +529,18 @@ h1 {
 
 .search-button:hover {
   background-color: #735505;
+}
+
+.search-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-dropdown-menu {
+  width: min(320px, 90vw);
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 /* Filter Sidebar */
@@ -750,8 +820,13 @@ h1 {
     left: 14px;
   }
 
-  .search-button {
+  .search-actions {
     width: 100%;
+  }
+
+  .search-actions .search-button {
+    width: auto;
+    flex: 1;
     height: 44px;
     border-radius: 12px;
   }
