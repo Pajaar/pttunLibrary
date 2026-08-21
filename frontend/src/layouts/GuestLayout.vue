@@ -39,10 +39,6 @@
                 <span class="contact-text">{{ contact.fax }}</span>
               </div>
               <div class="contact-item d-flex align-items-center gap-1">
-                <i class="bi bi-printer-fill text-gold"></i>
-                <span class="contact-text">{{ contact.fax }}</span>
-              </div>
-              <div class="contact-item d-flex align-items-center gap-1">
                 <i class="bi bi-envelope-fill text-gold"></i>
                 <span class="contact-text">{{ contact.email }}</span>
               </div>
@@ -63,8 +59,9 @@
 
         <div class="d-flex align-items-center gap-2">
           <div class="dropdown d-none d-lg-block" v-if="authStore.isAuthenticated">
-            <button class="btn-login-pill dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-circle"></i>
+            <button class="btn-login-pill dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false" aria-label="Menu akun">
+              <i class="bi bi-person-circle" aria-hidden="true"></i>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><router-link class="dropdown-item" to="/admin/dashboard">Dashboard</router-link></li>
@@ -330,6 +327,7 @@
 }
 
 .btn-login-pill {
+  border: 0;
   background-color: var(--gold);
   color: var(--navy);
   font-weight: 600;
