@@ -238,7 +238,7 @@
           <button class="search-button" type="button"> Cari Buku </button>
           <div class="dropdown d-lg-none">
             <button class="search-button dropdown-toggle" type="button"
-              data-bs-toggle="dropdown" aria-expanded="false">
+              data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
               Filter
             </button>
             <div class="dropdown-menu dropdown-menu-end filter-dropdown-menu p-3">
@@ -539,7 +539,7 @@ h1 {
 
 .filter-dropdown-menu {
   width: min(320px, 90vw);
-  max-height: 70vh;
+  max-height: min(70vh, 340px);
   overflow-y: auto;
 }
 
