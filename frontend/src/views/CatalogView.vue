@@ -319,7 +319,6 @@
 
           <div v-else class="row g-4 mt-2">
             <div class="col-md-4" v-for="buku in pagedBuku" :key="buku.id_buku">
-              <!-- Bungkus seluruh card dengan router-link -->
               <router-link :to="{ name: 'book-detail', params: { id: buku.id_buku } }"
                 class="book-card text-decoration-none text-reset d-block">
 
@@ -341,7 +340,6 @@
             </div>
           </div>
 
-          <!-- Pagination -->
           <nav v-if="totalPages > 1" class="pagination-nav" aria-label="Navigasi halaman">
             <button v-if="currentPage > 1" type="button" class="page-arrow" @click="prevPage"
               aria-label="Halaman sebelumnya">
